@@ -1,0 +1,8 @@
+Software Engineer Resume
+Contact: john.doe@email.com
+Experience:
+- Developed web applications using JavaScript, React, and Node.js.
+- Managed SQL databases and cloud deployments on AWS.
+- Collaborated with cross-functional teams using Agile methodologies.
+Skills: JavaScript, HTML, CSS, React, SQL, AWS, Git.
+Education: BS in Computer Science.

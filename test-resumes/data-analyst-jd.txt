@@ -1,0 +1,64 @@
+DATA ANALYST
+Location: Bangalore, India (Hybrid)
+Experience: 3-6 years
+Salary: ₹8-15 LPA
+
+ABOUT THE ROLE
+We are looking for a talented Data Analyst to join our growing analytics team. You will work with large datasets, create insightful visualizations, and provide data-driven recommendations to support business decisions across all departments.
+
+KEY RESPONSIBILITIES
+• Extract, clean, and analyze large datasets using SQL and Python
+• Create interactive dashboards and reports using Tableau or Power BI
+• Perform statistical analysis and A/B testing to measure product performance
+• Conduct cohort analysis, customer segmentation, and behavior analysis
+• Build predictive models to forecast trends and identify opportunities
+• Automate data pipelines and reporting processes
+• Collaborate with product, marketing, and engineering teams
+• Present findings and recommendations to stakeholders
+• Monitor KPIs and create executive-level reports
+• Identify data quality issues and implement solutions
+• Perform ad-hoc analysis to support business questions
+• Maintain documentation of analysis methodologies and findings
+
+REQUIRED QUALIFICATIONS
+• Bachelor's degree in Computer Science, Statistics, Mathematics, Engineering, or related field
+• 3-6 years of experience in data analysis or business intelligence
+• Strong proficiency in SQL for data extraction and manipulation
+• Hands-on experience with Python (Pandas, NumPy, Matplotlib)
+• Expertise in data visualization tools (Tableau or Power BI)
+• Advanced Excel skills including pivot tables, VLOOKUP, and macros
+• Strong statistical knowledge and experience with A/B testing
+• Experience with databases (MySQL, PostgreSQL, or SQL Server)
+• Excellent analytical and problem-solving skills
+• Strong communication skills to explain technical concepts to non-technical stakeholders
+• Ability to work independently and manage multiple priorities
+
+PREFERRED SKILLS
+• Experience with machine learning and predictive modeling
+• Knowledge of R programming language
+• Familiarity with cloud platforms (AWS, GCP, Azure)
+• Experience with Google Analytics or similar web analytics tools
+• Understanding of ETL processes and data warehousing
+• Certification in Tableau, Power BI, or Google Data Analytics
+• Experience in e-commerce, fintech, or SaaS industries
+• Knowledge of version control (Git)
+• Experience with big data technologies (Spark, Hadoop)
+• Familiarity with data science workflows
+
+TECHNICAL REQUIREMENTS
+• SQL: Advanced queries, joins, subqueries, window functions
+• Python: Data manipulation, analysis, and visualization
+• Statistics: Hypothesis testing, regression analysis, time series
+• Data Visualization: Dashboard design, storytelling with data
+• Excel: Advanced formulas, pivot tables, data modeling
+• Business Intelligence: Dimensional modeling, metrics definition
+
+WHAT WE OFFER
+• Competitive salary and performance bonuses
+• Health insurance and wellness benefits
+• Flexible work arrangements (hybrid model)
+• Learning budget for courses and certifications
+• Modern tools and technology stack
+• Collaborative and data-driven culture
+• Career growth opportunities
+• Work-life balance

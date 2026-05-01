@@ -1,0 +1,82 @@
+DEVOPS ENGINEER
+Location: Bangalore / Hyderabad (Hybrid)
+Experience: 4-8 years
+Salary: ₹15-30 LPA
+
+ABOUT THE ROLE
+We are looking for an experienced DevOps Engineer to build and maintain our cloud infrastructure. You will automate deployments, manage Kubernetes clusters, and ensure high availability of services serving millions of users. This role requires strong experience with AWS, Kubernetes, and CI/CD pipelines.
+
+KEY RESPONSIBILITIES
+• Design, build, and maintain scalable cloud infrastructure on AWS
+• Manage Kubernetes clusters and containerized applications using Docker
+• Develop and maintain CI/CD pipelines using Jenkins, GitLab CI, or GitHub Actions
+• Implement Infrastructure as Code using Terraform or CloudFormation
+• Set up monitoring, logging, and alerting using Prometheus, Grafana, and ELK stack
+• Automate infrastructure provisioning and configuration management using Ansible
+• Ensure high availability, disaster recovery, and backup strategies
+• Implement security best practices including secrets management and access control
+• Optimize cloud costs through rightsizing, auto-scaling, and resource management
+• Troubleshoot production issues and participate in on-call rotation
+• Collaborate with development teams to improve deployment processes
+• Document infrastructure architecture and operational procedures
+• Lead migration projects from legacy systems to cloud-native architecture
+
+REQUIRED QUALIFICATIONS
+• Bachelor's degree in Computer Science, Engineering, or related field
+• 4-8 years of experience in DevOps, SRE, or Infrastructure Engineering
+• Strong hands-on experience with AWS services (EC2, S3, RDS, Lambda, EKS, etc.)
+• Proficiency in Kubernetes and Docker containerization
+• Experience building CI/CD pipelines using Jenkins, GitLab CI, or similar tools
+• Strong knowledge of Infrastructure as Code using Terraform or CloudFormation
+• Expertise in Linux system administration (Ubuntu, CentOS, RHEL)
+• Proficiency in scripting languages (Bash, Python, or PowerShell)
+• Experience with monitoring tools (Prometheus, Grafana, CloudWatch, Datadog)
+• Knowledge of networking concepts (TCP/IP, DNS, Load Balancers, VPN)
+• Experience with Git version control and GitOps workflows
+• Strong troubleshooting and problem-solving skills
+• Excellent communication and collaboration abilities
+
+PREFERRED SKILLS
+• AWS certifications (Solutions Architect, DevOps Engineer Professional)
+• Certified Kubernetes Administrator (CKA) or similar certification
+• Experience with service mesh technologies (Istio, Linkerd)
+• Knowledge of GitOps tools (ArgoCD, Flux)
+• Experience with HashiCorp tools (Vault, Consul, Packer)
+• Familiarity with database administration (PostgreSQL, MySQL, MongoDB)
+• Experience with message queues (Kafka, RabbitMQ, SQS)
+• Knowledge of security scanning and compliance (Trivy, Falco, CIS benchmarks)
+• Experience with multi-cloud environments (Azure, GCP)
+• Understanding of microservices architecture
+• Experience with serverless technologies (Lambda, API Gateway)
+• Knowledge of configuration management tools (Ansible, Puppet, Chef)
+
+TECHNICAL REQUIREMENTS
+• Cloud: AWS (EC2, EKS, S3, RDS, Lambda, CloudFormation, VPC, IAM)
+• Containers: Kubernetes, Docker, Helm, container registries
+• CI/CD: Jenkins, GitLab CI, GitHub Actions, ArgoCD
+• IaC: Terraform, CloudFormation, Ansible
+• Monitoring: Prometheus, Grafana, ELK, CloudWatch, Datadog
+• Scripting: Bash, Python, automation frameworks
+• Networking: Load balancers, DNS, security groups, VPCs
+• Security: Secrets management, RBAC, SSL/TLS, security best practices
+• Version Control: Git, GitHub, GitLab, GitOps workflows
+
+WHAT WE OFFER
+• Competitive salary and performance bonuses
+• Health insurance for you and your family
+• Flexible work arrangements (hybrid model)
+• Learning budget for certifications and training
+• Access to latest DevOps tools and technologies
+• Opportunity to work on large-scale infrastructure
+• Collaborative and innovative team culture
+• Career growth path to Principal Engineer or Engineering Manager
+• Work-life balance with minimal on-call burden
+
+KEY PERFORMANCE INDICATORS
+• Infrastructure uptime (target: 99.9%+)
+• Deployment frequency and success rate
+• Mean time to recovery (MTTR) for incidents
+• Cloud cost optimization and efficiency
+• Automation coverage of manual processes
+• Incident resolution time
+• CI/CD pipeline performance

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free ATS Resume Checker | Get ATS Ready | No Signup, 100% Private</title>
+    <meta name="description" content="Free ATS resume checker — instantly score your resume against any job description. No signup. 100% private, processed in your browser. Get ATS ready in seconds.">
+    <link rel="canonical" href="https://www.getatsready.com/">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.getatsready.com/">
+    <meta property="og:title" content="Free ATS Resume Checker | Get ATS Ready">
+    <meta property="og:description" content="Instantly score your resume against any job description. Free, no signup, 100% private. See exactly which keywords you're missing.">
+    <meta property="og:site_name" content="GetATSReady">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Free ATS Resume Checker | Get ATS Ready">
+    <meta name="twitter:description" content="Instantly score your resume against any job description. Free, no signup, 100% private.">
+    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- SEO Schema: Jobscan Level -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "GetATSReady",
+      "url": "https://www.getatsready.com",
+      "description": "Free, 100% private ATS resume checker. Optimize your resume for job descriptions without signing up.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <!-- PDF and DOCX libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-banner">
+        <p>We use cookies for analytics and advertising. By continuing, you accept our <a href="privacy.html">Privacy Policy</a>.</p>
+        <button onclick="acceptCookies()">Accept</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1><a href="index.html" style="text-decoration: none; color: inherit;">GetATSReady</a></h1>
+            <nav class="main-nav">
+                <a href="index.html" class="active">Home</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html">Privacy</a>
+            </nav>
+            <div class="privacy-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                100% Private: Processed entirely in your browser. No Signup Required.
+            </div>
+        </header>
+
+        <!-- Ad Zone: Top Banner (728x90 or Responsive) -->
+        <div class="ad-zone ad-top">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        </div>
+
+        <main>
+            <div class="tool-grid">
+                <!-- Left: Job Description -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        Job Description
+                    </div>
+                    <textarea id="jobDescription" placeholder="Paste the job description here to find matching keywords..."></textarea>
+                </div>
+
+                <!-- Right: Resume Upload -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+                        Your Resume
+                    </div>
+                    <div class="upload-area" id="dropZone">
+                        <div class="upload-icon">📄</div>
+                        <p>Drag & drop your resume (PDF or DOCX)</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">or click to browse</p>
+                        <input type="file" id="fileInput" hidden accept=".pdf,.docx">
+                        <p id="fileName" style="margin-top: 1rem; font-weight: 600; color: var(--success); word-break: break-word; overflow-wrap: break-word; max-width: 100%; font-size: 0.88rem; line-height: 1.4;"></p>
+                    </div>
+                    <button class="secondary-btn" id="tryExampleBtn" style="width: 100%; margin-top: 1rem;">Try with Example Resume</button>
+                    <button class="analyze-btn" id="analyzeBtn">
+                        <span class="btn-text">Analyze Resume</span>
+                        <span class="btn-loader" style="display: none;">⏳ Analyzing...</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="results" class="results-section">
+
+                <!-- Template/Format Warning Banner (shown only when PDF has layout issues) -->
+                <div id="formatWarningBanner" style="display:none; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.4); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;"></div>
+
+                <div class="results-grid">
+                    <div class="score-card">
+                        <div class="score-circle" id="scoreValue">0</div>
+                        <h2>ATS Compatibility Score</h2>
+                        <p id="scoreText" style="font-size: 0.82rem; color: var(--text-muted);">ATS compatibility: keyword match, template compliance, structure, and impact — based on how real ATS systems score resumes.</p>
+                        <button id="downloadReport" class="secondary-btn" style="margin-top: 1rem; width: 100%;">Download Professional Report</button>
+                    </div>
+
+                    <div class="stats-card">
+                        <div class="stat-item">
+                            <div class="stat-header">
+                                <span>Template Compliance
+                                    <span class="tooltip-icon">ℹ️
+                                        <span class="tooltip-text">Checks if your resume template can be correctly parsed by ATS software. Multi-column and table layouts cause "text-layer scrambling" — your content becomes unreadable word salad. This score is used as a multiplier on your keyword match: a 30% template score means ATS will only find ~30% of your keywords regardless of how good your content is.</span>
+                                    </span>
+                                </span>
+                                <span id="formatPct">0%</span>
+                            </div>
+                            <div class="progress-bar"><div id="formatBar" class="progress-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-header">
+                                <span>Structure & Parsability 
+                                    <span class="tooltip-icon">ℹ️
+                                        <span class="tooltip-text">Measures if your resume can be correctly parsed by ATS systems. Checks for standard sections like Experience, Education, Skills, and proper formatting. Low scores mean the ATS might misread your resume.</span>
+                                    </span>
+                                </span>
+                                <span id="structurePct">0%</span>
+                            </div>
+                            <div class="progress-bar"><div id="structureBar" class="progress-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-header">
+                                <span>Keyword Match 
+                                    <span class="tooltip-icon">ℹ️
+                                        <span class="tooltip-text">Percentage of job description keywords found in your resume. ATS systems scan for exact matches and synonyms. Higher match = better chance of passing automated screening. Aim for 75%+.</span>
+                                    </span>
+                                </span>
+                                <span id="keywordPct">0%</span>
+                            </div>
+                            <div class="progress-bar"><div id="keywordBar" class="progress-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-header">
+                                <span>Impact & Metrics 
+                                    <span class="tooltip-icon">ℹ️
+                                        <span class="tooltip-text">Measures quantifiable achievements using numbers, percentages, or dollar amounts. Example: "Increased sales by 35%" vs "Responsible for sales". ATS and recruiters prefer measurable impact.</span>
+                                    </span>
+                                </span>
+                                <span id="impactPct">0%</span>
+                            </div>
+                            <div class="progress-bar"><div id="impactBar" class="progress-fill" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-grid">
+                    <div class="card">
+                        <div class="card-title">Missing Keywords</div>
+                        <div id="missingKeywords"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Found Keywords</div>
+                        <div id="foundKeywords"></div>
+                    </div>
+                </div>
+
+                <div class="tool-grid" id="detailsSection" style="margin-top: 1rem; display: none;">
+                    <div class="card">
+                        <div class="card-title">Structure &amp; Parsability — What Was Found</div>
+                        <div id="structureDetails"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Impact &amp; Metrics — What Was Found</div>
+                        <div id="impactDetails"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 2rem;">
+                    <div class="card-title">Improvement Tips</div>
+                    <ul id="tipsList">                    </ul>
+                </div>
+            </div>
+
+            <!-- Ad Zone: In-Content (336x280) -->
+            <div class="ad-zone ad-content">
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:336px;height:280px"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"></ins>
+            </div>
+
+            <!-- FAQ Section for SEO -->
+            <div class="card" id="faq" style="margin-top: 3rem;">
+                <h2 style="margin-bottom: 2rem;">Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <h3>What is an ATS (Applicant Tracking System)?</h3>
+                    <p>An ATS is software used by employers to filter and rank resumes automatically. About 75% of resumes are rejected by ATS before reaching human recruiters. Common ATS systems include Workday, Taleo, Greenhouse, and Lever.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Is this tool really free and private?</h3>
+                    <p>Yes! Unlike other resume checkers that require signup and upload your data to servers, we process everything in your browser using JavaScript. Your resume never leaves your device. We earn revenue through ethical advertising (Google AdSense) to keep the service free.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>What file formats are supported?</h3>
+                    <p>We currently support PDF and DOCX (Microsoft Word) files. We recommend using PDF format as it preserves formatting better and is widely accepted by ATS systems.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>How accurate is the ATS score?</h3>
+                    <p>Our algorithm replicates real ATS behavior using a <strong>multiplicative model</strong>: Template Compliance acts as a discount factor on your keyword score, because a broken template (multi-column, tables) physically prevents ATS parsers from finding your keywords — exactly like Workday, Taleo, and iCIMS behave. The four factors are: Template Compliance (multiplier), Keyword Match (50%), Structure (25%), and Impact/Metrics (25%). Based on Jobscan research covering 97.8% of Fortune 500 ATS systems.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>What score should I aim for?</h3>
+                    <p>First, ensure your Template Compliance is 85%+ — a broken template will tank your score regardless of how good your content is. With a clean template, aim for 75+ overall (good), 85+ (excellent). The single biggest fix most candidates can make is switching from a multi-column or Canva-style template to a clean single-column ATS-friendly one.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>How do I improve my ATS score?</h3>
+                    <p>In order of impact: (1) <strong>Fix your template</strong> — switch to a clean single-column layout if Template Compliance is below 85%; this is the highest-ROI fix. (2) <strong>Add missing keywords</strong> from the job description naturally into your experience section. (3) <strong>Use standard section headers</strong> (Professional Experience, Education, Skills, Certifications) — creative names like "My Journey" confuse ATS categorization. (4) <strong>Add quantifiable achievements</strong> with numbers and percentages.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Can I use this for multiple job applications?</h3>
+                    <p>Absolutely! We recommend tailoring your resume for each job application. Paste the specific job description, analyze your resume, and make targeted adjustments. There's no limit on how many times you can use the tool.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Does this work for all industries?</h3>
+                    <p>Yes. Our keyword matching uses semantic analysis that works across industries—tech, finance, healthcare, marketing, engineering, and more. The tool identifies role-specific keywords regardless of field.</p>
+                </div>
+            </div>
+
+            <!-- Ad Zone: Bottom (728x90) -->
+            <div class="ad-zone ad-bottom">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <p>&copy; 2026 GetATSReady. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html">About</a>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js?v=8"></script>
+</body>
+</html>

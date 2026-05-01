@@ -1,0 +1,101 @@
+PRIYA KUMAR
+AI/ML Engineer
+Email: priya.kumar@email.com | Phone: +91-9876543210 | GitHub: github.com/priyakumar | Portfolio: priyakumar.dev
+
+PROFESSIONAL SUMMARY
+AI/ML Engineer with 5+ years of experience building and deploying machine learning models at scale. Specialized in deep learning, NLP, and computer vision. Successfully deployed 15+ ML models serving 5M+ users with 95%+ accuracy. Proficient in Python, TensorFlow, PyTorch, and cloud platforms (AWS, Azure, GCP).
+
+WORK EXPERIENCE
+
+Senior AI/ML Engineer
+AI Solutions Inc, Bangalore | Mar 2022 - Present
+• Architected and deployed transformer-based NLP model that improved customer sentiment analysis accuracy from 78% to 94%, processing 100K+ reviews daily
+• Built recommendation engine using collaborative filtering and deep learning, increasing user engagement by 42% and revenue by $1.5M annually
+• Optimized model inference time by 65% through quantization and TensorRT, reducing cloud costs by $50K/year
+• Led team of 4 ML engineers in developing computer vision system for quality inspection, achieving 97% accuracy and reducing defect rate by 35%
+• Implemented MLOps pipeline using Kubeflow and MLflow, reducing model deployment time from 2 weeks to 2 days
+• Developed real-time fraud detection model using XGBoost and LSTM, preventing $2M+ in fraudulent transactions
+• Published 2 research papers at NeurIPS and CVPR conferences on model compression and efficient training
+
+Machine Learning Engineer
+DataTech Solutions, Mumbai | Jun 2020 - Feb 2022
+• Developed predictive maintenance model using time series analysis and Random Forest, reducing equipment downtime by 28%
+• Built image classification system using CNN (ResNet-50), achieving 92% accuracy on 500K+ images
+• Created data pipelines using Apache Spark and Airflow to process 10TB+ data daily
+• Implemented A/B testing framework to measure ML model performance impact on business metrics
+• Fine-tuned BERT model for text classification, improving accuracy by 18% over baseline
+• Automated feature engineering pipeline, reducing model training time by 40%
+• Collaborated with product team to integrate ML models into production systems serving 2M+ users
+
+Junior Data Scientist
+Analytics Hub, Pune | Jul 2018 - May 2020
+• Built customer churn prediction model using Logistic Regression and Gradient Boosting with 85% accuracy
+• Performed exploratory data analysis on 5M+ customer records to identify business insights
+• Developed time series forecasting models using ARIMA and Prophet for demand prediction
+• Created data visualization dashboards using Tableau and Plotly
+• Conducted statistical hypothesis testing and A/B testing for marketing campaigns
+• Assisted in building recommendation system using matrix factorization techniques
+
+EDUCATION
+
+Master of Technology in Computer Science (Specialization: AI/ML)
+Indian Institute of Technology, Bombay | 2016-2018
+CGPA: 9.2/10 | Thesis: "Attention Mechanisms in Neural Machine Translation"
+
+Bachelor of Engineering in Computer Science
+BITS Pilani | 2012-2016
+CGPA: 8.7/10
+
+TECHNICAL SKILLS
+
+Programming Languages: Python, R, SQL, C++, Java, Scala
+Machine Learning: Supervised Learning, Unsupervised Learning, Reinforcement Learning, Transfer Learning, Ensemble Methods
+Deep Learning Frameworks: TensorFlow, PyTorch, Keras, JAX, MXNet
+NLP: BERT, GPT, Transformers, spaCy, NLTK, Word2Vec, GloVe, Sentiment Analysis, Named Entity Recognition
+Computer Vision: CNNs, ResNet, YOLO, OpenCV, Image Classification, Object Detection, Semantic Segmentation
+ML Libraries: Scikit-learn, XGBoost, LightGBM, CatBoost, NumPy, Pandas, SciPy
+MLOps: MLflow, Kubeflow, Weights & Biases, DVC, Docker, Kubernetes
+Cloud Platforms: AWS (SageMaker, EC2, S3, Lambda), Azure ML, Google Cloud AI Platform
+Big Data: Apache Spark, Hadoop, Kafka, Airflow, Hive
+Databases: PostgreSQL, MongoDB, Redis, Elasticsearch
+Version Control: Git, GitHub, GitLab, DVC
+Deployment: Flask, FastAPI, Docker, Kubernetes, TensorFlow Serving, ONNX, TensorRT
+Data Visualization: Matplotlib, Seaborn, Plotly, Tableau, Power BI
+
+PROJECTS
+
+GPT-based Chatbot for Customer Support
+• Fine-tuned GPT-3.5 model on 50K customer support conversations
+• Achieved 89% resolution rate for common queries, reducing support costs by 40%
+• Deployed using FastAPI and Docker on AWS EKS serving 10K+ requests/day
+
+Real-time Object Detection System
+• Implemented YOLOv8 model for real-time object detection in surveillance videos
+• Optimized for edge devices using TensorRT, achieving 30 FPS on Jetson Nano
+• Deployed across 50+ locations with 94% detection accuracy
+
+Credit Risk Assessment Model
+• Built ensemble model (XGBoost + Neural Network) for loan default prediction
+• Achieved 91% AUC-ROC score, reducing bad loans by 25%
+• Implemented SHAP for model interpretability and explainability
+
+CERTIFICATIONS
+
+• TensorFlow Developer Certificate - Google (2024)
+• AWS Certified Machine Learning - Specialty (2023)
+• Deep Learning Specialization - Deeplearning.ai (Coursera) (2023)
+• Natural Language Processing Specialization - Deeplearning.ai (2022)
+• Microsoft Certified: Azure AI Engineer Associate (2022)
+
+PUBLICATIONS
+
+• "Efficient Model Compression for Edge Deployment" - NeurIPS 2024
+• "Attention Mechanisms in Low-Resource NMT" - CVPR 2023
+
+ACHIEVEMENTS
+
+• Deployed ML models serving 5M+ users with 95%+ accuracy
+• Reduced cloud infrastructure costs by $50K/year through optimization
+• Prevented $2M+ in fraud through real-time detection system
+• Published 2 papers in top-tier ML conferences (NeurIPS, CVPR)
+• Led team that won company hackathon for AI innovation

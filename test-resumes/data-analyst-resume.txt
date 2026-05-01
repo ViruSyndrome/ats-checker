@@ -1,0 +1,87 @@
+RAHUL SHARMA
+Data Analyst
+Email: rahul.sharma@email.com | Phone: +91-9876543210 | GitHub: github.com/rahulsharma
+
+PROFESSIONAL SUMMARY
+Detail-oriented Data Analyst with 4+ years of experience in data analysis, visualization, and business intelligence. Skilled in Python, SQL, Tableau, and Excel. Proven ability to transform complex data into actionable insights that drive business decisions and increase revenue by 30%.
+
+WORK EXPERIENCE
+
+Data Analyst
+FinTech Solutions Pvt Ltd, Bangalore | Jul 2022 - Present
+• Analyzed 10M+ transaction records using SQL and Python to identify revenue opportunities worth $2M
+• Created 25+ interactive Tableau dashboards used by 50+ stakeholders for daily decision-making
+• Performed statistical analysis and A/B testing that increased conversion rate by 22%
+• Automated data pipelines using Python, reducing report generation time by 65%
+• Collaborated with product team to define KPIs and track product performance metrics
+• Conducted cohort analysis and customer segmentation to improve retention by 18%
+• Built predictive models using machine learning to forecast customer churn with 85% accuracy
+
+Junior Data Analyst
+E-commerce India, Mumbai | Jun 2020 - Jun 2022
+• Extracted and analyzed sales data from multiple sources using SQL queries
+• Created weekly and monthly business reports in Excel and PowerPoint for senior management
+• Performed data cleaning and preprocessing on datasets with 1M+ rows
+• Developed Excel macros and VBA scripts to automate repetitive tasks
+• Assisted in building customer behavior analysis reports that informed marketing strategy
+• Conducted market basket analysis to identify cross-selling opportunities
+• Maintained data quality by implementing validation checks and error handling
+
+Data Analyst Intern
+Analytics Hub, Pune | Jan 2020 - May 2020
+• Analyzed customer feedback data and created sentiment analysis reports
+• Assisted in data visualization projects using Tableau and Power BI
+• Performed data entry and quality assurance tasks
+• Supported senior analysts in ad-hoc analysis requests
+
+EDUCATION
+
+Bachelor of Technology in Computer Science
+Indian Institute of Technology, Delhi | 2016-2020
+CGPA: 8.5/10
+
+TECHNICAL SKILLS
+
+Programming Languages: Python, SQL, R, VBA
+Python Libraries: Pandas, NumPy, Scikit-learn, Matplotlib, Seaborn, SciPy
+Databases: MySQL, PostgreSQL, MongoDB, SQL Server
+Data Visualization: Tableau, Power BI, Plotly, Excel Charts
+Analytics Tools: Google Analytics, Mixpanel, Amplitude
+Excel: Advanced Excel, Pivot Tables, VLOOKUP, Macros, Power Query
+Statistical Analysis: Hypothesis Testing, Regression Analysis, A/B Testing, Time Series
+Machine Learning: Linear Regression, Logistic Regression, Decision Trees, Random Forest
+Cloud Platforms: AWS (S3, Redshift), Google Cloud Platform
+Version Control: Git, GitHub
+Other Tools: Jupyter Notebook, Google Colab, JIRA, Confluence
+
+PROJECTS
+
+Sales Forecasting Model
+• Built time series forecasting model using Python and Prophet to predict sales with 92% accuracy
+• Implemented ARIMA and exponential smoothing models for comparison
+• Deployed model in production, saving 20+ hours of manual forecasting work weekly
+
+Customer Segmentation Analysis
+• Performed RFM analysis and K-means clustering on 500K+ customers
+• Identified 5 distinct customer segments for targeted marketing campaigns
+• Recommendations increased marketing ROI by 35%
+
+Churn Prediction System
+• Developed machine learning model to predict customer churn with 85% accuracy
+• Used logistic regression, random forest, and XGBoost algorithms
+• Created actionable retention strategies based on churn risk factors
+
+CERTIFICATIONS
+
+• Google Data Analytics Professional Certificate - 2024
+• Tableau Desktop Specialist - 2023
+• Microsoft Certified: Data Analyst Associate (Power BI) - 2023
+• Python for Data Science (IBM) - 2022
+• SQL for Data Analysis (Udacity) - 2022
+
+ACHIEVEMENTS
+
+• Identified data insights that led to $2M in additional revenue
+• Reduced report generation time by 65% through automation
+• Built 25+ Tableau dashboards used by 50+ stakeholders daily
+• Improved customer retention by 18% through cohort analysis
