@@ -466,14 +466,28 @@ function getResumeHealth(text) {
     };
 }
 
+function getBulletMetricsPct(text) {
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 20);
+    const bullets = lines.filter(line =>
+        /^[\u2022\-\*\u00b7]/.test(line) ||
+        (/^[A-Z]/.test(line) && line.length > 35 && line.length < 250 && !/^[A-Z\s]{3,}$/.test(line))
+    );
+    const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+|\d+x\b|\d+\s*(users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?)/i;
+    const withMetrics = bullets.filter(line => metricPattern.test(line));
+    const total = bullets.length;
+    return { pct: total > 0 ? Math.round((withMetrics.length / total) * 100) : 0, withMetrics: withMetrics.length, total };
+}
+
 analyzeBtn.addEventListener('click', () => {
-    const jdText = document.getElementById('jobDescription').value;
-    
-    if (!jdText || !resumeText) {
-        alert("Please provide both a Job Description and a Resume.");
+    const jdText = document.getElementById('jobDescription').value.trim();
+
+    if (!resumeText) {
+        alert("Please upload your resume first.");
         return;
     }
-    
+
+    const hasJD = jdText.length > 50;
+
     // Show loading state
     const btnText = analyzeBtn.querySelector('.btn-text');
     const btnLoader = analyzeBtn.querySelector('.btn-loader');
@@ -483,7 +497,7 @@ analyzeBtn.addEventListener('click', () => {
     
     // Simulate brief processing delay for UX
     setTimeout(() => {
-        const jdFreq = getKeywords(jdText, true); 
+        const jdFreq = hasJD ? getKeywords(jdText, true) : {};
         const resumeFreq = getKeywords(resumeText, false);
         
         const found = [];
@@ -491,55 +505,51 @@ analyzeBtn.addEventListener('click', () => {
         let keywordScore = 0;
         let maxPossibleScore = 0;
 
-        // Helper for Universal (Bi-directional) Synonym Matching
-        const checkMatch = (jdKw, freqMap) => {
-            // 1. Direct Match
-            if (freqMap[jdKw] > 0) return true;
-            
-            // 2. Family Match (Bi-directional lookup)
-            // Find all families this JD keyword belongs to
-            const families = [];
-            for (const [key, values] of Object.entries(SYNONYMS)) {
-                if (key === jdKw || values.includes(jdKw)) {
-                    families.push(...values, key);
-                }
-            }
-            
-            for (const member of families) {
-                if (freqMap[member] > 0) return true;
+        if (hasJD) {
+            // Helper for Universal (Bi-directional) Synonym Matching
+            const checkMatch = (jdKw, freqMap) => {
+                // 1. Direct Match
+                if (freqMap[jdKw] > 0) return true;
                 
-                // Sub-string/Root match on family members
-                if (member.length >= 3) {
-                    const root = member.substring(0, 4);
-                    if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(member) || member.includes(rk))) return true;
+                // 2. Family Match (Bi-directional lookup)
+                const families = [];
+                for (const [key, values] of Object.entries(SYNONYMS)) {
+                    if (key === jdKw || values.includes(jdKw)) {
+                        families.push(...values, key);
+                    }
                 }
-            }
-            
-            // 3. Fallback: Fuzzy root on the JD keyword itself
-            if (jdKw.length >= 3) {
-                const root = jdKw.substring(0, 4);
-                if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(jdKw) || jdKw.includes(rk))) return true;
-            }
+                
+                for (const member of families) {
+                    if (freqMap[member] > 0) return true;
+                    if (member.length >= 3) {
+                        const root = member.substring(0, 4);
+                        if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(member) || member.includes(rk))) return true;
+                    }
+                }
+                
+                // 3. Fallback: Fuzzy root on the JD keyword itself
+                if (jdKw.length >= 3) {
+                    const root = jdKw.substring(0, 4);
+                    if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(jdKw) || jdKw.includes(rk))) return true;
+                }
+                return false;
+            };
 
-            return false;
-        };
+            // Semantic Matching & Intelligent Scoring
+            Object.keys(jdFreq).forEach(jdKw => {
+                const jdWeight = Math.min(jdFreq[jdKw], 3);
+                const boostMultiplier = TECH_BOOST.has(jdKw) ? 5 : 1;
+                maxPossibleScore += jdWeight * 10 * boostMultiplier;
+                if (checkMatch(jdKw, resumeFreq)) {
+                    found.push(jdKw);
+                    keywordScore += jdWeight * 10 * boostMultiplier;
+                } else {
+                    missing.push(jdKw);
+                }
+            });
+        }
 
-        // Semantic Matching & Intelligent Scoring
-        Object.keys(jdFreq).forEach(jdKw => {
-            const jdWeight = Math.min(jdFreq[jdKw], 3);
-            const boostMultiplier = TECH_BOOST.has(jdKw) ? 5 : 1;
-            
-            maxPossibleScore += jdWeight * 10 * boostMultiplier;
-
-            if (checkMatch(jdKw, resumeFreq)) {
-                found.push(jdKw);
-                keywordScore += jdWeight * 10 * boostMultiplier; 
-            } else {
-                missing.push(jdKw);
-            }
-        });
-
-        displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore);
+        displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
         
         // Reset button state
         btnText.style.display = 'inline-block';
@@ -548,7 +558,7 @@ analyzeBtn.addEventListener('click', () => {
     }, 500);
 });
 
-function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordScore, maxPossibleScore) {
+function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD = true) {
     resultsSection.style.display = 'block';
     resultsSection.scrollIntoView({ behavior: 'smooth' });
 
@@ -572,7 +582,10 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     const effectiveKeywordScore = Math.round(keywordMatchPct * (formatScore / 100));
     // Projected score if user fixes their template (format penalty removed)
     const projectedWithFix = Math.round(keywordMatchPct * 0.50 + structureScore * 0.25 + impactScore * 0.25);
-    const finalScore = Math.round(effectiveKeywordScore * 0.50 + structureScore * 0.25 + impactScore * 0.25);
+    // Final score: with JD use keyword-weighted formula; without JD redistribute to structure & impact
+    const finalScore = hasJD
+        ? Math.round(effectiveKeywordScore * 0.50 + structureScore * 0.25 + impactScore * 0.25)
+        : Math.round(formatScore * 0.25 + structureScore * 0.40 + impactScore * 0.35);
 
     // Format banner — explains the multiplicative impact when template issues are detected
     const formatBanner = document.getElementById('formatWarningBanner');
@@ -598,7 +611,9 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     // Update score description dynamically based on format health
     const scoreTextEl = document.getElementById('scoreText');
     if (scoreTextEl) {
-        if (criticalFormatIssues.length > 0) {
+        if (!hasJD) {
+            scoreTextEl.textContent = 'Base score (no JD) — template, structure and impact only. Paste a job description above for full keyword analysis.';
+        } else if (criticalFormatIssues.length > 0) {
             scoreTextEl.innerHTML = `Template issues are hiding your keywords from ATS parsers. Fix your template to unlock ~<strong>${projectedWithFix}%</strong>.`;
         } else {
             scoreTextEl.textContent = 'ATS compatibility: keyword match, template compliance, structure, and impact — based on how real ATS systems score resumes.';
@@ -616,17 +631,21 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     document.getElementById('impactBar').style.width = impactScore + '%';
     document.getElementById('impactPct').textContent = impactScore + '%';
     
-    // Update Keywords UI with SPACING
-    document.getElementById('foundKeywords').innerHTML = found
-        .sort((a, b) => jdFreq[b] - jdFreq[a])
-        .map(kw => `<span class="keyword-badge keyword-found">${kw}</span> `)
-        .join(' ');
-
-    document.getElementById('missingKeywords').innerHTML = missing
-        .sort((a, b) => jdFreq[b] - jdFreq[a])
-        .slice(0, 25)
-        .map(kw => `<span class="keyword-badge keyword-missing">${kw}</span> `)
-        .join(' ');
+    // Update Keywords UI
+    if (hasJD) {
+        document.getElementById('foundKeywords').innerHTML = found
+            .sort((a, b) => jdFreq[b] - jdFreq[a])
+            .map(kw => `<span class="keyword-badge keyword-found">${kw}</span> `)
+            .join(' ');
+        document.getElementById('missingKeywords').innerHTML = missing
+            .sort((a, b) => jdFreq[b] - jdFreq[a])
+            .slice(0, 25)
+            .map(kw => `<span class="keyword-badge keyword-missing">${kw}</span> `)
+            .join(' ');
+    } else {
+        document.getElementById('missingKeywords').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;margin:0;">Paste a job description and re-analyse to see which keywords your resume is missing for that specific role.</p>';
+        document.getElementById('foundKeywords').innerHTML = '';
+    }
 
     // Structure Details
     const structureDetailsEl = document.getElementById('structureDetails');
@@ -645,18 +664,21 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     }
 
     // Impact Details
+    const bulletMetrics = getBulletMetricsPct(fullText);
     const impactDetailsEl = document.getElementById('impactDetails');
     if (impactDetailsEl) {
+        const bulletPctColor = bulletMetrics.pct < 30 ? 'var(--danger)' : bulletMetrics.pct < 60 ? 'var(--warning)' : 'var(--success)';
         const metricHTML = impactResult.metricExamples.length > 0
-            ? `Found numbers/metrics in your resume: ${impactResult.metricExamples.map(m => `<strong>${m}</strong>`).join(', ')}`
+            ? `Found metrics in your resume: ${impactResult.metricExamples.map(m => `<strong>${m}</strong>`).join(', ')}`
             : '⚠️ No metrics found (%, $, numbers like "50K"). Quantify your achievements!';
         const verbsHTML = impactResult.foundVerbs.length > 0
             ? impactResult.foundVerbs.slice(0, 8).map(v => 
                 `<span class="keyword-badge keyword-found">✓ ${v}</span>`).join(' ')
             : '<span style="color: var(--danger); font-size: 0.85rem;">No strong action verbs detected. Use: led, built, launched, optimized, delivered</span>';
         impactDetailsEl.innerHTML = `
-            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.6rem;">Scores (1) quantifiable metrics like numbers and percentages, and (2) strong action verbs. Both signal real results to recruiters.</p>
-            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.4rem;"><strong>Metrics (${impactResult.metricCount} found):</strong> ${metricHTML}</p>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.6rem;">Scores (1) quantifiable metrics and (2) strong action verbs. Both signal real results to recruiters.</p>
+            <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Bullets with metrics: <strong style="color:${bulletPctColor}">${bulletMetrics.pct}%</strong> <span style="color:var(--text-muted);font-size:0.8rem;">(${bulletMetrics.withMetrics} of ${bulletMetrics.total} bullet points)</span></p>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.4rem;"><strong>Metrics found:</strong> ${metricHTML}</p>
             <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.4rem;"><strong>Action verbs detected:</strong></p>
             <div>${verbsHTML}</div>`;
     }
@@ -697,13 +719,16 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         tips.push(`<strong>🎯 Critical Keywords Missing (${keywordMatchPct}% match):</strong> Add these to your resume: <strong>${topMissing.slice(0, 5).join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`);
     }
 
-    // 2. Impact & Metrics with REAL-WORLD EXAMPLES
-    if (impactScore < 60) {
-        tips.push(`<strong>📊 Add Quantifiable Achievements (Current: ${impactScore}%):</strong><br>
-        ❌ Bad: "Responsible for improving system performance"<br>
-        ✅ Good: "Optimized database queries, reducing load time by 45% and improving user experience for 50K+ users"<br><br>
-        ❌ Bad: "Managed marketing campaigns"<br>
-        ✅ Good: "Launched 3 email campaigns reaching 100K subscribers, achieving 28% open rate and generating $250K revenue"`);
+    // 2. Impact & Metrics with bullet-level specificity
+    if (bulletMetrics.pct < 50 || impactScore < 60) {
+        const bulletMsg = bulletMetrics.total > 0
+            ? `Only <strong>${bulletMetrics.pct}%</strong> of your bullets have metrics (${bulletMetrics.withMetrics} of ${bulletMetrics.total}) — add numbers to show impact.`
+            : 'Add quantifiable metrics to your bullets — numbers are what recruiters and ATS systems look for.';
+        tips.push(`<strong>📊 ${bulletMsg}</strong><br><br>
+        ❌ Weak: "Responsible for improving system performance"<br>
+        ✅ Strong: "Optimized database queries, reducing load time by 45% for 50K+ users"<br><br>
+        ❌ Weak: "Managed marketing campaigns"<br>
+        ✅ Strong: "Launched 3 email campaigns achieving 28% open rate, generating $250K revenue"`);
     }
 
     // 3. Structural Integrity with SPECIFIC SECTION NAMES
@@ -777,7 +802,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         tipsList.appendChild(li);
     });
 
-    window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix };
+    window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics };
 }
 
 // Download Enhanced PDF Report (Designer Edition with More Details)
