@@ -22,20 +22,7 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.6;
-    background-image: 
-        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.12), transparent 40%),
-        radial-gradient(circle at 85% 30%, rgba(192, 132, 252, 0.12), transparent 40%),
-        radial-gradient(circle at 50% 80%, rgba(79, 70, 229, 0.1), transparent 50%);
-    background-attachment: fixed;
-    background-size: 120% 120%;
-    animation: ambientBg 18s ease-in-out infinite alternate;
     min-height: 100vh;
-}
-
-@keyframes ambientBg {
-    0%   { background-position: 0% 0%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 100%; }
 }
 
 .container {
