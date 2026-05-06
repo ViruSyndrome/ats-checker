@@ -183,9 +183,16 @@ async function readPdf(file) {
         }
 
         // Check for very short text fragments (table cells)
+        // Exclude bullet chars, separators, and ordinal markers — these appear in clean resumes too
+        const SEPARATOR_PAT = /^[\u2022\u2023\u25B8\u25E6\u25CF\u2043\u2013\u2014\|\*\/\\\-]$|^\d{1,2}$/;
         const fragments = content.items.map(item => item.str.trim()).filter(s => s.length > 0);
-        const shortFragments = fragments.filter(s => s.length <= 3 && !/^[A-Z]/.test(s));
-        if (shortFragments.length > fragments.length * 0.35 && fragments.length > 20) {
+        const shortFragments = fragments.filter(s =>
+            s.length <= 3 &&
+            !/^[A-Z]/.test(s) &&
+            !SEPARATOR_PAT.test(s)
+        );
+        // Raise threshold to 50% — genuine table layouts have the majority of fragments as short cells
+        if (shortFragments.length > fragments.length * 0.50 && fragments.length > 30) {
             pdfFormatWarnings.push('table-cells');
         }
 
@@ -609,14 +616,22 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     const formatBanner = document.getElementById('formatWarningBanner');
     if (formatBanner) {
         if (criticalFormatIssues.length > 0) {
-            formatBanner.innerHTML = `<strong>⚠️ Template Compliance: ${formatScore}% — this is your #1 problem right now</strong><br>
-                Detected: <strong>${formatCheck.issues.map(i => i.label).join(' + ')}</strong>.<br>
-                ATS systems (Workday, Taleo, Greenhouse) parse PDFs as a straight left-to-right text stream. Multi-column and table layouts cause <strong>text-layer scrambling</strong> — your content becomes "word salad" the parser cannot read.<br><br>
-                <strong>What this means for your score:</strong><br>
-                &nbsp;&nbsp;• Your resume has strong keyword content: <strong>${keywordMatchPct}%</strong><br>
-                &nbsp;&nbsp;• But ATS will only find ~<strong>${effectiveKeywordScore}%</strong> of them (${keywordMatchPct}% × ${formatScore}% template compliance)<br>
-                &nbsp;&nbsp;• Fix your template → your score jumps from <strong>${finalScore}% → ~${projectedWithFix}%</strong><br><br>
-                <strong>Free fix:</strong> Switch to a single-column template — <em>Google Docs "Swiss" or "Serif"</em>, <em>Word → search "ATS resume"</em>, or <em>resume.io / novoresume.com (ATS-friendly filter)</em>. Re-upload here to verify.`;
+            formatBanner.innerHTML = `
+                <strong>⚠️ Template Compliance: ${formatScore}% — this is your #1 problem right now</strong><br>
+                Detected: <strong>${formatCheck.issues.map(i => i.label).join(' + ')}</strong>.<br><br>
+                ATS systems (Workday, Taleo, Greenhouse) parse PDFs as a straight left-to-right text stream.
+                Multi-column and table layouts cause <strong>text-layer scrambling</strong> — your content becomes "word salad" the parser cannot read.<br><br>
+                <strong>What this means for your score:</strong>
+                <ul style="margin:0.5rem 0 0.5rem 1.4rem; padding:0; list-style:disc;">
+                  <li>Your resume has strong keyword content: <strong>${keywordMatchPct}%</strong></li>
+                  <li>But ATS will only find ~<strong>${effectiveKeywordScore}%</strong> of them (${keywordMatchPct}% × ${formatScore}% template compliance)</li>
+                  <li>Fix your template → your score jumps from <strong>${finalScore}% → ~${projectedWithFix}%</strong></li>
+                </ul>
+                <strong>Free fix:</strong> Switch to a single-column template —
+                <em>Google Docs: File → Templates → <strong>Swiss</strong> or <strong>Serif</strong></em>,
+                <em>Word: File → New → search "ATS resume"</em>, or
+                <em>resume.io / novoresume.com (ATS-friendly filter)</em>.
+                Re-upload here to confirm your improved score.`;
             formatBanner.style.display = 'block';
         } else if (formatCheck.issues.length > 0) {
             formatBanner.innerHTML = `<strong>ℹ️ Minor Format Note:</strong> ${formatCheck.issues.map(i => `• ${i.label}`).join('<br>')}`;
