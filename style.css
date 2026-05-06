@@ -22,18 +22,25 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.6;
-    background-image: 
-        radial-gradient(rgba(129, 140, 248, 0.2) 2px, transparent 2px),
-        radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.08), transparent 80%);
-    background-attachment: fixed;
-    background-size: 30px 30px, 100% 100%;
-    animation: atsScan 6s linear infinite;
     min-height: 100vh;
 }
 
+body::before {
+    content: "";
+    position: fixed;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background-image: 
+        radial-gradient(rgba(129, 140, 248, 0.2) 2px, transparent 2px),
+        radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.08), transparent 80%);
+    background-size: 30px 30px, 50% 50%;
+    animation: atsScan 6s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
 @keyframes atsScan {
-    0%   { background-position: 0px 0px, 50% 50%; }
-    100% { background-position: 0px 60px, 50% 50%; }
+    0%   { transform: translate(0px, 0px); }
+    100% { transform: translate(0px, 60px); }
 }
 
 .container {
