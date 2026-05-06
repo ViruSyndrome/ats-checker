@@ -415,6 +415,85 @@ const ANALYSIS_RULES = {
     pronouns: ['i', 'me', 'my', 'mine', 'we', 'our', 'us']
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  CONTACT INFO VALIDATOR — catches broken LinkedIn, bad email, bad phone
+// ─────────────────────────────────────────────────────────────────────────────
+function checkContactInfo(text) {
+    const issues = [];
+    const warnings = [];
+
+    // ── Email ──────────────────────────────────────────────────────────────────
+    // Match anything that looks like it was meant to be an email
+    const emailCandidates = text.match(/[a-zA-Z0-9._%+\-]+\s*[@＠]\s*[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g) || [];
+    if (emailCandidates.length === 0) {
+        issues.push('No email address found. Add a professional email (yourname@gmail.com) to your contact section.');
+    } else {
+        emailCandidates.forEach(raw => {
+            const e = raw.replace(/\s/g, '');
+            // Catch common typos: double @, missing TLD dot, .con/.cmo/.ocm etc.
+            if ((e.match(/@/g) || []).length > 1) {
+                issues.push(`Email looks broken: <strong>${e}</strong> — has two @ symbols.`);
+            } else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(e)) {
+                issues.push(`Email may be malformed: <strong>${e}</strong> — check for typos.`);
+            } else if (/\.(con|cmo|ocm|cm|gmal|gmial|yahooo|outlok|outlookcom)$/i.test(e)) {
+                issues.push(`Email domain looks like a typo: <strong>${e}</strong> — check the domain spelling.`);
+            }
+        });
+    }
+
+    // ── Phone ──────────────────────────────────────────────────────────────────
+    // Match 7+ digit sequences (international or local, with optional +, dashes, spaces, parens)
+    const phoneCandidates = text.match(/\+?[\d\s\-().]{7,20}/g) || [];
+    const validPhones = phoneCandidates.filter(p => (p.replace(/\D/g, '').length >= 7 && p.replace(/\D/g, '').length <= 15));
+    if (validPhones.length === 0) {
+        warnings.push('No phone number detected. Many recruiters call before emailing — add your number.');
+    } else {
+        validPhones.forEach(raw => {
+            const digits = raw.replace(/\D/g, '');
+            if (digits.length < 10 && digits.length > 0) {
+                issues.push(`Phone number looks incomplete: <strong>${raw.trim()}</strong> — only ${digits.length} digits found (expected 10+).`);
+            }
+        });
+    }
+
+    // ── LinkedIn ───────────────────────────────────────────────────────────────
+    // Match any linkedin.com mention in the text
+    const linkedinMatches = text.match(/linkedin\.com[^\s,)"<>]*/gi) || [];
+    if (linkedinMatches.length === 0) {
+        // Also check for bare /in/ pattern (no domain)
+        if (!/\/in\/[a-zA-Z0-9\-]{3,}/i.test(text)) {
+            warnings.push('No LinkedIn profile URL found. Add linkedin.com/in/your-name — recruiters check LinkedIn for every candidate.');
+        }
+    } else {
+        linkedinMatches.forEach(raw => {
+            const url = raw.toLowerCase();
+            // Must have /in/ followed by a username of at least 3 chars
+            if (!/linkedin\.com\/in\/[a-zA-Z0-9\-]{3,}/.test(url)) {
+                issues.push(`LinkedIn URL looks broken: <strong>${raw}</strong><br>
+                    Expected format: <code>linkedin.com/in/your-name</code><br>
+                    Common issues: missing /in/, extra spaces, broken copy-paste from PDF.`);
+            } else if (/linkedin\.com\/in\/$/.test(url) || /linkedin\.com\/in\/[^a-zA-Z0-9]/.test(url)) {
+                issues.push(`LinkedIn URL appears incomplete: <strong>${raw}</strong> — the username part is missing or invalid.`);
+            }
+        });
+    }
+
+    // ── Other URLs (portfolio, GitHub, website) ────────────────────────────────
+    const urlMatches = text.match(/https?:\/\/[^\s,)"<>]+/gi) || [];
+    urlMatches.forEach(raw => {
+        // Catch obviously broken URLs
+        if (/https?:\/\/(www\.)?linkedin/i.test(raw) && !/\/in\/[a-zA-Z0-9\-]{3,}/.test(raw)) {
+            issues.push(`LinkedIn URL is broken: <strong>${raw}</strong> — missing the /in/username part.`);
+        }
+        // Catch URLs with spaces (common PDF copy-paste artifact)
+        if (/https?:\/\/[^\s]*\s/.test(raw + ' ')) {
+            issues.push(`URL appears to have a space or line-break in it (common in PDFs): <strong>${raw}</strong>`);
+        }
+    });
+
+    return { issues, warnings };
+}
+
 function calculateStructureScore(text) {
     return getStructureDetails(text).score;
 }
@@ -593,6 +672,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     const structureResult = getStructureDetails(fullText);
     const impactResult = getImpactDetails(fullText);
     const health = getResumeHealth(fullText);
+    const contactCheck = checkContactInfo(fullText);  // ← NEW
 
     const structureScore = structureResult.score;
     const impactScore = impactResult.score;
@@ -724,6 +804,21 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     tipsList.innerHTML = "";
     const tips = [];
 
+    // -1. Contact Info Issues — HIGHEST PRIORITY: if recruiter can't reach you, nothing else matters
+    if (contactCheck.issues.length > 0) {
+        tips.push(`<strong>🚨 Broken Contact Details — Fix Immediately</strong><br>
+        A recruiter found your resume but cannot reach you. These issues will cost you interviews:<br><br>
+        <ul style="margin:0.4rem 0 0 1.2rem; padding:0; list-style:disc;">
+          ${contactCheck.issues.map(i => `<li style="margin-bottom:6px">${i}</li>`).join('')}
+        </ul>`);
+    }
+    if (contactCheck.warnings.length > 0) {
+        tips.push(`<strong>⚠️ Contact Info — Missing Items</strong><br>
+        <ul style="margin:0.4rem 0 0 1.2rem; padding:0; list-style:disc;">
+          ${contactCheck.warnings.map(w => `<li style="margin-bottom:6px">${w}</li>`).join('')}
+        </ul>`);
+    }
+
     // 0. Template Compliance — HIGHEST PRIORITY, fix before anything else
     if (criticalFormatIssues.length > 0) {
         tips.push(`<strong>🚨 Fix Your Template First — This Is Priority #1</strong><br>
@@ -837,7 +932,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         tipsList.appendChild(li);
     });
 
-    window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics };
+    window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics, contactCheck };
 }
 
 // Download Enhanced PDF Report (Designer Edition with More Details)
