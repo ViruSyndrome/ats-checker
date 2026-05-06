@@ -365,7 +365,10 @@ function getKeywords(text, isJD = false) {
         'proficiency', 'evolve', 'evolving', 'championing', 'champion', 'viewpoints', 'maturity',
         'awareness', 'solid', 'actively', 'bonus', 'history', 'oriented', 'demonstrates',
         'innovative', 'impactful', 'deeply', 'vision', 'goals', 'impacts', 'diverse', 'diversity',
-        'inclusive', 'approach', 'approaches', 'behaviors', 'behaviors', 'behaviors'
+        'inclusive', 'approach', 'approaches', 'behaviors',
+        // Single words split from compound phrases ("object-oriented", "problem solving", "track record")
+        'ideas', 'deep', 'least', 'one', 'address', 'object', 'problem', 'solving', 'track', 'record',
+        'tooling', 'streamline', 'streamlining'
     ]);
 
     const frequencyMap = {};
