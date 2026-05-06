@@ -189,7 +189,20 @@ async function readPdf(file) {
             pdfFormatWarnings.push('table-cells');
         }
 
-        text += content.items.map(item => item.str).join(" ");
+        // Reconstruct natural line breaks using Y coordinate (PDF Y is bottom-up)
+        // This is critical for bullet detection — joined text has no newlines otherwise
+        const itemsByY = {};
+        for (const item of content.items) {
+            if (!item.str.trim()) continue;
+            const y = Math.round(item.transform[5] / 4) * 4; // cluster within 4pt
+            if (!itemsByY[y]) itemsByY[y] = [];
+            itemsByY[y].push({ x: item.transform[4], str: item.str });
+        }
+        const sortedLines = Object.keys(itemsByY)
+            .map(Number)
+            .sort((a, b) => b - a) // PDF Y is bottom-up, descending = top to bottom
+            .map(y => itemsByY[y].sort((a, b) => a.x - b.x).map(i => i.str).join(' '));
+        text += sortedLines.join('\n') + '\n';
     }
 
     // Deduplicate warnings
@@ -340,7 +353,12 @@ function getKeywords(text, isJD = false) {
         'new', // already above but ensure
         'senior', 'junior', // job levels, not keywords
         'including', // already above
-        'across'
+        'across',
+        // Generic JD soft-skill / filler words — appear in job descriptions but are NOT real ATS keywords
+        'proficiency', 'evolve', 'evolving', 'championing', 'champion', 'viewpoints', 'maturity',
+        'awareness', 'solid', 'actively', 'bonus', 'history', 'oriented', 'demonstrates',
+        'innovative', 'impactful', 'deeply', 'vision', 'goals', 'impacts', 'diverse', 'diversity',
+        'inclusive', 'approach', 'approaches', 'behaviors', 'behaviors', 'behaviors'
     ]);
 
     const frequencyMap = {};
@@ -461,7 +479,7 @@ function getResumeHealth(text) {
         pronounCount: foundPronouns.length,
         weakVerbCount: foundWeakVerbsList.length,
         weakVerbsFound: uniqueWeakVerbs,
-        isWallOfText: wordCount > 1000,
+        isWallOfText: wordCount > 1800,
         isTooShort: wordCount < 300
     };
 }
@@ -469,7 +487,7 @@ function getResumeHealth(text) {
 function getBulletMetricsPct(text) {
     const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 20);
     const bullets = lines.filter(line =>
-        /^[\u2022\-\*\u00b7]/.test(line) ||
+        /^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/.test(line) ||
         (/^[A-Z]/.test(line) && line.length > 35 && line.length < 250 && !/^[A-Z\s]{3,}$/.test(line))
     );
     const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+|\d+x\b|\d+\s*(users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?)/i;
@@ -712,7 +730,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             } else if (kw.includes('team') || kw.includes('lead')) {
                 return `<em>"Led cross-functional ${kw} of 8 members to deliver project 2 weeks ahead of schedule"</em>`;
             } else {
-                return `<em>"Utilized ${kw} to streamline processes and improve team productivity by 20%"</em>`;
+                return `<em>"[Add a specific achievement that demonstrates your ${kw} experience]"</em>`;
             }
         }).join('<br>        ');
         
@@ -773,13 +791,12 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
 
     // 5. Length & Formatting with SPECIFIC GUIDANCE
     if (health.isWallOfText) {
-        tips.push(`<strong>📏 Improve Readability (${health.wordCount.toLocaleString()} words detected — aim for 400–700):</strong><br>
-        Your resume is long. ATS parsers and recruiters both prefer concise resumes — recruiters spend ~7 seconds on initial scan.<br><br>
-        • Trim each bullet to 1–2 lines max<br>
-        • Remove filler phrases ("responsible for", "worked on", "involved in")<br>
-        • Limit to 3–5 bullets per job role — keep only the most impactful<br>
-        • Use bullet points (•) not dense paragraphs<br><br>
-        Example — tighten this type of bullet:<br>
+        tips.push(`<strong>📏 Resume Length (${health.wordCount.toLocaleString()} words):</strong><br>
+        For a <strong>senior, lead, or staff-level role</strong> with 8+ years of experience, 900–1,500 words across 2 pages is perfectly appropriate — recruiters expect depth at this level. <strong>ATS parsers do not penalise long resumes.</strong><br><br>
+        If you want to tighten it for readability:<br>
+        • Trim bullets to 1–2 lines; cut setup phrases ("responsible for", "worked on")<br>
+        • Each role: keep the 3–5 highest-impact bullets, trim supporting context<br><br>
+        Example:<br>
         ❌ "Was responsible for working on the development of an API system that helped to reduce load times"<br>
         ✅ "Built REST API that reduced load time by 40%"`);
     }
