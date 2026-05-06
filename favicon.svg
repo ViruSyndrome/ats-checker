@@ -1,4 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="8" fill="#1e1b4b"/>
-  <path d="M8,17 L13,22 L24,11" stroke="#6366f1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Document outline -->
+  <path d="M10 5h8l5 5v16a1 1 0 01-1 1H10a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+  <!-- Folded corner -->
+  <path d="M18 5v5h5" stroke="#6366f1" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+  <!-- Scan line (animated feel) -->
+  <line x1="7" y1="18" x2="25" y2="18" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+  <!-- Text lines on document -->
+  <line x1="12" y1="13" x2="20" y2="13" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="12" y1="16" x2="18" y2="16" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="12" y1="22" x2="20" y2="22" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
 </svg>
