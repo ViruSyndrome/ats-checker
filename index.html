@@ -206,6 +206,12 @@
                     </div>
                 </div>
 
+                <div class="card" style="margin-top: 1rem;">
+                    <div class="card-title">How ATS Reads Your Resume (Raw Text)</div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">This is exactly what an ATS parser extracts from your file. If this looks like scrambled "word salad" with words mashed together out of order, you are failing the ATS screen automatically. This is almost always caused by multi-column or table-based templates.</p>
+                    <textarea id="rawTextPreview" readonly style="width: 100%; height: 200px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
+                </div>
+
                 <div class="tool-grid" id="detailsSection" style="margin-top: 1rem; display: none;">
                     <div class="card">
                         <div class="card-title">Structure &amp; Parsability — What Was Found</div>

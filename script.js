@@ -669,6 +669,12 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     resultsSection.style.display = 'block';
     resultsSection.scrollIntoView({ behavior: 'smooth' });
 
+    // Populate Raw Text Preview
+    const rawPreview = document.getElementById('rawTextPreview');
+    if (rawPreview) {
+        rawPreview.value = fullText.trim();
+    }
+
     const structureResult = getStructureDetails(fullText);
     const impactResult = getImpactDetails(fullText);
     const health = getResumeHealth(fullText);
