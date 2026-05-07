@@ -658,6 +658,16 @@ textarea:focus {
         font-size: 1rem;
         padding: 4px;
     }
+
+    /* Header & Nav Mobile */
+    .logo-text { font-size: 1.8rem; }
+    .logo-link svg { width: 32px; height: 32px; }
+    .main-nav { gap: 0.5rem; }
+    .main-nav a { font-size: 0.85rem; padding: 0.4rem 0.6rem; }
+    .privacy-badge { font-size: 0.75rem; padding: 0.5rem 0.8rem; }
+    
+    .container { padding: 1rem; }
+    header { margin-bottom: 2rem; }
 }
 
 /* Loading State */
