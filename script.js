@@ -673,6 +673,14 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     const rawPreview = document.getElementById('rawTextPreview');
     if (rawPreview) {
         rawPreview.value = fullText.trim();
+        const formatScore = getFormatChecklist(fullText).score;
+        if (formatScore < 50) {
+            rawPreview.style.borderColor = '#ef4444'; // Red
+            rawPreview.parentElement.style.border = '2px solid #ef4444';
+        } else {
+            rawPreview.style.borderColor = 'var(--border)';
+            rawPreview.parentElement.style.border = 'none';
+        }
     }
 
     const structureResult = getStructureDetails(fullText);
