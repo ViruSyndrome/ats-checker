@@ -172,13 +172,24 @@ header h1 {
 
 @media (max-width: 480px) {
     header h1 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
-    
+    .logo-text {
+        font-size: 1.8rem;
+    }
+    .privacy-badge {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+        line-height: 1.4;
+        border-radius: 12px;
+    }
     .container {
-        padding: 1rem;
+        padding: 0.75rem;
     }
-    
+    .card {
+        padding: 1.25rem;
+        border-radius: 1rem;
+    }
     .score-circle {
         width: 100px;
         height: 100px;
