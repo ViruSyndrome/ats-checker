@@ -1120,7 +1120,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     y = drawMetricCard(
         "IMPACT & METRICS", 
         res.impactScore, 
-        `Evaluates quantifiable achievements. Detected ${res.bulletMetrics.length} metrics out of ${res.bulletMetrics.totalBullets} bullets. Strong action verbs used: ${res.foundVerbs ? res.foundVerbs.slice(0, 5).join(', ') : 'None'}.`,
+        `Evaluates quantifiable achievements. Detected ${res.bulletMetrics.withMetrics} metrics out of ${res.bulletMetrics.total} bullets. Strong action verbs used: ${res.foundVerbs && res.foundVerbs.length > 0 ? res.foundVerbs.slice(0, 5).join(', ') : 'None detected'}.`,
         y
     );
 
@@ -1199,7 +1199,8 @@ document.getElementById('downloadReport').addEventListener('click', () => {
         doc.setFontSize(9);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(71, 85, 105);
-        const splitTip = doc.splitTextToSize(cleanText(tip), 160);
+        const cleanedTip = cleanText(tip).replace(/\s+/g, ' '); // Normalize spaces
+        const splitTip = doc.splitTextToSize(cleanedTip, 160);
         doc.text(splitTip, 30, actionY);
         actionY += (splitTip.length * 5) + 6;
     });
@@ -1240,7 +1241,8 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     }
     
     topActions.slice(0, 3).forEach(action => {
-        const splitAction = doc.splitTextToSize(action, 170);
+        const cleanedAction = cleanText(action).replace(/\s+/g, ' ');
+        const splitAction = doc.splitTextToSize(cleanedAction, 170);
         doc.text(splitAction, 20, actionY);
         actionY += (splitAction.length * 5) + 3;
     });
@@ -1297,16 +1299,18 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     y += 10;
 
     // Matching Keywords
-    doc.setTextColor(16, 185, 129);
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "bold");
-    doc.text(`Detected Skills (${res.found.length}):`, 20, y);
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(71, 85, 105);
-    const foundText = doc.splitTextToSize(res.found.slice(0, 30).join(" • "), 170);
-    doc.text(foundText, 20, y + 6);
-    y += (foundText.length * 4) + 12;
+    if (res.hasJD && res.found.length > 0) {
+        doc.setTextColor(16, 185, 129);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Detected Skills (${res.found.length}):`, 20, y);
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(71, 85, 105);
+        const foundText = doc.splitTextToSize(res.found.slice(0, 30).join(" • "), 170);
+        doc.text(foundText, 20, y + 6);
+        y += (foundText.length * 4) + 12;
+    }
 
     // Missing Keywords
     if (res.missing.length > 0) {
