@@ -15,7 +15,10 @@
 
     <meta name="description" content="Privacy policy for GetATSReady. Your data is processed locally and never stored on our servers.">
     <link rel="canonical" href="https://www.getatsready.com/privacy.html">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HMGTGQ4B8"></script>
@@ -29,21 +32,39 @@
 </head>
 <body>
     <div class="container">
+    <div class="container">
         <header>
-            <h1><a href="index.html" style="text-decoration: none; color: inherit;">GetATSReady</a></h1>
+            <div class="header-brand">
+                <a href="index.html" class="logo-link">
+                    <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                        <path d="M18 4v5h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+                        <line x1="6" y1="18" x2="26" y2="18" stroke="var(--accent, #818cf8)" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+                        <line x1="12" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+                        <line x1="12" y1="15" x2="18" y2="15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+                        <line x1="12" y1="22" x2="20" y2="22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+                    </svg>
+                    <span class="logo-text">GetATS<span class="logo-accent">Ready</span></span>
+                </a>
+            </div>
             <nav class="main-nav">
                 <a href="index.html">Home</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
-                <a href="privacy.html" class="active">Privacy</a>
-                <a href="terms.html">Terms</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="privacy.html" class="active">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
             </nav>
+            <div class="privacy-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                100% Private: Processed entirely in your browser. No Signup Required.
+            </div>
         </header>
+
 
         <main class="legal-page">
             <div class="card">
                 <h2>Privacy Policy</h2>
-                <p><em>Last updated: May 1, 2026</em></p>
+                <p><em>Last updated: May 8, 2026</em></p>
 
                 <h3>Our Privacy Commitment</h3>
                 <p>GetATSReady is built with privacy as our core principle. Unlike other resume checkers that upload your data to servers, we process everything <strong>100% locally in your browser</strong>.</p>
@@ -55,50 +76,41 @@
                     <li><strong>Your Resume:</strong> We do NOT collect, store, or transmit your resume or job descriptions. All processing happens in your browser using JavaScript.</li>
                 </ul>
 
+                <h3>User-Initiated Troubleshooting (Debug Log)</h3>
+                <p>To assist with technical support, we provide a "Download Debug Log" feature. This feature is <strong>strictly user-initiated</strong>.</p>
+                <ul>
+                    <li>When you click "Download Debug Log", a small file is generated <strong>locally</strong> on your device.</li>
+                    <li>This file contains technical metadata (browser type, error codes) and a truncated sample of extracted text (first 1,000 characters).</li>
+                    <li>We do not receive this file automatically. You must choose to share it with us via email if you require support.</li>
+                </ul>
+
                 <h3>How We Use Your Information</h3>
                 <ul>
                     <li>Improve our website and user experience</li>
                     <li>Display relevant advertisements through Google AdSense</li>
                     <li>Analyze traffic patterns and popular features</li>
                 </ul>
-
-                <h3>Third-Party Services</h3>
-                <p>We use the following third-party services:</p>
-                <ul>
-                    <li><strong>Google Analytics:</strong> For website analytics (<a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a>)</li>
-                    <li><strong>Google AdSense:</strong> For displaying advertisements (<a href="https://policies.google.com/technologies/ads" target="_blank">Privacy Policy</a>)</li>
-                </ul>
-
-                <h3>Your Rights</h3>
-                <p>You have the right to:</p>
-                <ul>
-                    <li>Opt out of cookies and analytics tracking</li>
-                    <li>Request information about data we collect (though we don't store personal data)</li>
-                    <li>Use ad blockers to prevent AdSense cookies</li>
-                </ul>
-
+                
                 <h3>Data Security</h3>
-                <p>Since we don't collect or store your resume data, there's no risk of data breaches or unauthorized access to your personal information. All processing is done client-side in your browser.</p>
-
-                <h3>Children's Privacy</h3>
-                <p>Our service is not directed to children under 13. We do not knowingly collect information from children.</p>
-
-                <h3>Changes to This Policy</h3>
-                <p>We may update this privacy policy from time to time. Changes will be posted on this page with an updated revision date.</p>
+                <p>Since we don't collect or store your resume data, there's no risk of data breaches or unauthorized access to your personal information on our end. All processing is done client-side in your browser.</p>
 
                 <h3>Contact Us</h3>
-                <p>If you have questions about this privacy policy, please contact us at: <a href="contact.html">Contact Page</a></p>
+                <p>If you have questions about this privacy policy, please contact us at: <a href="mailto:hello@getatsready.com">hello@getatsready.com</a></p>
             </div>
         </main>
 
         <footer class="site-footer">
-            <p>&copy; 2026 GetATSReady. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
-                <a href="contact.html">Contact</a>
+            <div class="footer-inner">
+                <p>&copy; 2026 GetATSReady. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="about.html">About Us</a>
+                </div>
             </div>
         </footer>
     </div>
 </body>
 </html>
+

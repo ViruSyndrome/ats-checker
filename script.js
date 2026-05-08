@@ -326,7 +326,7 @@ function getKeywords(text, isJD = false) {
         'its', 'himself', 'herself', 'themselves', 'whether', 'upon', 'against', 'under', 'above', 'below', 'off',
         'out', 'down', 'per', 'around', 'near', 'far', 'often', 'always', 'never', 'sometimes', 'usually', 'become',
         // Company names & context words that should never be resume keywords
-        'ibm', 'microsoft', 'google', 'amazon', 'oracle', 'sap', 'meta', 'apple', 'hewlett', 'packard',
+        'ibm', 'microsoft', 'google', 'amazon', 'amazon', 'oracle', 'sap', 'meta', 'apple', 'hewlett', 'packard',
         // Noise from JD context phrases
         'feel', 'feeling', 'felt', 'feels',
         'head', 'heads',
@@ -384,34 +384,39 @@ function getKeywords(text, isJD = false) {
 // Semantic Synonym Map - Universal Library
 const SYNONYMS = {
     // Data & Performance
-    'data': ['analytics', 'databases', 'analysis', 'dataset', 'datasets', 'big data', 'metrics', 'kpis', 'statistics'],
-    'metrics': ['kpis', 'data points', 'roi', 'conversion', 'analytics', 'metrics', 'measurements'],
-    'seo': ['search', 'visibility', 'optimization', 'metadata', 'google search'],
-    'ai': ['artificial intelligence', 'ml', 'machine learning', 'chatbot', 'nlp', 'llm', 'generative'],
+    'data': ['analytics', 'databases', 'analysis', 'dataset', 'datasets', 'big data', 'metrics', 'kpis', 'statistics', 'visualization', 'tableau', 'power bi'],
+    'metrics': ['kpis', 'data points', 'roi', 'conversion', 'analytics', 'metrics', 'measurements', 'okrs', 'dashboards'],
+    'seo': ['search', 'visibility', 'optimization', 'metadata', 'google search', 'organic traffic', 'serp'],
+    'ai': ['artificial intelligence', 'ml', 'machine learning', 'chatbot', 'nlp', 'llm', 'generative', 'pytorch', 'tensorflow', 'neural networks'],
     
     // Technical Writing & Content
-    'writing': ['documentation', 'content', 'authoring', 'editorial', 'write', 'writer', 'technical writing', 'tech docs'],
-    'content developer': ['technical writer', 'content creator', 'documentation specialist', 'information architecture'],
-    'xml': ['dita', 'xml', 'structured authoring', 'authoring tools', 'content-as-code'],
+    'writing': ['documentation', 'content', 'authoring', 'editorial', 'write', 'writer', 'technical writing', 'tech docs', 'copywriting', 'ghostwriting'],
+    'content developer': ['technical writer', 'content creator', 'documentation specialist', 'information architecture', 'knowledge management'],
+    'xml': ['dita', 'xml', 'structured authoring', 'authoring tools', 'content-as-code', 'madcap flare', 'framemaker'],
     
+    // Cloud & Infrastructure
+    'cloud': ['aws', 'azure', 'gcp', 'cloud computing', 'saas', 'paas', 'iaas', 'serverless', 'infrastructure'],
+    'devops': ['ci/cd', 'docker', 'kubernetes', 'k8s', 'jenkins', 'automation', 'terraform', 'ansible'],
+
     // Software & Web
-    'software': ['application', 'platform', 'product', 'saas', 'solution', 'tools', 'software products'],
-    'web': ['online', 'cloud', 'browser', 'internet', 'portal', 'web-based'],
-    'javascript': ['js', 'typescript', 'react', 'node', 'vue', 'frontend'],
-    'api': ['rest', 'graphql', 'soap', 'microservices', 'endpoints'],
+    'software': ['application', 'platform', 'product', 'saas', 'solution', 'tools', 'software products', 'systems'],
+    'web': ['online', 'cloud', 'browser', 'internet', 'portal', 'web-based', 'frontend', 'backend', 'fullstack'],
+    'javascript': ['js', 'typescript', 'react', 'node', 'vue', 'angular', 'jquery', 'npm', 'webpack'],
+    'api': ['rest', 'graphql', 'soap', 'microservices', 'endpoints', 'json', 'postman'],
     
     // Leadership & Business
-    'project management': ['pm', 'pmp', 'agile', 'scrum', 'leadership', 'stakeholder', 'partnerships'],
-    'problem solving': ['analytical', 'troubleshooting', 'problem-solving', 'resolved', 'critical thinking'],
-    'communication': ['communications', 'communicating', 'interpersonal', 'collaborate', 'collaboration'],
-    'certification': ['training', 'certified', 'cert', 'credentials', 'program', 'course']
+    'project management': ['pm', 'pmp', 'agile', 'scrum', 'leadership', 'stakeholder', 'partnerships', 'strategy', 'roadmap'],
+    'problem solving': ['analytical', 'troubleshooting', 'problem-solving', 'resolved', 'critical thinking', 'debugging'],
+    'communication': ['communications', 'communicating', 'interpersonal', 'collaborate', 'collaboration', 'stakeholder engagement'],
+    'certification': ['training', 'certified', 'cert', 'credentials', 'program', 'course', 'degree', 'diploma']
 };
 
-const TECH_BOOST = new Set(['xml', 'agile', 'scrum', 'ai', 'seo', 'api', 'cloud', 'wireless', '5g', 'gui', 'architecture', 'dita', 'cms', 'software', 'documentation', 'content', 'technical']);
+const TECH_BOOST = new Set(['xml', 'agile', 'scrum', 'ai', 'seo', 'api', 'cloud', 'wireless', '5g', 'gui', 'architecture', 'dita', 'cms', 'software', 'documentation', 'content', 'technical', 'kubernetes', 'docker', 'aws', 'typescript']);
 
 // Professional Analysis Modules
 const ANALYSIS_RULES = {
-    weakVerbs: ['assisted', 'helped', 'worked', 'involved', 'responsible', 'participated'],
+    weakVerbs: ['assisted', 'helped', 'worked', 'involved', 'responsible', 'participated', 'did', 'making'],
+    activeVerbs: ['led', 'directed', 'managed', 'supervised', 'orchestrated', 'spearheaded', 'built', 'developed', 'designed', 'engineered', 'created', 'architected', 'optimized', 'improved', 'increased', 'decreased', 'streamlined', 'simplified', 'accelerated', 'delivered', 'generated', 'negotiated', 'secured', 'won', 'surpassed', 'launched', 'mentored', 'automated'],
     pronouns: ['i', 'me', 'my', 'mine', 'we', 'our', 'us']
 };
 
@@ -423,18 +428,16 @@ function checkContactInfo(text) {
     const warnings = [];
 
     // ── Email ──────────────────────────────────────────────────────────────────
-    // Match anything that looks like it was meant to be an email
-    const emailCandidates = text.match(/[a-zA-Z0-9._%+\-]+\s*[@＠]\s*[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g) || [];
+    const emailRegex = /([a-zA-Z0-9._%+\-]+\s*[@＠]\s*[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g;
+    const emailCandidates = text.match(emailRegex) || [];
+    
     if (emailCandidates.length === 0) {
         issues.push('No email address found. Add a professional email (yourname@gmail.com) to your contact section.');
     } else {
         emailCandidates.forEach(raw => {
-            const e = raw.replace(/\s/g, '');
-            // Catch common typos: double @, missing TLD dot, .con/.cmo/.ocm etc.
+            const e = raw.replace(/\s/g, '').toLowerCase();
             if ((e.match(/@/g) || []).length > 1) {
                 issues.push(`Email looks broken: <strong>${e}</strong> — has two @ symbols.`);
-            } else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(e)) {
-                issues.push(`Email may be malformed: <strong>${e}</strong> — check for typos.`);
             } else if (/\.(con|cmo|ocm|cm|gmal|gmial|yahooo|outlok|outlookcom)$/i.test(e)) {
                 issues.push(`Email domain looks like a typo: <strong>${e}</strong> — check the domain spelling.`);
             }
@@ -442,11 +445,12 @@ function checkContactInfo(text) {
     }
 
     // ── Phone ──────────────────────────────────────────────────────────────────
-    // Match 7+ digit sequences (international or local, with optional +, dashes, spaces, parens)
-    const phoneCandidates = text.match(/\+?[\d\s\-().]{7,20}/g) || [];
-    const validPhones = phoneCandidates.filter(p => (p.replace(/\D/g, '').length >= 7 && p.replace(/\D/g, '').length <= 15));
+    const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4,6}/g;
+    const phoneCandidates = text.match(phoneRegex) || [];
+    const validPhones = phoneCandidates.filter(p => p.replace(/\D/g, '').length >= 10);
+    
     if (validPhones.length === 0) {
-        warnings.push('No phone number detected. Many recruiters call before emailing — add your number.');
+        warnings.push('No phone number detected. Add your number so recruiters can call you.');
     } else {
         validPhones.forEach(raw => {
             const digits = raw.replace(/\D/g, '');
@@ -539,21 +543,27 @@ function calculateImpactScore(text) {
 
 function getImpactDetails(text) {
     const lowerText = text.toLowerCase();
-    const metrics = text.match(/\d+%|\$[\d,]+|\d+\s?[kKmM]\b|\+\d+/g);
+    
+    // Detect numbers, percentages, dollar amounts, and data-driven phrases
+    const metrics = text.match(/\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+|reduced|increased|saved|growth|revenue|efficiency/gi);
     const metricCount = metrics ? metrics.length : 0;
     const metricExamples = metrics ? [...new Set(metrics)].slice(0, 5) : [];
 
-    const impactWordList = [
-        'spearheaded', 'executed', 'launched', 'expanded', 'increased', 'managed',
-        'developed', 'delivered', 'automated', 'optimized', 'standardized', 'streamlined',
-        'reduced', 'pioneered', 'architected', 'led', 'built', 'designed', 'implemented',
-        'created', 'improved', 'achieved', 'generated', 'established', 'transformed'
-    ];
-    const foundVerbs = impactWordList.filter(v => lowerText.includes(v));
+    // Detect high-impact action verbs
+    const words = lowerText.split(/\W+/);
+    const foundVerbs = ANALYSIS_RULES.activeVerbs.filter(v => words.includes(v));
 
-    let score = (metricCount * 15) + (foundVerbs.length * 10);
-    return { score: Math.min(score, 100), metricCount, metricExamples, foundVerbs };
+    // Scoring: 15 pts per unique metric, 10 pts per unique active verb
+    let score = ([...new Set(metrics || [])].length * 15) + ([...new Set(foundVerbs)].length * 10);
+    
+    return { 
+        score: Math.min(score, 100), 
+        metricCount, 
+        metricExamples, 
+        foundVerbs: [...new Set(foundVerbs)] 
+    };
 }
+
 
 function getResumeHealth(text) {
     const words = text.toLowerCase().split(/\s+/);
@@ -686,7 +696,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     const structureResult = getStructureDetails(fullText);
     const impactResult = getImpactDetails(fullText);
     const health = getResumeHealth(fullText);
-    const contactCheck = checkContactInfo(fullText);  // ← NEW
+    const contactCheck = checkContactInfo(fullText);
 
     const structureScore = structureResult.score;
     const impactScore = impactResult.score;
@@ -694,25 +704,40 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     const formatScore = formatCheck.score;
     const criticalFormatIssues = formatCheck.issues.filter(i => i.severity === 'critical');
 
-    const keywordMatchPct = maxPossibleScore > 0 
+    const keywordMatchPct = (maxPossibleScore > 0 && hasJD)
         ? Math.min(Math.round((keywordScore / maxPossibleScore) * 100), 100)
         : 0;
 
     // Multiplicative model: bad template physically hides keywords from ATS parsers.
-    // Format score acts as a discount factor on keyword effectiveness — replicating how
-    // a multi-column PDF's text-layer scrambling stops keywords from being found.
     const effectiveKeywordScore = Math.round(keywordMatchPct * (formatScore / 100));
-    // Projected score if user fixes their template (format penalty removed)
-    const projectedWithFix = Math.round(keywordMatchPct * 0.50 + structureScore * 0.25 + impactScore * 0.25);
-    // Final score: with JD use keyword-weighted formula; without JD redistribute to structure & impact
-    const finalScore = hasJD
-        ? Math.round(effectiveKeywordScore * 0.50 + structureScore * 0.25 + impactScore * 0.25)
-        : Math.round(formatScore * 0.25 + structureScore * 0.40 + impactScore * 0.35);
+    const projectedWithFix = Math.min(95, Math.round(keywordMatchPct * 0.95 + 10)); // Heuristic projection
+    
+    // Final score calculation
+    let finalScore = hasJD
+        ? Math.round(effectiveKeywordScore * 0.40 + structureScore * 0.20 + impactScore * 0.20 + formatScore * 0.20)
+        : Math.round(formatScore * 0.40 + structureScore * 0.30 + impactScore * 0.30);
+
+    // CRITICAL PENALTIES: If core contact info is missing or template is broken, cap the score
+    if (contactCheck.issues.length > 0) {
+        finalScore = Math.min(finalScore, 65);
+    }
+    if (formatScore < 50) {
+        finalScore = Math.min(finalScore, 50);
+    }
 
     // Format banner — explains the multiplicative impact when template issues are detected
     const formatBanner = document.getElementById('formatWarningBanner');
     if (formatBanner) {
         if (criticalFormatIssues.length > 0) {
+            const keywordText = hasJD ? 
+                `<li>Your resume has strong keyword content: <strong>${keywordMatchPct}%</strong></li>
+                 <li>But ATS will only find ~<strong>${effectiveKeywordScore}%</strong> of them (${keywordMatchPct}% × ${formatScore}% template compliance)</li>` :
+                `<li>Paste a job description above to see your predicted keyword match score.</li>`;
+            
+            const jumpText = hasJD ? 
+                `<li>Fix your template → your score jumps from <strong>${finalScore}% → ~${projectedWithFix}%</strong></li>` :
+                `<li>Fixing your template is the fastest way to improve your visibility to recruiters.</li>`;
+
             formatBanner.innerHTML = `
                 <strong>⚠️ Template Compliance: ${formatScore}% — this is your #1 problem right now</strong><br>
                 Detected: <strong>${formatCheck.issues.map(i => i.label).join(' + ')}</strong>.<br><br>
@@ -720,15 +745,14 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
                 Multi-column and table layouts cause <strong>text-layer scrambling</strong> — your content becomes "word salad" the parser cannot read.<br><br>
                 <strong>What this means for your score:</strong>
                 <ul style="margin:0.5rem 0 0.5rem 1.4rem; padding:0; list-style:disc;">
-                  <li>Your resume has strong keyword content: <strong>${keywordMatchPct}%</strong></li>
-                  <li>But ATS will only find ~<strong>${effectiveKeywordScore}%</strong> of them (${keywordMatchPct}% × ${formatScore}% template compliance)</li>
-                  <li>Fix your template → your score jumps from <strong>${finalScore}% → ~${projectedWithFix}%</strong></li>
+                  ${keywordText}
+                  ${jumpText}
                 </ul>
                 <strong>Free fix:</strong> Switch to a single-column template —
                 <em>Google Docs: File → Templates → <strong>Swiss</strong> or <strong>Serif</strong></em>,
-                <em>Word: File → New → search "ATS resume"</em>, or
-                <em>resume.io / novoresume.com (ATS-friendly filter)</em>.
+                <em>Word: File → New → search "ATS resume"</em>.
                 Re-upload here to confirm your improved score.`;
+
             formatBanner.style.display = 'block';
         } else if (formatCheck.issues.length > 0) {
             formatBanner.innerHTML = `<strong>ℹ️ Minor Format Note:</strong> ${formatCheck.issues.map(i => `• ${i.label}`).join('<br>')}`;
@@ -1050,7 +1074,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
 
     let y = 130;
 
-    // Template Compliance — first because it's the multiplier for everything else
+    // Template Compliance
     const formatIssueText = res.formatCheck.issues.length > 0
         ? `Issues detected: ${res.formatCheck.issues.map(i => i.label).join('; ')}. This is discounting your keyword score from ${res.keywordMatchPct}% to ${res.effectiveKeywordScore}%. Fixing your template could raise your score to ~${res.projectedWithFix}%.`
         : res.formatScore >= 95 
@@ -1064,10 +1088,16 @@ document.getElementById('downloadReport').addEventListener('click', () => {
         y
     );
 
+    // Keyword Match (Conditional based on JD)
+    const kwLabel = res.hasJD ? "KEYWORD MATCH" : "KEYWORD MATCH (BASE)";
+    const kwExpl = res.hasJD ? 
+        `Score: ${res.keywordMatchPct}%. Effective (after template penalty): ${res.effectiveKeywordScore}%. ${res.found.length} skills matched out of ${res.found.length + Math.min(res.missing.length, 25)} key terms found in job description.` :
+        "No job description provided for matching. This score is currently set to 0. Paste a JD for a full keyword analysis.";
+
     y = drawMetricCard(
-        "KEYWORD MATCH", 
+        kwLabel, 
         res.keywordMatchPct, 
-        `Raw keyword content score: ${res.keywordMatchPct}%. Effective (after template penalty): ${res.effectiveKeywordScore}%. ${res.found.length} skills matched out of ${res.found.length + Math.min(res.missing.length, 25)} key terms found in job description.`,
+        kwExpl,
         y
     );
     
@@ -1081,49 +1111,105 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     y = drawMetricCard(
         "IMPACT & METRICS", 
         res.impactScore, 
-        "Evaluates use of quantifiable achievements (numbers, percentages, dollar amounts). Higher scores indicate results-driven content.",
+        `Evaluates quantifiable achievements. Detected ${res.bulletMetrics.length} metrics out of ${res.bulletMetrics.totalBullets} bullets. Strong action verbs used: ${res.foundVerbs ? res.foundVerbs.slice(0, 5).join(', ') : 'None'}.`,
         y
     );
 
-    // 4. Industry Benchmark
+    // 4. Contact Details Audit (CRITICAL)
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("Industry Benchmarks", 20, y + 8);
+    doc.text("CONTACT INFO AUDIT", 20, y + 8);
+    doc.setDrawColor(226, 232, 240);
+    doc.line(20, y + 10, 190, y + 10);
+    
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    
+    let contactY = y + 16;
+    if (res.contactCheck.issues.length === 0 && res.contactCheck.warnings.length === 0) {
+        doc.setTextColor(16, 185, 129);
+        doc.text("✓ Professional Contact Details: All core items (Email, Phone, LinkedIn) detected.", 20, contactY);
+    } else {
+        res.contactCheck.issues.forEach(issue => {
+            doc.setTextColor(239, 68, 68);
+            doc.text(`[CRITICAL] ${cleanText(issue)}`, 20, contactY);
+            contactY += 5;
+        });
+        res.contactCheck.warnings.forEach(warning => {
+            doc.setTextColor(245, 158, 11);
+            doc.text(`[WARNING] ${cleanText(warning)}`, 20, contactY);
+            contactY += 5;
+        });
+    }
+
+    // 5. Industry Benchmark & Expert Tip
+    let benchY = contactY + 8;
+    doc.setTextColor(30, 41, 59);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("INDUSTRY BENCHMARKS", 20, benchY);
     
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(71, 85, 105);
-    const avgScore = 68; // Average ATS score
-    const topScore = 85; // Top 10% score
+    doc.text(`Your Score: ${res.finalScore}% | Average: 68% | Top Performers: 85%+`, 20, benchY + 6);
     
-    doc.text(`Your Score: ${res.finalScore}% | Average: ${avgScore}% | Top Performers: ${topScore}%+`, 20, y + 14);
-    
-    if (res.finalScore >= topScore) {
-        doc.setTextColor(16, 185, 129);
-        doc.text("You're in the TOP 10% of resumes! Excellent work.", 20, y + 20);
-    } else if (res.finalScore >= avgScore) {
-        doc.setTextColor(245, 158, 11);
-        doc.text(`You're above average! ${topScore - res.finalScore}% away from top tier.`, 20, y + 20);
-    } else {
-        doc.setTextColor(239, 68, 68);
-        doc.text(`Below average. Focus on improvements to reach ${avgScore}% first.`, 20, y + 20);
-    }
+    // Pro Tip
+    doc.setFillColor(248, 250, 252);
+    doc.rect(20, benchY + 10, 170, 12, 'F');
+    doc.setTextColor(100, 116, 139);
+    doc.setFont("helvetica", "italic");
+    doc.text("Expert Tip: While PDFs are visually stable, single-column DOCX files are technically 'fail-safe' for ATS parsers.", 25, benchY + 17);
 
-    // 5. Priority Action Items (Top 3)
+    // PAGE 2: Strategic Action Plan
+    doc.addPage();
+    doc.setFillColor(30, 41, 59);
+    doc.rect(0, 0, 210, 25, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("STRATEGIC ACTION PLAN", 20, 17);
+
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("TOP 3 PRIORITY ACTIONS", 20, y + 32);
-    doc.setDrawColor(226, 232, 240);
-    doc.line(20, y + 34, 190, y + 34);
+    doc.text("Top Priority Improvements", 20, 40);
     
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(51, 65, 85);
-    
-    let actionY = y + 40;
-    const topActions = [];
+    let actionY = 50;
+    res.tips.forEach((tip, i) => {
+        if (actionY > 270) {
+            doc.addPage();
+            actionY = 20;
+        }
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(30, 41, 59);
+        doc.text(`#${i + 1}`, 20, actionY);
+        
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(71, 85, 105);
+        const splitTip = doc.splitTextToSize(cleanText(tip), 160);
+        doc.text(splitTip, 30, actionY);
+        actionY += (splitTip.length * 5) + 6;
+    });
+
+    if (res.hasJD && res.missing.length > 0) {
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(30, 41, 59);
+        doc.text("Missing Keywords (Immediate Impact)", 20, actionY + 5);
+        
+        actionY += 12;
+        const missingText = res.missing.slice(0, 25).join(", ");
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(239, 68, 68);
+        const splitMissing = doc.splitTextToSize(missingText, 170);
+        doc.text(splitMissing, 20, actionY);
+    }
+
     
     if (res.formatCheck && res.formatCheck.issues.filter(i => i.severity === 'critical').length > 0) {
         topActions.push(`#1 CRITICAL - Fix Template: Switch to a single-column ATS-safe layout. This alone will raise your score from ${res.finalScore}% to ~${res.projectedWithFix}%. Use Google Docs "Swiss/Serif", Word "ATS resume" template, or resume.io (ATS-friendly filter).`);
@@ -1329,3 +1415,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Debug Support Logic
+const debugBtn = document.getElementById("debugBtn");
+if (debugBtn) {
+    debugBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const debugData = {
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            resumeLength: resumeText ? resumeText.length : 0,
+            jdLength: document.getElementById('jobDescription').value.length,
+            rawText: resumeText ? resumeText.substring(0, 1000) : 'None',
+            url: window.location.href
+        };
+        const blob = new Blob([JSON.stringify(debugData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ats_debug_log.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        alert("Debug log downloaded! Please email this file to hello@getatsready.com for support.");
+    });
+}
