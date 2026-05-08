@@ -91,7 +91,7 @@ Nice to Have:
 // Try Example Button
 tryExampleBtn.addEventListener('click', () => {
     resumeText = EXAMPLE_RESUME;
-    pdfFormatWarnings = []; // plain text example — no layout issues
+    layoutWarnings = []; // plain text example — no layout issues
     document.getElementById('jobDescription').value = EXAMPLE_JD;
     fileNameDisplay.textContent = 'Loaded: Example Resume (Software Engineer)';
     fileNameDisplay.style.color = 'var(--success)';
@@ -133,7 +133,7 @@ async function handleFile(file) {
             resumeText = await readPdf(file);
         } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
             isPdfUpload = false;
-            pdfFormatWarnings = [];
+            layoutWarnings = [];
             resumeText = await readDocx(file);
         } else {
             alert("Please upload a PDF or DOCX file.");
@@ -157,14 +157,14 @@ async function handleFile(file) {
     }
 }
 
-let pdfFormatWarnings = []; // Global, set during PDF read
+let layoutWarnings = []; // Global, set during file read
 let isPdfUpload = false;    // True only when a PDF file was uploaded
 
 async function readPdf(file) {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let text = "";
-    pdfFormatWarnings = [];
+    layoutWarnings = [];
 
     for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
@@ -179,7 +179,7 @@ async function readPdf(file) {
         const midPageItems = xPositions.filter(x => x > 200 && x < 400); // items in the middle of page
         
         if (midPageItems.length > 10 && i === 1) {
-            pdfFormatWarnings.push('multi-column');
+            layoutWarnings.push('multi-column');
         }
 
         // Check for very short text fragments (table cells)
@@ -193,7 +193,7 @@ async function readPdf(file) {
         );
         // Raise threshold to 50% — genuine table layouts have the majority of fragments as short cells
         if (shortFragments.length > fragments.length * 0.50 && fragments.length > 30) {
-            pdfFormatWarnings.push('table-cells');
+            layoutWarnings.push('table-cells');
         }
 
         // Reconstruct natural line breaks using Y coordinate (PDF Y is bottom-up)
@@ -213,12 +213,19 @@ async function readPdf(file) {
     }
 
     // Deduplicate warnings
-    pdfFormatWarnings = [...new Set(pdfFormatWarnings)];
+    layoutWarnings = [...new Set(layoutWarnings)];
     return text;
 }
 
 async function readDocx(file) {
     const arrayBuffer = await file.arrayBuffer();
+    
+    // Check for tables by converting to HTML (diagnostic)
+    const htmlResult = await mammoth.convertToHtml({ arrayBuffer });
+    if (htmlResult.value.includes('<table')) {
+        layoutWarnings.push('table-cells');
+    }
+    
     const result = await mammoth.extractRawText({ arrayBuffer });
     return result.value;
 }
@@ -229,21 +236,20 @@ async function readDocx(file) {
 // a bad template physically prevents the parser from finding keywords (text-layer scrambling).
 function getFormatChecklist(fullText) {
     const issues = [];
-    let score = isPdfUpload ? 100 : 90; // DOCX: can't detect layout, assume clean
+    let score = 100;
 
-    if (isPdfUpload) {
-        const isMultiCol    = pdfFormatWarnings.includes('multi-column');
-        const hasTableCells = pdfFormatWarnings.includes('table-cells');
-        if (isMultiCol && hasTableCells) {
-            issues.push({ key: 'multi-column+tables', label: 'Multi-column layout + table cells', severity: 'critical' });
-            score = 15;
-        } else if (isMultiCol) {
-            issues.push({ key: 'multi-column', label: 'Multi-column layout (2-column template)', severity: 'critical' });
-            score = 30;
-        } else if (hasTableCells) {
-            issues.push({ key: 'table-cells', label: 'Table-based layout', severity: 'critical' });
-            score = 55;
-        }
+    const isMultiCol    = layoutWarnings.includes('multi-column');
+    const hasTableCells = layoutWarnings.includes('table-cells');
+    
+    if (isMultiCol && hasTableCells) {
+        issues.push({ key: 'multi-column+tables', label: 'Multi-column layout + table cells', severity: 'critical' });
+        score = 15;
+    } else if (isMultiCol) {
+        issues.push({ key: 'multi-column', label: 'Multi-column layout (2-column template)', severity: 'critical' });
+        score = 30;
+    } else if (hasTableCells) {
+        issues.push({ key: 'table-cells', label: 'Table-based layout (multi-column warning)', severity: 'critical' });
+        score = 55;
     }
 
     // Universal: detect apostrophe-style dates ('21, '22) — confuses ATS years-of-experience parsing
