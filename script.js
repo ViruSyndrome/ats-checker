@@ -716,12 +716,14 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
 
     // Multiplicative model: bad template physically hides keywords from ATS parsers.
     const effectiveKeywordScore = Math.round(keywordMatchPct * (formatScore / 100));
-    const projectedWithFix = Math.min(95, Math.round(keywordMatchPct * 0.95 + 10)); // Heuristic projection
-    
     // Final score calculation
     let finalScore = hasJD
         ? Math.round(effectiveKeywordScore * 0.40 + structureScore * 0.20 + impactScore * 0.20 + formatScore * 0.20)
         : Math.round(formatScore * 0.40 + structureScore * 0.30 + impactScore * 0.30);
+
+    const projectedWithFix = hasJD 
+        ? Math.min(95, Math.round(keywordMatchPct * 0.95 + 10)) 
+        : Math.round(95); // If no JD, fix template → near perfect base score
 
     // CRITICAL PENALTIES: If core contact info is missing or template is broken, cap the score
     if (contactCheck.issues.length > 0) {
@@ -747,7 +749,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             formatBanner.innerHTML = `
                 <strong>⚠️ Template Compliance: ${formatScore}% — this is your #1 problem right now</strong><br>
                 Detected: <strong>${formatCheck.issues.map(i => i.label).join(' + ')}</strong>.<br><br>
-                ATS systems (Workday, Taleo, Greenhouse) parse PDFs as a straight left-to-right text stream.
+                ATS systems (Workday, Taleo, Greenhouse) parse documents as a straight left-to-right text stream.
                 Multi-column and table layouts cause <strong>text-layer scrambling</strong> — your content becomes "word salad" the parser cannot read.<br><br>
                 <strong>What this means for your score:</strong>
                 <ul style="margin:0.5rem 0 0.5rem 1.4rem; padding:0; list-style:disc;">
@@ -961,7 +963,8 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     // 6. Overall Score Guidance — template-aware so low scores from format penalty aren't misleading
     if (criticalFormatIssues.length > 0) {
         // Content is strong but template is hiding it — don't say "needs improvement" about the content
-        tips.push(`<strong>📋 Summary:</strong> Your content scores well (<strong>${keywordMatchPct}% keyword match</strong>). The low overall score (<strong>${finalScore}%</strong>) is driven almost entirely by your template — not a content problem. Fix the template first, then fine-tune keywords.`);
+        const contentStatus = hasJD ? `Your content scores well (<strong>${keywordMatchPct}% keyword match</strong>). ` : "";
+        tips.push(`<strong>📋 Summary:</strong> ${contentStatus}The low overall score (<strong>${finalScore}%</strong>) is driven almost entirely by your template — not a content problem. Fix the template first, then fine-tune keywords.`);
     } else if (finalScore >= 80) {
         tips.push(`<strong>🎉 Excellent Score!</strong> Your resume is well-optimized for ATS systems. Make the suggested tweaks above to reach 90%+.`);
     } else if (finalScore >= 60) {
@@ -1097,7 +1100,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     // Keyword Match (Conditional based on JD)
     const kwLabel = res.hasJD ? "KEYWORD MATCH" : "KEYWORD MATCH (BASE)";
     const kwExpl = res.hasJD ? 
-        `Score: ${res.keywordMatchPct}%. Effective (after template penalty): ${res.effectiveKeywordScore}%. ${res.found.length} skills matched out of ${res.found.length + Math.min(res.missing.length, 25)} key terms found in job description.` :
+        `Score: ${res.keywordMatchPct}%. Effective (after template penalty): ${res.effectiveKeywordScore}%. ${res.found.length} skills matched out of ${res.keywordMatchPct === 100 ? res.found.length : (res.found.length + Math.min(res.missing.length, 25))} key terms identified in job description.` :
         "No job description provided for matching. This score is currently set to 0. Paste a JD for a full keyword analysis.";
 
     y = drawMetricCard(
