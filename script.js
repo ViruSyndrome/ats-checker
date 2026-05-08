@@ -1219,7 +1219,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
         doc.text(splitMissing, 20, actionY);
     }
 
-    
+    const topActions = [];
     if (res.formatCheck && res.formatCheck.issues.filter(i => i.severity === 'critical').length > 0) {
         topActions.push(`#1 CRITICAL - Fix Template: Switch to a single-column ATS-safe layout. This alone will raise your score from ${res.finalScore}% to ~${res.projectedWithFix}%. Use Google Docs "Swiss/Serif", Word "ATS resume" template, or resume.io (ATS-friendly filter).`);
     }
