@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
+    <script>
+      Sentry.onLoad(function() {
+        Sentry.init({
+          tracesSampleRate: 1.0,
+          replaysSessionSampleRate: 0.1,
+          replaysOnErrorSampleRate: 1.0,
+        });
+      });
+    </script>
     <title>Free ATS Resume Checker | Get ATS Ready | No Signup, 100% Private</title>
     <meta name="description" content="Free ATS resume checker — instantly score your resume against any job description. No signup. 100% private, processed in your browser. Get ATS ready in seconds.">
     <meta name="google-site-verification" content="c4WdlWUstVdmgNA2ymHt14Vy8k2QQiKPh4MHsW_J_7Y" />
