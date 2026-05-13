@@ -151,7 +151,8 @@ async function handleFile(file) {
         }
     } catch (error) {
         console.error('Error processing file:', error);
-        fileNameDisplay.textContent = "Error: File processing failed. Please try again.";
+        const errorMsg = error.message ? `: ${error.message}` : '';
+        fileNameDisplay.textContent = `Error: File processing failed${errorMsg}. Please try again.`;
         fileNameDisplay.style.color = 'var(--danger)';
         resumeText = "";
     }
@@ -209,7 +210,7 @@ async function readPdf(file) {
         // This is critical for bullet detection — joined text has no newlines otherwise
         const itemsByY = {};
         for (const item of content.items) {
-            if (!item.str.trim()) continue;
+            if (!item || !item.str || !item.str.trim() || !item.transform) continue;
             const y = Math.round(item.transform[5] / 4) * 4; // cluster within 4pt
             if (!itemsByY[y]) itemsByY[y] = [];
             itemsByY[y].push({ x: item.transform[4], str: item.str });
