@@ -170,15 +170,21 @@ async function readPdf(file) {
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
 
-        // Collect X positions to detect multi-column layout
-        const xPositions = content.items.map(item => Math.round(item.transform[4]));
-        const uniqueXClusters = new Set(xPositions.filter(x => x > 0));
-
-        // If many distinct X positions > 4 distinct left-margins, likely multi-column or table
-        const leftMargins = xPositions.filter(x => x < 100); // items starting near the left edge
-        const midPageItems = xPositions.filter(x => x > 200 && x < 400); // items in the middle of page
-        
-        if (midPageItems.length > 10 && i === 1) {
+        // ── Multi-column detection: look for TWO distinct left-margin clusters ──
+        // A genuine 2-col layout has two groups of text items starting at very different X origins.
+        // Single-column resumes (even wide ones) have ONE dominant left margin.
+        const leftStarts = xPositions.filter(x => x >= 20 && x <= 350); // plausible left-edge starts
+        const buckets = {};
+        leftStarts.forEach(x => {
+            const bucket = Math.round(x / 30) * 30; // 30px clusters
+            buckets[bucket] = (buckets[bucket] || 0) + 1;
+        });
+        const significantCols = Object.values(buckets).filter(count => count >= 8); // ≥8 lines starting there
+        // True multi-column: 2+ distinct left-margin clusters each with substantial content
+        // AND the gap between them is at least 120px (rules out minor indentation variation)
+        const bucketKeys = Object.keys(buckets).map(Number).filter(k => buckets[k] >= 8).sort((a,b) => a-b);
+        const hasWideGap = bucketKeys.length >= 2 && (bucketKeys[bucketKeys.length-1] - bucketKeys[0]) >= 120;
+        if (significantCols.length >= 2 && hasWideGap && i === 1) {
             layoutWarnings.push('multi-column');
         }
 
