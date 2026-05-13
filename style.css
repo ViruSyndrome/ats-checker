@@ -99,8 +99,15 @@ header h1 {
 .header-top-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 1rem;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .header-top-row {
+        justify-content: space-between;
+    }
 }
 
 /* Hamburger button */
