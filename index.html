@@ -76,7 +76,7 @@
 
     <div class="container">
         <header>
-            <div class="header-brand">
+            <div class="header-top-row">
                 <a href="index.html" class="logo-link">
                     <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
@@ -88,8 +88,11 @@
                     </svg>
                     <span class="logo-text">GetATS<span class="logo-accent">Ready</span></span>
                 </a>
+                <button class="hamburger" id="atsHamburger" aria-label="Toggle navigation" onclick="document.getElementById('atsNavLinks').classList.toggle('open');this.classList.toggle('open')">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
-            <nav class="main-nav">
+            <nav class="main-nav" id="atsNavLinks">
                 <a href="index.html" class="active">Home</a>
                 <a href="about.html">About Us</a>
                 <a href="contact.html">Contact Us</a>
@@ -102,16 +105,7 @@
             </div>
         </header>
 
-        <!-- Ad Zone: Top Banner (Commented out temporarily to remove blank space)
-        <div class="ad-zone ad-top">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-2959862133855422"
-                 data-ad-slot="XXXXXXXXXX"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-        </div>
-        -->
+
 
         <main>
             <div class="tool-grid">
@@ -240,12 +234,15 @@
                 </div>
             </div>
 
-            <!-- Ad Zone: In-Content (336x280) -->
-            <div class="ad-zone ad-content">
+            <!-- Ad Zone: In-Content — Auto Ads (Google places optimally) -->
+            <div class="ad-zone ad-content" aria-label="Advertisement">
                 <ins class="adsbygoogle"
-                     style="display:inline-block;width:336px;height:280px"
+                     style="display:block;text-align:center;"
+                     data-ad-layout="in-article"
+                     data-ad-format="fluid"
                      data-ad-client="ca-pub-2959862133855422"
-                     data-ad-slot="XXXXXXXXXX"></ins>
+                     data-ad-slot="auto"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
 
             <!-- FAQ Section for SEO -->
@@ -303,14 +300,27 @@
                 </div>
             </div>
 
-            <!-- Ad Zone: Bottom (728x90) -->
-            <div class="ad-zone ad-bottom">
+            <!-- Contribute / Support Banner -->
+            <div class="contribute-banner">
+                <div class="contribute-inner">
+                    <span class="contribute-icon">☕</span>
+                    <div>
+                        <div class="contribute-title">This tool is free — and always will be</div>
+                        <div class="contribute-sub">If it helped you land an interview, consider buying me a coffee. It keeps the servers running and the tool improving.</div>
+                    </div>
+                    <a href="contribute.html" class="contribute-btn">Support the Project</a>
+                </div>
+            </div>
+
+            <!-- Ad Zone: Below results — Auto fluid ad -->
+            <div class="ad-zone ad-bottom" aria-label="Advertisement">
                 <ins class="adsbygoogle"
                      style="display:block"
-                     data-ad-client="ca-pub-2959862133855422"
-                     data-ad-slot="XXXXXXXXXX"
                      data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
+                     data-full-width-responsive="true"
+                     data-ad-client="ca-pub-2959862133855422"
+                     data-ad-slot="auto"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
         </main>
 
