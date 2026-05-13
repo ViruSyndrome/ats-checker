@@ -175,20 +175,28 @@ async function readPdf(file) {
         const xPositions = content.items.map(item => Math.round(item.transform[4]));
 
         // ── Multi-column detection: look for TWO distinct left-margin clusters ──
-        // A genuine 2-col layout has two groups of text items starting at very different X origins.
-        // Single-column resumes (even wide ones) have ONE dominant left margin.
-        const leftStarts = xPositions.filter(x => x >= 20 && x <= 350); // plausible left-edge starts
-        const buckets = {};
-        leftStarts.forEach(x => {
-            const bucket = Math.round(x / 30) * 30; // 30px clusters
-            buckets[bucket] = (buckets[bucket] || 0) + 1;
+        // We count how many DISTINCT lines (Y-coordinates) start at each X-position.
+        // This prevents headers or multi-fragment lines from being seen as "columns".
+        const buckets = {}; // bucket -> Set of Y-coordinates
+        content.items.forEach(item => {
+            if (!item.str.trim() || !item.transform) return;
+            const x = Math.round(item.transform[4]);
+            const y = Math.round(item.transform[5]);
+            if (x >= 20 && x <= 350) {
+                const xBucket = Math.round(x / 30) * 30;
+                if (!buckets[xBucket]) buckets[xBucket] = new Set();
+                buckets[xBucket].add(y);
+            }
         });
-        const significantCols = Object.values(buckets).filter(count => count >= 8); // ≥8 lines starting there
-        // True multi-column: 2+ distinct left-margin clusters each with substantial content
-        // AND the gap between them is at least 120px (rules out minor indentation variation)
-        const bucketKeys = Object.keys(buckets).map(Number).filter(k => buckets[k] >= 8).sort((a,b) => a-b);
-        const hasWideGap = bucketKeys.length >= 2 && (bucketKeys[bucketKeys.length-1] - bucketKeys[0]) >= 120;
-        if (significantCols.length >= 2 && hasWideGap && i === 1) {
+
+        // A column is "significant" if it has at least 8 distinct lines starting at that X-margin
+        const bucketKeys = Object.keys(buckets)
+            .map(Number)
+            .filter(k => buckets[k].size >= 8)
+            .sort((a, b) => a - b);
+
+        const hasWideGap = bucketKeys.length >= 2 && (bucketKeys[bucketKeys.length - 1] - bucketKeys[0]) >= 120;
+        if (bucketKeys.length >= 2 && hasWideGap && i === 1) {
             layoutWarnings.push('multi-column');
         }
 
