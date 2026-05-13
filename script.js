@@ -170,6 +170,9 @@ async function readPdf(file) {
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
 
+        // Collect X positions to detect multi-column layout
+        const xPositions = content.items.map(item => Math.round(item.transform[4]));
+
         // ── Multi-column detection: look for TWO distinct left-margin clusters ──
         // A genuine 2-col layout has two groups of text items starting at very different X origins.
         // Single-column resumes (even wide ones) have ONE dominant left margin.
