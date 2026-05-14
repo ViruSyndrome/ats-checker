@@ -10,6 +10,13 @@ const resultsSection = document.getElementById('results');
 
 let resumeText = "";
 
+// Analytics Tracking Helper
+function trackEvent(eventName, params = {}) {
+    if (typeof gtag === 'function') {
+        gtag('event', eventName, params);
+    }
+}
+
 // Cookie Consent
 function acceptCookies() {
     localStorage.setItem('cookieConsent', 'true');
@@ -90,6 +97,7 @@ Nice to Have:
 
 // Try Example Button
 tryExampleBtn.addEventListener('click', () => {
+    trackEvent('try_example_resume');
     resumeText = EXAMPLE_RESUME;
     layoutWarnings = []; // plain text example — no layout issues
     document.getElementById('jobDescription').value = EXAMPLE_JD;
@@ -628,6 +636,10 @@ analyzeBtn.addEventListener('click', () => {
     }
 
     const hasJD = jdText.length > 50;
+
+    trackEvent('analyze_resume', {
+        'has_jd': hasJD ? 'yes' : 'no'
+    });
 
     // Show loading state
     const btnText = analyzeBtn.querySelector('.btn-text');
@@ -1452,6 +1464,7 @@ const debugBtn = document.getElementById("debugBtn");
 if (debugBtn) {
     debugBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        trackEvent('download_debug_log');
         const debugData = {
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent,
