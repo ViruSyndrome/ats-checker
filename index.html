@@ -243,7 +243,18 @@
                      data-ad-format="fluid"
                      data-ad-client="ca-pub-2959862133855422"
                      data-ad-slot="auto"></ins>
-                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                <script>
+                    (function() {
+                        var adPush = function() {
+                            if (document.querySelector('.ad-content').offsetWidth > 0) {
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            } else {
+                                setTimeout(adPush, 500);
+                            }
+                        };
+                        adPush();
+                    })();
+                </script>
             </div>
 
             <!-- FAQ Section for SEO -->
