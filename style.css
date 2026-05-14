@@ -789,6 +789,28 @@ textarea:focus {
 
     .container { padding: 1rem; }
     header { margin-bottom: 2rem; }
+
+    /* Mobile specific tool refinements */
+    textarea#jobDescription {
+        height: 150px; /* Reduce JD height on mobile to bring upload into view */
+    }
+    
+    .upload-area {
+        height: 250px;
+    }
+
+    textarea#rawTextPreview {
+        height: 180px;
+        font-size: 0.9rem; /* Slightly larger for mobile readability */
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .stat-header {
+        font-size: 0.82rem;
+    }
 }
 
 /* Loading State */
