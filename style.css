@@ -843,3 +843,10 @@ textarea:focus {
         transform: translateY(0);
     }
 }
+
+/* Mobile Fixes */
+@media (max-width: 768px) {
+  .header-top-row { width: 100%; position: relative; justify-content: center; }
+  .hamburger { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+  .card { width: 100%; }
+}
