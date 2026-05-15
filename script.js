@@ -229,12 +229,29 @@ async function readPdf(file) {
             if (!item || !item.str || !item.str.trim() || !item.transform) continue;
             const y = Math.round(item.transform[5] / 4) * 4; // cluster within 4pt
             if (!itemsByY[y]) itemsByY[y] = [];
-            itemsByY[y].push({ x: item.transform[4], str: item.str });
+            itemsByY[y].push({ x: item.transform[4], str: item.str, width: item.width });
         }
         const sortedLines = Object.keys(itemsByY)
             .map(Number)
             .sort((a, b) => b - a) // PDF Y is bottom-up, descending = top to bottom
-            .map(y => itemsByY[y].sort((a, b) => a.x - b.x).map(i => i.str).join(' '));
+            .map(y => {
+                const items = itemsByY[y].sort((a, b) => a.x - b.x);
+                if (items.length === 0) return '';
+                let lineStr = items[0].str;
+                for (let j = 1; j < items.length; j++) {
+                    const prev = items[j - 1];
+                    const curr = items[j];
+                    const gap = curr.x - (prev.x + prev.width);
+                    // If gap is greater than ~3pt, assume it's a space or a new column
+                    if (gap > 3) {
+                        lineStr += ' ' + curr.str;
+                    } else {
+                        // Words were split unnaturally, merge them directly without a space
+                        lineStr += curr.str;
+                    }
+                }
+                return lineStr;
+            });
         text += sortedLines.join('\n') + '\n';
     }
 
