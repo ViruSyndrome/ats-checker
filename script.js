@@ -353,7 +353,7 @@ function getKeywords(text, isJD = false) {
 
     const words = processingText.toLowerCase()
         .replace(/([a-z])([A-Z])/g, '$1 $2') 
-        .replace(/[^\w\s+#]/g, ' ') 
+        .replace(/[^\w\s+#+]/g, ' ') 
         .split(/\s+/)
         .map(w => w.trim())
         .filter(w => w.length > 2 || /^(ai|js|ip|5g|ui|ux|c#|xml)$/.test(w));
@@ -411,9 +411,13 @@ function getKeywords(text, isJD = false) {
         'think', 'edits', 'creation', 'expand', 'assurance', 'additional', 'onsite',
         'what', 'where', 'when', 'how', 'why', 'familiarity', 'qualifications', 'required', 'preferred', 'across', 'through', 'from', 'your', 'will', 'must', 'should',
         'etc', 'prem', 'review', 'templates', 'initiatives', 'standard', 'standards', 'timelines', 'plus', 'exposure', 'etc', 'etc.',
+        'base', 'customer', 'notes', 'appropriate', 'beyond', 'traditional', 'videos', 'demos', 'tours', 'other', 'passion', 'their', 'proofreading', 'generation', 'scripting', 
+        'bachelor', 'fields', '15+', 'capacity', 'understanding', 'methodologies', 'editing', 'prioritize', 'effectively', 'tight', 'client', 'aids', 'online', 'educational', 
+        'techniques', 'continuous', 'enablement', 'modern', 'proactively', 'contribution', 'improvement', 'practices', 'knowledge', 'understanding', 'lifecycle', 'methods',
+        'method', 'methodologies', 'tools', 'technologies', 'technology', 'skills', 'experience', 'years', 'month', 'months', 'degree', 'degrees', 'education',
         // HR soft-skills that read as keywords but aren't searchable skills
         'collaboration', 'collaborative', 'communication', 'communicating', 'partnership', 'partnering',
-        'cross', 'functional', 'cross-functional', 'attention', 'detail',
+        'cross', 'functional', 'cross-functional', 'attention', 'detail', 'leadership', 'collaboration',
         // Company names — never resume skills
         'ibm', 'microsoft', 'google', 'amazon', 'oracle', 'sap', 'meta', 'apple', 'hewlett', 'packard',
         'hpe', 'salesforce', 'cisco', 'synopsys', 'vmware', 'nokia', 'dell', 'reltio',
