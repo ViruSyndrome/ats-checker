@@ -139,8 +139,8 @@
             </div>
 
             <div id="results" class="results-section">
-                <!-- 1. FORMAT WARNING BANNER -->
-                <div id="formatWarningBanner" style="display:none; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.4); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;"></div>
+                <!-- 1. CRITICAL ALERT ZONE (High-Intensity warnings like Template issues) -->
+                <div id="criticalAlert" style="display:none; margin-bottom: 2rem;"></div>
 
                 <!-- 2. SCORE + BREAKDOWN -->
                 <div class="results-grid">
@@ -219,29 +219,30 @@
                     </div>
                 </div>
 
-                <!-- 5. TECHNICAL DETAILS -->
-                <details style="margin-top: 1rem;">
-                    <summary style="cursor:pointer; padding: 1rem 1.5rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); user-select: none;">
-                        🔍 Technical Details &nbsp;<span style="font-size:0.75rem;font-weight:400;">(structure analysis, impact metrics, raw ATS text)</span>
-                    </summary>
-                    <div style="padding-top: 1rem;">
-                        <div class="tool-grid" id="detailsSection">
-                            <div class="card">
-                                <div class="card-title">Structure & Parsability — Detected Sections</div>
-                                <div id="structureDetails"></div>
-                            </div>
-                            <div class="card">
-                                <div class="card-title">Impact & Metrics — Bullet Analysis</div>
-                                <div id="impactDetails"></div>
-                            </div>
+                <!-- 5. TECHNICAL DETAILS — Always visible now -->
+                <div class="technical-breakdown" style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 1.1rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        Technical Breakdown & Raw Analysis
+                    </h3>
+                    
+                    <div class="tool-grid" id="detailsSection">
+                        <div class="card">
+                            <div class="card-title">Structure & Parsability — Detected Sections</div>
+                            <div id="structureDetails"></div>
                         </div>
-                        <div class="card" style="margin-top: 1rem;">
-                            <div class="card-title">How ATS Reads Your Resume (Raw Extracted Text)</div>
-                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">This is exactly what an ATS parser extracts from your file. Scrambled or merged words = your template is failing the ATS screen automatically.</p>
-                            <textarea id="rawTextPreview" readonly style="width: 100%; height: 200px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
+                        <div class="card">
+                            <div class="card-title">Impact & Metrics — Bullet Analysis</div>
+                            <div id="impactDetails"></div>
                         </div>
                     </div>
-                </details>
+                    
+                    <div class="card" style="margin-top: 1rem;">
+                        <div class="card-title">How ATS Reads Your Resume (Raw Extracted Text)</div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically.</p>
+                        <textarea id="rawTextPreview" readonly style="width: 100%; height: 250px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
+                    </div>
+                </div>
             </div>
 
             <!-- Ad Zone: In-Content -->

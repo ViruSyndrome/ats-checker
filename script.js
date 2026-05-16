@@ -826,40 +826,52 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         finalScore = Math.min(finalScore, 50);
     }
 
-    // Format banner — explains the multiplicative impact when template issues are detected
-    const formatBanner = document.getElementById('formatWarningBanner');
-    if (formatBanner) {
+    // Critical Alert Zone — prominent warning for template issues
+    const criticalAlert = document.getElementById('criticalAlert');
+    if (criticalAlert) {
         if (criticalFormatIssues.length > 0) {
             const keywordText = hasJD ? 
-                `<li>Your resume has strong keyword content: <strong>${keywordMatchPct}%</strong></li>
-                 <li>But ATS will only find ~<strong>${effectiveKeywordScore}%</strong> of them (${keywordMatchPct}% × ${formatScore}% template compliance)</li>` :
+                `<li>Our engine detected strong keyword content: <strong>${keywordMatchPct}%</strong></li>
+                 <li>But enterprise ATS systems will likely only find <strong>${effectiveKeywordScore}%</strong> of them due to your template.</li>` :
                 `<li>Paste a job description above to see your predicted keyword match score.</li>`;
             
             const jumpText = hasJD ? 
                 `<li>Fix your template → your score jumps from <strong>${finalScore}% → ~${projectedWithFix}%</strong></li>` :
                 `<li>Fixing your template is the fastest way to improve your visibility to recruiters.</li>`;
 
-            formatBanner.innerHTML = `
-                <strong>⚠️ Template Compliance: ${formatScore}% — this is your #1 problem right now</strong><br>
-                Detected: <strong>${formatCheck.issues.map(i => i.label).join(' + ')}</strong>.<br><br>
-                ATS systems (Workday, Taleo, Greenhouse) parse documents as a straight left-to-right text stream.
-                Multi-column and table layouts cause <strong>text-layer scrambling</strong> — your content becomes "word salad" the parser cannot read.<br><br>
-                <strong>What this means for your score:</strong>
-                <ul style="margin:0.5rem 0 0.5rem 1.4rem; padding:0; list-style:disc;">
-                  ${keywordText}
-                  ${jumpText}
-                </ul>
-                <strong>Free fix:</strong> Switch to a single-column template —
-                <em>Google Docs: File → Templates → <strong>Swiss</strong> or <strong>Serif</strong></em>,
-                <em>Word: File → New → search "ATS resume"</em>.
-                Re-upload here to confirm your improved score.`;
-
-            formatBanner.style.display = 'block';
+            criticalAlert.innerHTML = `
+                <div class="card critical-alert-card">
+                    <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                        <div class="alert-icon">⚠️</div>
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0 0 0.5rem 0; color: var(--danger); font-size: 1.1rem;">Template Compliance: ${formatScore}% — Action Required</h3>
+                            <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1rem;">
+                                Detected: <strong>${formatCheck.issues.map(i => i.label).join(' + ')}</strong>.<br><br>
+                                Even if the <strong>Raw Text Preview</strong> below looks readable, older ATS systems (Workday, Taleo) often "mash" columns together, creating unreadable word salad. We've penalized your score to reflect this high risk of automated rejection.
+                            </p>
+                            <div style="background: rgba(239, 68, 68, 0.05); border-radius: 8px; padding: 1rem; border: 1px solid rgba(239, 68, 68, 0.1);">
+                                <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-muted);">
+                                    ${keywordText}
+                                    ${jumpText}
+                                </ul>
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.85rem; font-weight: 600;">
+                                Fix: Use a single-column template from Google Docs (Swiss/Serif) or Word (search "ATS resume").
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
+            criticalAlert.style.display = 'block';
         } else if (formatCheck.issues.length > 0) {
-            formatBanner.innerHTML = `<strong>ℹ️ Minor Format Note:</strong> ${formatCheck.issues.map(i => `• ${i.label}`).join('<br>')}`;
-            formatBanner.style.display = 'block';
+            criticalAlert.innerHTML = `
+                <div class="card" style="border-left: 4px solid var(--warning); padding: 1rem 1.5rem;">
+                    <p style="margin: 0; font-size: 0.88rem; color: var(--text-muted);">
+                        <strong>ℹ️ Minor Format Note:</strong> ${formatCheck.issues.map(i => i.label).join(' • ')}
+                    </p>
+                </div>`;
+            criticalAlert.style.display = 'block';
         } else {
-            formatBanner.style.display = 'none';
+            criticalAlert.style.display = 'none';
         }
     }
 
