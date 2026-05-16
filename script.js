@@ -1037,17 +1037,26 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     }
 
     // 1. Keyword Gap Strategy with SPECIFIC EXAMPLES
-    if (keywordMatchPct < 85 && missing.length > 0) {
-        const topMissing = missing.slice(0, 5);
-        const examples = topMissing.slice(0, 3).map(kw => {
-            if (kw.includes('aws') || kw.includes('cloud') || kw.includes('azure')) {
+        const filteredMissing = missing.filter(kw => kw.length > 3 && !noiseWords.has(kw));
+        const topMissing = filteredMissing.slice(0, 5);
+        
+        const templates = [
+            (kw) => `<em>"Optimized ${kw} workflows, resulting in a 20% increase in team productivity."</em>`,
+            (kw) => `<em>"Led the transition to ${kw}-based systems, improving scalability for 50k+ users."</em>`,
+            (kw) => `<em>"Implemented advanced ${kw} strategies that reduced manual processing time by 15 hours/week."</em>`,
+            (kw) => `<em>"Directed cross-functional initiatives involving ${kw} to deliver project 3 weeks early."</em>`
+        ];
+
+        const examples = topMissing.slice(0, 3).map((kw, idx) => {
+            const lowerKw = kw.toLowerCase();
+            if (lowerKw.includes('aws') || lowerKw.includes('cloud') || lowerKw.includes('azure')) {
                 return `<em>"Deployed microservices on ${kw.toUpperCase()}, reducing infrastructure costs by 30%"</em>`;
-            } else if (kw.includes('data') || kw.includes('analytics')) {
+            } else if (lowerKw.includes('data') || lowerKw.includes('analytics')) {
                 return `<em>"Conducted ${kw} to identify trends, resulting in 25% efficiency improvement"</em>`;
-            } else if (kw.includes('team') || kw.includes('lead')) {
+            } else if (lowerKw.includes('team') || lowerKw.includes('lead')) {
                 return `<em>"Led cross-functional ${kw} of 8 members to deliver project 2 weeks ahead of schedule"</em>`;
             } else {
-                return `<em>"[Add a specific achievement that demonstrates your ${kw} experience]"</em>`;
+                return templates[idx % templates.length](kw);
             }
         }).join('<br>        ');
         
