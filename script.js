@@ -1037,6 +1037,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     }
 
     // 1. Keyword Gap Strategy with SPECIFIC EXAMPLES
+    if (keywordMatchPct < 85 && missing.length > 0) {
         const filteredMissing = missing.filter(kw => kw.length > 3 && !noiseWords.has(kw));
         const topMissing = filteredMissing.slice(0, 5);
         
