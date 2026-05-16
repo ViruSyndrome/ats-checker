@@ -40,10 +40,10 @@
     <meta name="twitter:description" content="Instantly score your resume against any job description. Free, no signup, 100% private.">
     <meta name="twitter:image" content="https://www.getatsready.com/og-image.png" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2" />
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- SEO Schema: Jobscan Level -->
     <script type="application/ld+json">
     {
@@ -106,8 +106,6 @@
             </div>
         </header>
 
-
-
         <main>
             <div class="tool-grid">
                 <!-- Left: Job Description -->
@@ -141,23 +139,24 @@
             </div>
 
             <div id="results" class="results-section">
-
-                <!-- Template/Format Warning Banner (shown only when PDF has layout issues) -->
+                <!-- 1. FORMAT WARNING BANNER -->
                 <div id="formatWarningBanner" style="display:none; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.4); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;"></div>
 
+                <!-- 2. SCORE + BREAKDOWN -->
                 <div class="results-grid">
                     <div class="score-card">
                         <div class="score-circle" id="scoreValue">0</div>
                         <h2>ATS Compatibility Score</h2>
-                        <p id="scoreText" style="font-size: 0.82rem; color: var(--text-muted);">ATS compatibility: keyword match, template compliance, structure, and impact — based on how real ATS systems score resumes.</p>
-                        <button id="downloadReport" class="secondary-btn" style="margin-top: 1rem; width: 100%;">Download Professional Report</button>
+                        <div id="scoreVerdictBadge" style="display:inline-block; margin: 0.4rem 0 0.6rem; padding: 4px 16px; border-radius: 99px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; background: rgba(99,102,241,0.15); color: var(--accent);">Analyzing...</div>
+                        <p id="scoreText" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.3rem;">Keyword match x template compliance x structure x impact — mirroring how enterprise ATS systems rank candidates.</p>
+                        <button id="downloadReport" class="secondary-btn" style="margin-top: 1rem; width: 100%;">&#8595; Download Full PDF Report</button>
                     </div>
 
                     <div class="stats-card">
                         <div class="stat-item">
                             <div class="stat-header">
                                 <span>Template Compliance
-                                    <span class="tooltip-icon">ℹ️
+                                    <span class="tooltip-icon">&#8505;&#65039;
                                         <span class="tooltip-text">Checks if your resume template can be correctly parsed by ATS software. Multi-column and table layouts cause "text-layer scrambling" — your content becomes unreadable word salad. This score is used as a multiplier on your keyword match: a 30% template score means ATS will only find ~30% of your keywords regardless of how good your content is.</span>
                                     </span>
                                 </span>
@@ -167,9 +166,9 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-header">
-                                <span>Structure & Parsability 
-                                    <span class="tooltip-icon">ℹ️
-                                        <span class="tooltip-text">Measures if your resume can be correctly parsed by ATS systems. Checks for standard sections like Experience, Education, Skills, and proper formatting. Low scores mean the ATS might misread your resume.</span>
+                                <span>Structure & Parsability
+                                    <span class="tooltip-icon">&#8505;&#65039;
+                                        <span class="tooltip-text">Weighted section check: Work Experience (30pts), Skills (25pts), Education (20pts), Summary (10pts), Contact (10pts), Projects (3pts), Certifications (2pts). Missing critical sections heavily penalises your score.</span>
                                     </span>
                                 </span>
                                 <span id="structurePct">0%</span>
@@ -178,8 +177,8 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-header">
-                                <span>Keyword Match 
-                                    <span class="tooltip-icon">ℹ️
+                                <span>Keyword Match
+                                    <span class="tooltip-icon">&#8505;&#65039;
                                         <span class="tooltip-text">Percentage of job description keywords found in your resume. ATS systems scan for exact matches and synonyms. Higher match = better chance of passing automated screening. Aim for 75%+.</span>
                                     </span>
                                 </span>
@@ -189,9 +188,9 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-header">
-                                <span>Impact & Metrics 
-                                    <span class="tooltip-icon">ℹ️
-                                        <span class="tooltip-text">Measures quantifiable achievements using numbers, percentages, or dollar amounts. Example: "Increased sales by 35%" vs "Responsible for sales". ATS and recruiters prefer measurable impact.</span>
+                                <span>Impact & Metrics
+                                    <span class="tooltip-icon">&#8505;&#65039;
+                                        <span class="tooltip-text">Driven by the % of your bullet points that contain quantified results (numbers, %, $, team sizes). 80% of this score comes from bullet metrics; 20% from strong action verbs — mirroring what recruiters reward.</span>
                                     </span>
                                 </span>
                                 <span id="impactPct">0%</span>
@@ -201,41 +200,51 @@
                     </div>
                 </div>
 
-                <div class="tool-grid">
+                <!-- 3. PRIORITY ACTION PLAN -->
+                <div class="card" style="margin-top: 1.5rem; border-left: 3px solid var(--accent);">
+                    <div class="card-title">🎯 Your Priority Action Plan</div>
+                    <p style="color: var(--text-muted); font-size: 0.83rem; margin-bottom: 1rem;">Fixes are ranked by impact. Address #1 before working on anything else.</p>
+                    <ul id="tipsList"></ul>
+                </div>
+
+                <!-- 4. KEYWORDS: Missing then Found -->
+                <div class="tool-grid" style="margin-top: 1rem;">
                     <div class="card">
-                        <div class="card-title">Missing Keywords</div>
+                        <div class="card-title">❌ Missing Keywords <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;">Add these to pass ATS screening</span></div>
                         <div id="missingKeywords"></div>
                     </div>
                     <div class="card">
-                        <div class="card-title">Found Keywords</div>
+                        <div class="card-title">✅ Found Keywords <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;">Already matched in your resume</span></div>
                         <div id="foundKeywords"></div>
                     </div>
                 </div>
 
-                <div class="card" style="margin-top: 1rem;">
-                    <div class="card-title">How ATS Reads Your Resume (Raw Text)</div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">This is exactly what an ATS parser extracts from your file. If this looks like scrambled "word salad" with words mashed together out of order, you are failing the ATS screen automatically. This is almost always caused by multi-column or table-based templates.</p>
-                    <textarea id="rawTextPreview" readonly style="width: 100%; height: 200px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
-                </div>
-
-                <div class="tool-grid" id="detailsSection" style="margin-top: 1rem; display: none;">
-                    <div class="card">
-                        <div class="card-title">Structure &amp; Parsability — What Was Found</div>
-                        <div id="structureDetails"></div>
+                <!-- 5. TECHNICAL DETAILS -->
+                <details style="margin-top: 1rem;">
+                    <summary style="cursor:pointer; padding: 1rem 1.5rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); user-select: none;">
+                        🔍 Technical Details &nbsp;<span style="font-size:0.75rem;font-weight:400;">(structure analysis, impact metrics, raw ATS text)</span>
+                    </summary>
+                    <div style="padding-top: 1rem;">
+                        <div class="tool-grid" id="detailsSection">
+                            <div class="card">
+                                <div class="card-title">Structure & Parsability — Detected Sections</div>
+                                <div id="structureDetails"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">Impact & Metrics — Bullet Analysis</div>
+                                <div id="impactDetails"></div>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-top: 1rem;">
+                            <div class="card-title">How ATS Reads Your Resume (Raw Extracted Text)</div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">This is exactly what an ATS parser extracts from your file. Scrambled or merged words = your template is failing the ATS screen automatically.</p>
+                            <textarea id="rawTextPreview" readonly style="width: 100%; height: 200px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
+                        </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">Impact &amp; Metrics — What Was Found</div>
-                        <div id="impactDetails"></div>
-                    </div>
-                </div>
-
-                <div class="card" style="margin-top: 2rem;">
-                    <div class="card-title">Improvement Tips</div>
-                    <ul id="tipsList">                    </ul>
-                </div>
+                </details>
             </div>
 
-            <!-- Ad Zone: In-Content — Auto Ads (Google places optimally) -->
+            <!-- Ad Zone: In-Content -->
             <div class="ad-zone ad-content" aria-label="Advertisement">
                 <ins class="adsbygoogle"
                      style="display:block;text-align:center;"
@@ -274,6 +283,11 @@
                 <div class="faq-item">
                     <h3>What file formats are supported?</h3>
                     <p>We currently support PDF and DOCX (Microsoft Word) files. We recommend using PDF format as it preserves formatting better and is widely accepted by ATS systems.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Does the file name and size matter?</h3>
+                    <p>Yes. Many older ATS platforms (like Workday, Taleo, or Greenhouse) have strict limits. We recommend keeping your file under <strong>2MB</strong> and your filename under <strong>30 characters</strong>. Avoid special characters in the filename; use a simple <code>Firstname_Lastname_Resume.pdf</code> format to ensure universal compatibility.</p>
                 </div>
 
                 <div class="faq-item">
@@ -325,41 +339,41 @@
             </div>
 
             <section class="featured-guides" style="margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--glass-border);">
-            <div style="text-align: center; margin-bottom: 2.5rem;">
-                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Learn How to Beat the ATS</h2>
-                <p style="color: var(--text-muted);">Master the technology and keywords behind the modern recruitment filter.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                <a href="guides/how-ats-works.html" style="text-decoration: none; color: inherit;">
-                    <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
-                        <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">How ATS Works: The Complete Guide</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">Understand exactly how Workday, Taleo, and Greenhouse parse and score your resume.</p>
-                        <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
-                    </div>
-                </a>
+                <div style="text-align: center; margin-bottom: 2.5rem;">
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Learn How to Beat the ATS</h2>
+                    <p style="color: var(--text-muted);">Master the technology and keywords behind the modern recruitment filter.</p>
+                </div>
                 
-                <a href="guides/resume-keywords-mastery.html" style="text-decoration: none; color: inherit;">
-                    <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
-                        <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">Mastering Resume Keywords</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">Learn the difference between keyword stuffing and strategic semantic optimization.</p>
-                        <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
-                    </div>
-                </a>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                    <a href="guides/how-ats-works.html" style="text-decoration: none; color: inherit;">
+                        <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
+                            <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">How ATS Works: The Complete Guide</h3>
+                            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">Understand exactly how Workday, Taleo, and Greenhouse parse and score your resume.</p>
+                            <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
+                        </div>
+                    </a>
+                    
+                    <a href="guides/resume-keywords-mastery.html" style="text-decoration: none; color: inherit;">
+                        <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
+                            <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">Mastering Resume Keywords</h3>
+                            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">Learn the difference between keyword stuffing and strategic semantic optimization.</p>
+                            <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
+                        </div>
+                    </a>
+                    
+                    <a href="guides/pdf-vs-docx-resume.html" style="text-decoration: none; color: inherit;">
+                        <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
+                            <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">PDF vs. DOCX: Best Format</h3>
+                            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">The technical breakdown of file structures and which one guarantees your resume passes.</p>
+                            <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
+                        </div>
+                    </a>
+                </div>
                 
-                <a href="guides/pdf-vs-docx-resume.html" style="text-decoration: none; color: inherit;">
-                    <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
-                        <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">PDF vs. DOCX: Best Format</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">The technical breakdown of file structures and which one guarantees your resume passes.</p>
-                        <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
-                    </div>
-                </a>
-            </div>
-            
-            <div style="text-align: center; margin-top: 2rem;">
-                <a href="guides/index.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">View All Guides →</a>
-            </div>
-        </section>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="guides/index.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">View All Guides →</a>
+                </div>
+            </section>
         </main>
 
         <footer class="site-footer">
@@ -376,6 +390,6 @@
             </div>
         </footer>
     </div>
-    <script src="script.js?v=11"></script>
+    <script src="script.js?v=12"></script>
 </body>
 </html>

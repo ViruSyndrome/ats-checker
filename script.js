@@ -131,6 +131,12 @@ fileInput.addEventListener('change', (e) => {
 async function handleFile(file) {
     if (!file) return;
     
+    // Store metadata for analysis
+    fileMetadata = {
+        name: file.name,
+        size: file.size
+    };
+    
     // Show loading state
     fileNameDisplay.textContent = `Processing: ${file.name}...`;
     fileNameDisplay.style.color = 'var(--warning)';
@@ -168,6 +174,7 @@ async function handleFile(file) {
 
 let layoutWarnings = []; // Global, set during file read
 let isPdfUpload = false;    // True only when a PDF file was uploaded
+let fileMetadata = { name: "", size: 0 }; // Track for warnings
 
 async function readPdf(file) {
     const arrayBuffer = await file.arrayBuffer();
@@ -347,77 +354,65 @@ function getKeywords(text, isJD = false) {
     const protectedWords = new Set(['data', 'training', 'software', 'web', 'agile', 'scrum', 'code', 'writing', 'user', 'seo', 'api']);
 
     const noiseWords = new Set([
-        'about', 'the', 'and', 'for', 'with', 'from', 'that', 'this', 'your', 'their', 'work', 'experience', 'skills', 
-        'ability', 'responsible', 'knowledge', 'excellent', 'strong', 'management', 'development', 'team', 'project', 
-        'using', 'tools', 'years', 'within', 'across', 'including', 'various', 'based', 'provide', 'ensure', 'highly', 
-        'professional', 'must', 'have', 'can', 'are', 'our', 'looking', 'who', 'help', 'make', 'more', 'other', 'into', 
-        'way', 'people', 'live', 'needs', 'take', 'you', 'they', 'what', 'most', 'deeper', 'such', 'will', 'been', 'has',
-        'was', 'were', 'had', 'should', 'could', 'would', 'then', 'there', 'when', 'where', 'why', 'how', 'all', 'any',
-        'both', 'each', 'few', 'some', 'such', 'only', 'own', 'same', 'than', 'too', 'very', 'can', 'just', 'should', 'now',
-        'role', 'position', 'designed', 'expectation', 'primarily', 'office', 'who', 'we', 'are', 'help', 'turn', 'required',
-        'world', 'accelerate', 'opportunity', 'mark', 'delivering', 'engaging', 'industry', 'expert', 'truly', 'helpful',
-        'entire', 'journey', 'ideal', 'candidate', 'starter', 'get', 'done', 'also', 'follow', 'offer', 'plus', 'preferred',
-        'accountability', 'empathy', 'bias', 'mindset', 'active', 'listening', 'learning', 'procedures', 'administrative',
-        'controls', 'maintenance', 'mindset', 'empathy', 'growth', 'listening', 'learning', 'hpe', 'hewlett', 'packard', 
-        'enterprise', 'edge', 'company', 'applications', 'culture', 'here', 'opportunities', 'effective', 'leverage', 
-        'comparable', 'thinking', 'onsite', 'complex', 'understanding', 'through', 'customers', 'job', 'advancing',
-        'wherever', 'outcomes', 'today', 'finding', 'better', 'ways', 'varied', 'backgrounds', 'valued', 'succeed',
-        'flexibility', 'manage', 'bold', 'moves', 'together', 'force', 'good', 'stretch', 'grow', 'career', 'embrace',
-        'usa', 'europe', 'india', 'bengaluru', 'identify', 'improve', 'keeping', 'finger', 'pulse', 'robust', 'dive',
-        'find', 'process', 'closely', 'leverage', 'build', 'maintain', 'understand', 'requirements', 'identify',
-        'need', 'bring', 'fast', 'paced', 'preferably', 'concepts', 'projects', 'science', 'journalism', 'english',
-        'related', 'field', 'approaches', 'creation', 'expand', 'assurance', 'additional', 'business', 'policies', 
-        'creativity', 'inactive', 'bringing', 'join', 'joining', 'growing', 'millions', 'thousands', 'hundreds',
-        'years', 'months', 'weeks', 'days', 'large', 'small', 'big', 'new', 'old', 'long', 'short', 'high', 'low',
-        'best', 'great', 'many', 'much', 'every', 'several', 'different', 'become', 'give', 'show', 'part', 'over',
-        'year', 'back', 'however', 'well', 'may', 'come', 'these', 'during', 'between', 'after', 'before', 'while',
-        'since', 'until', 'without', 'still', 'even', 'much', 'large', 'small', 'another', 'being', 'able', 'see',
-        'its', 'himself', 'herself', 'themselves', 'whether', 'upon', 'against', 'under', 'above', 'below', 'off',
-        'out', 'down', 'per', 'around', 'near', 'far', 'often', 'always', 'never', 'sometimes', 'usually', 'become',
-        // Company names & context words that should never be resume keywords
-        'ibm', 'microsoft', 'google', 'amazon', 'amazon', 'oracle', 'sap', 'meta', 'apple', 'hewlett', 'packard',
-        // Noise from JD context phrases
-        'feel', 'feeling', 'felt', 'feels',
-        'head', 'heads',
-        'enabling', 'enable', 'enables', 'enabled',
-        'businesses',
-        'sensitive',
-        'deriving', 'derive', 'derived', 'derives',
-        'greater',
-        'careers',
-        'mission',
-        'critical', // standalone ("mission-critical" compound)
-        'seeking', 'seeks', 'seek',
-        'differentiators', 'differentiator',
-        'simplifying', 'simplifies', 'simplify',
-        'responsibilities',
-        'degree', 'degrees',
-        'increasing', 'increases', 'increase',
-        'organizations', 'organization',
-        'workers', // too generic when not "knowledge workers"
-        'confident',
-        'shift', 'left', // split from "shift-left" compound
-        'key', // too generic
-        'value', // too generic
-        'like', // from "differentiators like"
-        'execute', // too generic as verb
-        'executing',
-        'driven', // from "outcome-driven"
-        'drives', 'drive',
-        'mission', 'missions',
-        'aligns', 'aligned', // too vague
-        'new', // already above but ensure
-        'senior', 'junior', // job levels, not keywords
-        'including', // already above
-        'across',
-        // Generic JD soft-skill / filler words — appear in job descriptions but are NOT real ATS keywords
-        'proficiency', 'evolve', 'evolving', 'championing', 'champion', 'viewpoints', 'maturity',
-        'awareness', 'solid', 'actively', 'bonus', 'history', 'oriented', 'demonstrates',
-        'innovative', 'impactful', 'deeply', 'vision', 'goals', 'impacts', 'diverse', 'diversity',
-        'inclusive', 'approach', 'approaches', 'behaviors',
-        // Single words split from compound phrases ("object-oriented", "problem solving", "track record")
-        'ideas', 'deep', 'least', 'one', 'address', 'object', 'problem', 'solving', 'track', 'record',
-        'tooling', 'streamline', 'streamlining'
+        // Articles, prepositions, conjunctions
+        'the', 'and', 'for', 'with', 'from', 'that', 'this', 'into', 'over', 'per', 'off', 'out', 'down',
+        'its', 'our', 'you', 'they', 'who', 'we', 'are', 'was', 'were', 'has', 'had', 'been', 'will',
+        'can', 'may', 'all', 'any', 'both', 'each', 'few', 'some', 'such', 'only', 'own', 'same',
+        'than', 'too', 'very', 'just', 'now', 'then', 'when', 'where', 'why', 'how', 'also', 'back',
+        'more', 'most', 'much', 'many', 'even', 'well', 'still', 'since', 'while', 'after', 'before',
+        'above', 'below', 'near', 'far', 'upon', 'against', 'under', 'around', 'there', 'here', 'these',
+        'during', 'between', 'without', 'himself', 'herself', 'themselves', 'whether',
+        // Generic verbs too vague to be keywords
+        'have', 'make', 'take', 'give', 'show', 'find', 'come', 'get', 'see', 'look', 'use', 'help',
+        'need', 'want', 'keep', 'let', 'put', 'seem', 'ask', 'work', 'turn', 'move', 'live', 'feel',
+        'build', 'identify', 'improve', 'manage', 'provide', 'ensure', 'maintain', 'understand',
+        'leverage', 'enable', 'support', 'deliver', 'create', 'develop', 'bring', 'grow', 'follow',
+        'join', 'become', 'execute', 'drive', 'align', 'evolve', 'advance', 'include',
+        // Generic adjectives / adverbs that are NOT skills
+        'good', 'best', 'great', 'new', 'old', 'big', 'large', 'small', 'long', 'short', 'high', 'low',
+        'fast', 'slow', 'deep', 'bold', 'solid', 'robust', 'active', 'diverse', 'inclusive', 'critical',
+        'complex', 'effective', 'innovative', 'impactful', 'comparable', 'confident', 'different',
+        'several', 'various', 'another', 'every', 'often', 'always', 'never', 'usually', 'sometimes',
+        'today', 'highly', 'truly', 'deeply', 'closely', 'actively', 'primarily', 'primarily', 'directly',
+        // HR / JD boilerplate words — appear in every JD, carry zero differentiation
+        'experience', 'skills', 'ability', 'knowledge', 'responsible', 'excellent', 'strong', 'required',
+        'requirements', 'preferred', 'preferably', 'familiarity', 'openness', 'interest', 'similar',
+        'proven', 'demonstrated', 'commitment', 'attention', 'detail', 'quality', 'learn', 'learning',
+        'think', 'thinking', 'adaptable', 'flexible', 'quick', 'quickly', 'ability', 'able', 'being',
+        'areas', 'area', 'sets', 'surfaces', 'feature', 'planning', 'solutions', 'feedback', 'processes',
+        'process', 'processes', 'effectiveness', 'automation', 'needed', 'needed', 'similar', 'approach',
+        'approaches', 'outcomes', 'impact', 'impacts', 'results', 'goals', 'vision', 'mission', 'missions',
+        'responsibilities', 'opportunity', 'opportunities', 'candidate', 'candidates', 'ideal', 'position',
+        'role', 'roles', 'team', 'teams', 'project', 'projects', 'management', 'development', 'tools',
+        'using', 'within', 'across', 'including', 'based', 'related', 'field', 'concept', 'concepts',
+        'people', 'ways', 'way', 'needs', 'part', 'year', 'years', 'month', 'months', 'week', 'weeks',
+        'day', 'days', 'finding', 'joining', 'growing', 'bringing', 'advancing', 'accelerate', 'industry',
+        'world', 'business', 'businesses', 'company', 'enterprise', 'organization', 'organizations',
+        'culture', 'mindset', 'empathy', 'bias', 'listening', 'accountability', 'creativity', 'behaviors',
+        'diversity', 'maturity', 'awareness', 'viewpoints', 'behaviors', 'proficiency', 'standards',
+        'models', 'model', 'systems', 'system', 'samples', 'sample', 'simple', 'simply', 'guide', 'done',
+        'get', 'started', 'starter', 'entire', 'journey', 'mark', 'engaging', 'helpful', 'expert',
+        'degree', 'degrees', 'science', 'journalism', 'english', 'field', 'assurance', 'additional',
+        'policies', 'controls', 'administrative', 'procedures', 'maintenance', 'history', 'oriented',
+        'demonstrates', 'demonstrates', 'strategy', 'strategic', 'execute', 'executing', 'driven',
+        'drives', 'aligns', 'aligned', 'differentiators', 'differentiator', 'simplifying', 'seeking',
+        'seek', 'seeks', 'head', 'heads', 'sensitive', 'deriving', 'derive', 'greater', 'careers',
+        'increasing', 'workers', 'confident', 'shift', 'left', 'key', 'value', 'like', 'ideas', 'least',
+        'one', 'address', 'object', 'problem', 'solving', 'track', 'record', 'tooling', 'streamline',
+        'proficiency', 'evolving', 'championing', 'champion', 'solid', 'bonus', 'inactive', 'comparable',
+        'think', 'edits', 'creation', 'expand', 'assurance', 'additional', 'onsite',
+        'what', 'where', 'when', 'how', 'why', 'familiarity', 'qualifications', 'required', 'preferred', 'across', 'through', 'from', 'your', 'will', 'must', 'should',
+        // HR soft-skills that read as keywords but aren't searchable skills
+        'collaboration', 'collaborative', 'communication', 'communicating', 'partnership', 'partnering',
+        'cross', 'functional', 'cross-functional', 'attention', 'detail',
+        // Company names — never resume skills
+        'ibm', 'microsoft', 'google', 'amazon', 'oracle', 'sap', 'meta', 'apple', 'hewlett', 'packard',
+        'hpe', 'salesforce', 'cisco', 'synopsys', 'vmware', 'nokia', 'dell', 'reltio',
+        // Size/quantity adjectives
+        'millions', 'thousands', 'hundreds', 'large', 'small', 'big', 'new', 'old', 'senior', 'junior',
+        // Split fragments from compound phrases
+        'not', 'individual', 'topics', 'topic', 'feel', 'feeling', 'felt', 'feels',
+        'enabling', 'enables', 'enabled', 'businesses', 'sensitive', 'deriving', 'derived', 'derives'
     ]);
 
     const frequencyMap = {};
@@ -553,36 +548,44 @@ function calculateStructureScore(text) {
 
 function getStructureDetails(text) {
     const lowerText = text.toLowerCase();
+    // Sections are weighted by how critical they are to ATS parsing.
+    // Critical: without these, the ATS cannot categorise the candidate at all.
+    // Major: strongly expected by most ATS and recruiters.
+    // Minor: beneficial but not universally required.
     const sectionGroups = [
-        { name: 'Work Experience', patterns: ['experience', 'work history', 'professional background', 'employment', 'career'] },
-        { name: 'Education', patterns: ['education', 'academic', 'university', 'degree'] },
-        { name: 'Skills', patterns: ['skills', 'competencies', 'technologies', 'expertise', 'specialization'] },
-        { name: 'Summary / Profile', patterns: ['summary', 'profile', 'objective', 'about me', 'professional profile'] },
-        { name: 'Contact Info', patterns: ['contact', 'phone', 'email', 'linkedin', 'address'] },
-        { name: 'Projects / Portfolio', patterns: ['projects', 'portfolio', 'key initiatives', 'selected works', 'publications'] },
-        { name: 'Certifications / Awards', patterns: ['certifications', 'awards', 'training', 'certification', 'license', 'credentials'] }
+        { name: 'Work Experience',        patterns: ['experience', 'work history', 'professional background', 'employment', 'career'], weight: 30 },
+        { name: 'Skills',                 patterns: ['skills', 'competencies', 'technologies', 'expertise', 'specialization'],        weight: 25 },
+        { name: 'Education',              patterns: ['education', 'academic', 'university', 'degree'],                                   weight: 20 },
+        { name: 'Summary / Profile',      patterns: ['summary', 'profile', 'objective', 'about me', 'professional profile'],           weight: 10 },
+        { name: 'Contact Info',           patterns: ['contact', 'phone', 'email', 'linkedin', 'address'],                              weight: 10 },
+        { name: 'Projects / Portfolio',   patterns: ['projects', 'portfolio', 'key initiatives', 'selected works', 'publications'],    weight: 3  },
+        { name: 'Certifications / Awards',patterns: ['certifications', 'awards', 'training', 'certification', 'license', 'credentials'], weight: 2 }
     ];
+    const totalWeight = sectionGroups.reduce((s, g) => s + g.weight, 0); // = 100
 
     const found = [];
     const missing = [];
+    let earnedWeight = 0;
 
     sectionGroups.forEach(group => {
         const detected = group.patterns.some(s => lowerText.includes(s));
-        // Also check contact info via regex if header not found
+        // Fallback: detect Contact Info via email/phone regex even if header label is absent
         if (!detected && group.name === 'Contact Info') {
             if (/\S+@\S+\.\S+/.test(lowerText) || /\d{7,}/.test(lowerText)) {
                 found.push(group.name + ' (detected via phone/email)');
+                earnedWeight += group.weight;
                 return;
             }
         }
         if (detected) {
             found.push(group.name);
+            earnedWeight += group.weight;
         } else {
             missing.push(group.name);
         }
     });
 
-    const score = Math.min(Math.round((found.length / sectionGroups.length) * 100), 100);
+    const score = Math.min(Math.round((earnedWeight / totalWeight) * 100), 100);
     return { score, found, missing };
 }
 
@@ -593,18 +596,38 @@ function calculateImpactScore(text) {
 function getImpactDetails(text) {
     const lowerText = text.toLowerCase();
     
-    // Detect numbers, percentages, dollar amounts, and data-driven phrases
-    const metrics = text.match(/\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+|reduced|increased|saved|growth|revenue|efficiency/gi);
-    const metricCount = metrics ? metrics.length : 0;
-    const metricExamples = metrics ? [...new Set(metrics)].slice(0, 5) : [];
+    // Detect numbers, percentages, dollar amounts — but exclude phone numbers and years
+    // Phone numbers: 7+ consecutive digits. Years: 4-digit 19xx/20xx. Zip codes: bare 5-digit.
+    const phonePattern = /(?:\+\d{7,}|\b\d{10,}\b)/g;
+    const yearPattern = /\b(19|20)\d{2}\b/g;
+    const cleanedText = text.replace(phonePattern, '').replace(yearPattern, '');
+
+    const metricPattern = /\b\d+%|\$[\d,]+|\d+[kKmMbB]\b|\+\d{1,3}%|\b\d{1,4}(?:\+)?\s*(users?|customers?|people|engineers?|writers?|teams?|products?|projects?|companies|countries|articles?|clients?)/gi;
+    const softMetricPattern = /\b(reduced|increased|saved|growth|revenue|efficiency)\b/gi;
+
+    const rawMetrics = cleanedText.match(metricPattern) || [];
+    const softMetrics = cleanedText.match(softMetricPattern) || [];
+    const metrics = [...rawMetrics, ...softMetrics];
+    const metricCount = metrics.length;
+    // Filter out phone-like sequences from the display examples
+    const metricExamples = [...new Set(rawMetrics)].filter(m => !/^\d{5,}$/.test(m.replace(/[^\d]/g, ''))).slice(0, 5);
 
     // Detect high-impact action verbs
     const words = lowerText.split(/\W+/);
     const foundVerbs = ANALYSIS_RULES.activeVerbs.filter(v => words.includes(v));
 
-    // Scoring: 15 pts per unique metric, 10 pts per unique active verb
-    let score = ([...new Set(metrics || [])].length * 15) + ([...new Set(foundVerbs)].length * 10);
-    
+    // Impact score is now driven PRIMARILY by bullet-level metrics percentage.
+    // We call getBulletMetricsPct() here to get the accurate per-bullet measurement.
+    // This aligns the displayed "Bullets with metrics" stat with the actual score.
+    const bulletData = getBulletMetricsPct(text);
+    const bulletPct = bulletData.pct; // 0-100
+
+    // Verb quality contributes a smaller boost (max 20 points)
+    const verbBonus = Math.min([...new Set(foundVerbs)].length * 3, 20);
+
+    // Composite: 80% bullet metrics + 20% verb bonus
+    const score = Math.round(bulletPct * 0.80 + verbBonus);
+
     return { 
         score: Math.min(score, 100), 
         metricCount, 
@@ -633,15 +656,37 @@ function getResumeHealth(text) {
 }
 
 function getBulletMetricsPct(text) {
-    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 20);
-    const bullets = lines.filter(line =>
-        /^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/.test(line) ||
-        (/^[A-Z]/.test(line) && line.length > 35 && line.length < 250 && !/^[A-Z\s]{3,}$/.test(line))
-    );
-    const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+|\d+x\b|\d+\s*(users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?)/i;
+    // Clean phone numbers and years first to avoid false positives in metric detection
+    const phonePattern = /(?:\+\d{7,}|\b\d{10,}\b)/g;
+    const yearPattern = /\b(19|20)\d{2}\b/g;
+    const cleanedText = text.replace(phonePattern, ' [PHONE] ').replace(yearPattern, ' [YEAR] ');
+
+    const lines = cleanedText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 20);
+    const bullets = lines.filter(line => {
+        // 1. Explicit bullet characters are always treated as bullets
+        if (/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/.test(line)) return true;
+        
+        // 2. Fallback heuristic: Starts with uppercase, reasonable length (>= 50 to avoid short wrapped fragments)
+        // Also ensure it is NOT an all-caps header and DOES NOT contain title indicators like " — " or " | "
+        const hasBulletEnd = /[.!?]$/.test(line);
+        const isLikelyBullet = /^[A-Z]/.test(line) && line.length >= 50 && line.length < 350 && line !== line.toUpperCase();
+        
+        // 3. Reject if it looks like a section header, job metadata, or title
+        const isMetadata = /[|—]/.test(line) || /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/i.test(line);
+        
+        return isLikelyBullet && !isMetadata && hasBulletEnd;
+    });
+    const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+%|\d+x\b|\d+\s*(users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|cycles?|platforms?|members?|roles?|sites?)/i;
     const withMetrics = bullets.filter(line => metricPattern.test(line));
+    const withoutMetrics = bullets.filter(line => !metricPattern.test(line));
     const total = bullets.length;
-    return { pct: total > 0 ? Math.round((withMetrics.length / total) * 100) : 0, withMetrics: withMetrics.length, total };
+    // Pick up to 2 of the weakest bullets (shortest = least detail = best "before" candidates)
+    const weakBulletSamples = withoutMetrics
+        .filter(b => b.length > 30 && b.length < 200)
+        .sort((a, b) => a.length - b.length)
+        .slice(0, 2)
+        .map(b => b.replace(/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]\s*/, '').trim());
+    return { pct: total > 0 ? Math.round((withMetrics.length / total) * 100) : 0, withMetrics: withMetrics.length, total, weakBulletSamples };
 }
 
 analyzeBtn.addEventListener('click', () => {
@@ -705,14 +750,15 @@ analyzeBtn.addEventListener('click', () => {
                 return false;
             };
 
-            // Semantic Matching & Intelligent Scoring
+            // Keyword matching: each JD keyword is scored by frequency (capped at 3 occurrences).
+            // TECH_BOOST removed: the 5x multiplier made scores unpredictable and opaque.
+            // Instead, all keywords are scored equally — the quality of match is what matters.
             Object.keys(jdFreq).forEach(jdKw => {
                 const jdWeight = Math.min(jdFreq[jdKw], 3);
-                const boostMultiplier = TECH_BOOST.has(jdKw) ? 5 : 1;
-                maxPossibleScore += jdWeight * 10 * boostMultiplier;
+                maxPossibleScore += jdWeight * 10;
                 if (checkMatch(jdKw, resumeFreq)) {
                     found.push(jdKw);
-                    keywordScore += jdWeight * 10 * boostMultiplier;
+                    keywordScore += jdWeight * 10;
                 } else {
                     missing.push(jdKw);
                 }
@@ -839,6 +885,24 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     document.getElementById('keywordPct').textContent = keywordMatchPct + '%';
     document.getElementById('impactBar').style.width = impactScore + '%';
     document.getElementById('impactPct').textContent = impactScore + '%';
+
+    // Verdict badge — contextual label under the score circle
+    const verdictBadge = document.getElementById('scoreVerdictBadge');
+    if (verdictBadge) {
+        let label, bg, color;
+        if (finalScore >= 80) {
+            label = '🏆 Excellent — ATS-Ready';    bg = 'rgba(52,211,153,0.15)'; color = 'var(--success)';
+        } else if (finalScore >= 65) {
+            label = '✅ Good — Minor Tweaks Needed';  bg = 'rgba(99,102,241,0.15)'; color = 'var(--accent)';
+        } else if (finalScore >= 45) {
+            label = '⚠️ Fair — Action Required';     bg = 'rgba(234,179,8,0.15)';  color = 'var(--warning)';
+        } else {
+            label = '🚨 Needs Work — High Risk';      bg = 'rgba(239,68,68,0.15)';  color = 'var(--danger)';
+        }
+        verdictBadge.textContent = label;
+        verdictBadge.style.background = bg;
+        verdictBadge.style.color = color;
+    }
     
     // Update Keywords UI
     if (hasJD) {
@@ -869,7 +933,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.6rem;">Checks for 7 standard resume sections. ATS systems need these headers to correctly categorize your information.</p>
             <div style="margin-bottom: 0.5rem;">${foundHTML}</div>
             ${structureResult.missing.length > 0 ? `<p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0 0.3rem;">Missing:</p><div>${missingHTML}</div>` : missingHTML}`;
-        document.getElementById('detailsSection').style.display = 'grid';
+        // detailsSection is now inside a <details> accordion — no display toggle needed
     }
 
     // Impact Details
@@ -897,38 +961,63 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     tipsList.innerHTML = "";
     const tips = [];
 
+    // -2. File Metadata (New Hardening)
+    if (fileMetadata.name.length > 30) {
+        tips.push({
+            type: 'warning',
+            html: `<strong>⚠️ Long Filename Detected (${fileMetadata.name.length} chars)</strong><br>
+            Your filename is quite long. Some Applicant Tracking Systems truncate filenames or throw errors during upload. 
+            <br><em>Recommendation: Use a simpler format like "Firstname_Lastname_Resume.pdf"</em>`
+        });
+    }
+    if (fileMetadata.size > 2 * 1024 * 1024) {
+        tips.push({
+            type: 'danger',
+            html: `<strong>🚨 File Size Alert (${(fileMetadata.size / (1024 * 1024)).toFixed(1)} MB)</strong><br>
+            Your file is over 2MB. Older ATS portals (like Workday or Taleo) often have strict file size limits and may reject your application automatically.`
+        });
+    }
+
     // -1. Contact Info Issues — HIGHEST PRIORITY: if recruiter can't reach you, nothing else matters
     if (contactCheck.issues.length > 0) {
-        tips.push(`<strong>🚨 Broken Contact Details — Fix Immediately</strong><br>
-        A recruiter found your resume but cannot reach you. These issues will cost you interviews:<br><br>
-        <ul style="margin:0.4rem 0 0 1.2rem; padding:0; list-style:disc;">
-          ${contactCheck.issues.map(i => `<li style="margin-bottom:6px">${i}</li>`).join('')}
-        </ul>`);
+        tips.push({
+            type: 'danger',
+            html: `<strong>🚨 Broken Contact Details — Fix Immediately</strong><br>
+            A recruiter found your resume but cannot reach you. These issues will cost you interviews:<br><br>
+            <ul style="margin:0.4rem 0 0 1.2rem; padding:0; list-style:disc;">
+              ${contactCheck.issues.map(i => `<li style="margin-bottom:6px">${i}</li>`).join('')}
+            </ul>`
+        });
     }
     if (contactCheck.warnings.length > 0) {
-        tips.push(`<strong>⚠️ Contact Info — Missing Items</strong><br>
-        <ul style="margin:0.4rem 0 0 1.2rem; padding:0; list-style:disc;">
-          ${contactCheck.warnings.map(w => `<li style="margin-bottom:6px">${w}</li>`).join('')}
-        </ul>`);
+        tips.push({
+            type: 'warning',
+            html: `<strong>⚠️ Contact Info — Missing Items</strong><br>
+            <ul style="margin:0.4rem 0 0 1.2rem; padding:0; list-style:disc;">
+              ${contactCheck.warnings.map(w => `<li style="margin-bottom:6px">${w}</li>`).join('')}
+            </ul>`
+        });
     }
 
     // 0. Template Compliance — HIGHEST PRIORITY, fix before anything else
     if (criticalFormatIssues.length > 0) {
-        tips.push(`<strong>🚨 Fix Your Template First — This Is Priority #1</strong><br>
-        Your current template is reducing your score from a potential <strong>${projectedWithFix}%</strong> to <strong>${finalScore}%</strong>. No other single fix will have as much impact.<br><br>
-        Detected: <strong>${criticalFormatIssues.map(i => i.label).join(', ')}</strong><br><br>
-        <strong>Free ATS-safe templates:</strong><br>
-        • <strong>Google Docs:</strong> File → Template gallery → search "resume" → pick <em>Swiss</em> or <em>Serif</em><br>
-        • <strong>Microsoft Word:</strong> File → New → search "ATS resume" in the template search bar<br>
-        • <strong>Online:</strong> resume.io or novoresume.com → filter to "ATS-friendly" templates<br><br>
-        After switching: paste your content as plain text (Ctrl+Shift+V), not drag-and-drop. Re-upload here to confirm your improved score.`);
+        tips.push({
+            type: 'danger',
+            html: `<strong>🚨 Fix Your Template First — This Is Priority #1</strong><br>
+            Your current template is reducing your score from a potential <strong>${projectedWithFix}%</strong> to <strong>${finalScore}%</strong>. No other single fix will have as much impact.<br><br>
+            Detected: <strong>${criticalFormatIssues.map(i => i.label).join(', ')}</strong><br><br>
+            <strong>Free ATS-safe templates:</strong><br>
+            • <strong>Google Docs:</strong> File → Template gallery → search "resume" → pick <em>Swiss</em> or <em>Serif</em><br>
+            • <strong>Microsoft Word:</strong> File → New → search "ATS resume" in the template search bar<br>
+            • <strong>Online:</strong> resume.io or novoresume.com → filter to "ATS-friendly" templates<br><br>
+            After switching: paste your content as plain text (Ctrl+Shift+V), not drag-and-drop. Re-upload here to confirm your improved score.`
+        });
     }
 
     // 1. Keyword Gap Strategy with SPECIFIC EXAMPLES
     if (keywordMatchPct < 85 && missing.length > 0) {
         const topMissing = missing.slice(0, 5);
         const examples = topMissing.slice(0, 3).map(kw => {
-            // Provide context-specific examples
             if (kw.includes('aws') || kw.includes('cloud') || kw.includes('azure')) {
                 return `<em>"Deployed microservices on ${kw.toUpperCase()}, reducing infrastructure costs by 30%"</em>`;
             } else if (kw.includes('data') || kw.includes('analytics')) {
@@ -940,22 +1029,52 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             }
         }).join('<br>        ');
         
-        tips.push(`<strong>🎯 Critical Keywords Missing (${keywordMatchPct}% match):</strong> Add these to your resume: <strong>${topMissing.slice(0, 5).join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`);
+        tips.push({
+            type: 'warning',
+            html: `<strong>🎯 Critical Keywords Missing (${keywordMatchPct}% match):</strong> Add these to your resume: <strong>${topMissing.slice(0, 5).join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`
+        });
     }
 
-    // 2. Impact & Metrics with bullet-level specificity
+    // 2. Impact & Metrics
     if (bulletMetrics.pct < 50 || impactScore < 60) {
         const bulletMsg = bulletMetrics.total > 0
             ? `Only <strong>${bulletMetrics.pct}%</strong> of your bullets have metrics (${bulletMetrics.withMetrics} of ${bulletMetrics.total}) — add numbers to show impact.`
             : 'Add quantifiable metrics to your bullets — numbers are what recruiters and ATS systems look for.';
-        tips.push(`<strong>📊 ${bulletMsg}</strong><br><br>
-        ❌ Weak: "Responsible for improving system performance"<br>
-        ✅ Strong: "Optimized database queries, reducing load time by 45% for 50K+ users"<br><br>
-        ❌ Weak: "Managed marketing campaigns"<br>
-        ✅ Strong: "Launched 3 email campaigns achieving 28% open rate, generating $250K revenue"`);
+
+        let exampleHTML = '';
+        const weakSamples = bulletMetrics.weakBulletSamples || [];
+        if (weakSamples.length > 0) {
+            exampleHTML = weakSamples.map((b, i) => {
+                const clean = b.replace(/<[^>]+>/g, '').trim();
+                const suggestion = i === 0
+                    ? `Add a number, %, or team size — e.g., "<em>...reducing X by 30%</em>" or "<em>...for a team of N</em>"`
+                    : `Start with a power verb ("Led", "Reduced", "Delivered") and quantify the result.`;
+                return `❌ <strong>Your resume:</strong> "${clean}"<br>✅ <strong>Improve it:</strong> ${suggestion}`;
+            }).join('<br><br>');
+        } else {
+            exampleHTML = `❌ Weak: "Responsible for improving system performance"<br>
+            ✅ Strong: "Optimized database queries, reducing load time by 45% for 50K+ users"<br><br>
+            ❌ Weak: "Managed documentation projects"<br>
+            ✅ Strong: "Delivered 12 documentation projects on time, reducing support tickets by 25%"`;
+        }
+        tips.push({
+            type: 'warning',
+            html: `<strong>📊 ${bulletMsg}</strong><br><br>${exampleHTML}`
+        });
     }
 
-    // 3. Structural Integrity with SPECIFIC SECTION NAMES
+    // 2.5 Vocabulary Diversity (New Check)
+    const vocab = calculateVocabularyDiversity(fullText);
+    if (vocab.overused.length > 0) {
+        const overusedList = vocab.overused.map(v => `<strong>${v.verb}</strong> (${v.count}x)`).join(', ');
+        tips.push({
+            type: 'warning',
+            html: `<strong>🔄 Vocabulary Repetition:</strong> You've overused these terms: ${overusedList}.<br>
+            <em>Tip: Use a thesaurus or our synonym engine to diversify your language and show a broader professional vocabulary.</em>`
+        });
+    }
+
+    // 3. Structural Integrity
     if (structureScore < 95) {
         const missingSections = [];
         if (!fullText.match(/\b(experience|employment|work history)\b/i)) missingSections.push('"Professional Experience" or "Work History"');
@@ -966,18 +1085,22 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             ? `Missing standard sections: ${missingSections.join(', ')}. Add these headers to improve parsability.`
             : 'Use clear, standard section headers like "Professional Experience", "Education", "Skills", "Certifications".';
         
-        tips.push(`<strong>📑 Resume Structure (${structureScore}%):</strong> ${sectionAdvice}<br><br>
-        ATS systems scan for standard headers. Use industry-standard terms instead of creative ones like "My Journey" or "What I've Done".`);
+        tips.push({
+            type: 'warning',
+            html: `<strong>📑 Resume Structure (${structureScore}%):</strong> ${sectionAdvice}<br><br>
+            ATS systems scan for standard headers. Use industry-standard terms instead of creative ones like "My Journey" or "What I've Done".`
+        });
     }
 
-    // 4. Tone & Professionalism with BEFORE/AFTER
+    // 4. Tone & Professionalism
     if (health.pronounCount > 0) {
-        tips.push(`<strong>✍️ Remove Personal Pronouns (Found ${health.pronounCount}):</strong><br>
-        ❌ Avoid: "I developed a new feature that improved..."<br>
-        ✅ Better: "Developed new feature that improved..."<br><br>
-        ❌ Avoid: "My responsibilities included managing..."<br>
-        ✅ Better: "Managed cross-functional team of..."<br><br>
-        Professional resumes use implied first-person voice.`);
+        tips.push({
+            type: 'warning',
+            html: `<strong>✍️ Remove Personal Pronouns (Found ${health.pronounCount}):</strong><br>
+            ❌ Avoid: "I developed a new feature that improved..."<br>
+            ✅ Better: "Developed new feature that improved..."<br><br>
+            Professional resumes use implied first-person voice.`
+        });
     }
 
     if (health.weakVerbCount > 0) {
@@ -992,41 +1115,68 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         const verbLines = health.weakVerbsFound.map(v => 
             `• Found "<strong>${v}</strong>" → Replace with: <em>${verbReplacements[v] || 'a stronger action verb'}</em>`
         ).join('<br>');
-        tips.push(`<strong>💪 Weak Verbs Found in Your Resume (${health.weakVerbCount} instance${health.weakVerbCount > 1 ? 's' : ''}):</strong><br>${verbLines}<br><br>Example transformation:<br>❌ "${health.weakVerbsFound[0].charAt(0).toUpperCase() + health.weakVerbsFound[0].slice(1)} on backend API development"<br>✅ "Engineered RESTful backend APIs serving 200K+ requests/day"`);
+        tips.push({
+            type: 'warning',
+            html: `<strong>💪 Weak Verbs Found (${health.weakVerbCount}):</strong><br>${verbLines}<br><br>Example transformation:<br>❌ "${health.weakVerbsFound[0].charAt(0).toUpperCase() + health.weakVerbsFound[0].slice(1)} on backend API development"<br>✅ "Engineered RESTful backend APIs serving 200K+ requests/day"`
+        });
     }
 
-    // 5. Length & Formatting with SPECIFIC GUIDANCE
+    // 5. Length & Formatting
     if (health.isWallOfText) {
-        tips.push(`<strong>📏 Resume Length (${health.wordCount.toLocaleString()} words):</strong><br>
-        For a <strong>senior, lead, or staff-level role</strong> with 8+ years of experience, 900–1,500 words across 2 pages is perfectly appropriate — recruiters expect depth at this level. <strong>ATS parsers do not penalise long resumes.</strong><br><br>
-        If you want to tighten it for readability:<br>
-        • Trim bullets to 1–2 lines; cut setup phrases ("responsible for", "worked on")<br>
-        • Each role: keep the 3–5 highest-impact bullets, trim supporting context<br><br>
-        Example:<br>
-        ❌ "Was responsible for working on the development of an API system that helped to reduce load times"<br>
-        ✅ "Built REST API that reduced load time by 40%"`);
+        tips.push({
+            type: 'success',
+            html: `<strong>📏 Resume Length (${health.wordCount.toLocaleString()} words):</strong><br>
+            For a <strong>senior, lead, or staff-level role</strong>, 900–1,500 words across 2 pages is perfectly appropriate. Recruiter expect depth at this level.`
+        });
     }
 
-    // 6. Overall Score Guidance — template-aware so low scores from format penalty aren't misleading
+    // 6. Overall Score Guidance
     if (criticalFormatIssues.length > 0) {
-        // Content is strong but template is hiding it — don't say "needs improvement" about the content
         const contentStatus = hasJD ? `Your content scores well (<strong>${keywordMatchPct}% keyword match</strong>). ` : "";
-        tips.push(`<strong>📋 Summary:</strong> ${contentStatus}The low overall score (<strong>${finalScore}%</strong>) is driven almost entirely by your template — not a content problem. Fix the template first, then fine-tune keywords.`);
+        tips.push({
+            type: 'danger',
+            html: `<strong>📋 Summary:</strong> ${contentStatus}The low overall score (<strong>${finalScore}%</strong>) is driven almost entirely by your template. Fix the template first.`
+        });
     } else if (finalScore >= 80) {
-        tips.push(`<strong>🎉 Excellent Score!</strong> Your resume is well-optimized for ATS systems. Make the suggested tweaks above to reach 90%+.`);
+        tips.push({
+            type: 'success',
+            html: `<strong>🎉 Excellent Score!</strong> Your resume is well-optimized for ATS systems. Make the suggested tweaks above to reach 90%+.`
+        });
     } else if (finalScore >= 60) {
-        tips.push(`<strong>📈 Good Foundation:</strong> Your resume passes basic ATS screening. Focus on adding the missing keywords and quantifiable achievements to increase your interview chances by 40%+.`);
+        tips.push({
+            type: 'success',
+            html: `<strong>📈 Good Foundation:</strong> Your resume passes basic ATS screening. Focus on adding the missing keywords and quantifiable achievements.`
+        });
     } else {
-        tips.push(`<strong>⚠️ Needs Improvement:</strong> Priority actions: (1) Add missing keywords from the job description, (2) Quantify achievements with numbers and percentages, (3) Ensure you have standard section headers (Professional Experience, Education, Skills).`);
+        tips.push({
+            type: 'warning',
+            html: `<strong>⚠️ Needs Improvement:</strong> Priority actions: (1) Add missing keywords, (2) Quantify achievements, (3) Ensure standard section headers.`
+        });
     }
 
     tips.forEach(tip => {
         const li = document.createElement('li');
-        li.innerHTML = tip; // Use innerHTML to render <strong> and <em>
+        if (tip.type) li.classList.add(`tip-${tip.type}`);
+        li.innerHTML = tip.html;
         tipsList.appendChild(li);
     });
 
-    window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics, contactCheck };
+    window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics, contactCheck, weakBulletSamples: bulletMetrics.weakBulletSamples };
+}
+
+function calculateVocabularyDiversity(text) {
+    const words = text.toLowerCase().match(/\b[a-z]{3,}\b/g) || [];
+    const counts = {};
+    words.forEach(w => counts[w] = (counts[w] || 0) + 1);
+    
+    // Specifically check for overused action verbs
+    const targetVerbs = ['managed', 'responsible', 'assisted', 'helped', 'worked', 'involved', 'participated'];
+    const overused = targetVerbs.filter(v => counts[v] > 3);
+    
+    return {
+        uniqueRatio: words.length > 0 ? (Object.keys(counts).length / words.length) : 0,
+        overused: overused.map(v => ({ verb: v, count: counts[v] }))
+    };
 }
 
 // Download Enhanced PDF Report (Designer Edition with More Details)
@@ -1209,92 +1359,29 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(71, 85, 105);
-    doc.text(`Your Score: ${res.finalScore}% | Average: 68% | Top Performers: 85%+`, 20, benchY + 6);
+    const avgLabel = res.finalScore >= 85 ? 'Above average (top performer)' : res.finalScore >= 68 ? 'Above average' : 'Below average';
+    doc.text(`Your Score: ${res.finalScore}% | Industry Average: 68% | Top Performers: 85%+ | Status: ${avgLabel}`, 20, benchY + 6);
     
-    // Pro Tip
+    // Dynamic Expert Tip — reflects the user's actual biggest weakness
+    let expertTip = '';
+    if (res.formatCheck && res.formatCheck.issues.filter(i => i.severity === 'critical').length > 0) {
+        expertTip = 'Expert Tip: Your biggest win is fixing your template. A single-column layout can immediately raise your score by 20-40 points without changing a word of content.';
+    } else if (res.keywordMatchPct < 70) {
+        expertTip = `Expert Tip: With ${res.missing.length} missing keywords, tailoring your resume to each job description is your highest-impact action. Even adding 5-10 missing terms can push you past the 75% threshold.`;
+    } else if (res.bulletMetrics && res.bulletMetrics.pct < 40) {
+        expertTip = `Expert Tip: Only ${res.bulletMetrics.pct}% of your bullets have numbers. Recruiters spend 7 seconds on a resume — quantified achievements (30%, $500K, team of 12) are what make them stop and read.`;
+    } else {
+        expertTip = `Expert Tip: Your resume is well-optimized. The final step is tailoring 2-3 bullets per role to mirror exact phrases from each job description before applying.`;
+    }
     doc.setFillColor(248, 250, 252);
-    doc.rect(20, benchY + 10, 170, 12, 'F');
+    doc.rect(20, benchY + 10, 170, 14, 'F');
     doc.setTextColor(100, 116, 139);
     doc.setFont("helvetica", "italic");
-    doc.text("Expert Tip: While PDFs are visually stable, single-column DOCX files are technically 'fail-safe' for ATS parsers.", 25, benchY + 17);
+    const splitTip = doc.splitTextToSize(expertTip, 160);
+    doc.text(splitTip, 25, benchY + 17);
+    benchY += (splitTip.length > 1 ? 4 : 0);
 
-    // PAGE 2: Strategic Action Plan
-    doc.addPage();
-    doc.setFillColor(30, 41, 59);
-    doc.rect(0, 0, 210, 25, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("STRATEGIC ACTION PLAN", 20, 17);
-
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("Top Priority Improvements", 20, 40);
-    
-    let actionY = 50;
-    res.tips.forEach((tip, i) => {
-        if (actionY > 270) {
-            doc.addPage();
-            actionY = 20;
-        }
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(30, 41, 59);
-        doc.text(`#${i + 1}`, 20, actionY);
-        
-        doc.setFontSize(9);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(71, 85, 105);
-        const cleanedTip = cleanText(tip).replace(/\s+/g, ' '); // Normalize spaces
-        const splitTip = doc.splitTextToSize(cleanedTip, 160);
-        doc.text(splitTip, 30, actionY);
-        actionY += (splitTip.length * 5) + 6;
-    });
-
-    if (res.hasJD && res.missing.length > 0) {
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(30, 41, 59);
-        doc.text("Missing Keywords (Immediate Impact)", 20, actionY + 5);
-        
-        actionY += 12;
-        const missingText = res.missing.slice(0, 25).join(", ");
-        doc.setFontSize(9);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(239, 68, 68);
-        const splitMissing = doc.splitTextToSize(missingText, 170);
-        doc.text(splitMissing, 20, actionY);
-    }
-
-    const topActions = [];
-    if (res.formatCheck && res.formatCheck.issues.filter(i => i.severity === 'critical').length > 0) {
-        topActions.push(`#1 CRITICAL - Fix Template: Switch to a single-column ATS-safe layout. This alone will raise your score from ${res.finalScore}% to ~${res.projectedWithFix}%. Use Google Docs "Swiss/Serif", Word "ATS resume" template, or resume.io (ATS-friendly filter).`);
-    }
-    if (res.keywordMatchPct < 75) {
-        topActions.push(`${topActions.length > 0 ? '#2' : '#1'}: Add ${Math.min(res.missing.length, 5)} missing keywords: ${res.missing.slice(0, 5).join(', ')}`);
-    }
-    if (res.impactScore < 60) {
-        topActions.push(`#${topActions.length + 1}: Quantify achievements - add numbers, percentages, dollar amounts to at least 3 bullet points`);
-    }
-    if (res.structureScore < 95) {
-        topActions.push(`#${topActions.length + 1}: Use standard section headers: "Professional Experience", "Education", "Skills"`);
-    }
-    
-    if (topActions.length === 0) {
-        topActions.push("#1: Your resume is well-optimized! Focus on tailoring it to each specific job application.");
-        topActions.push("#2: Consider adding more quantifiable metrics to strengthen impact.");
-        topActions.push("#3: Review and update your resume every 3-6 months.");
-    }
-    
-    topActions.slice(0, 3).forEach(action => {
-        const cleanedAction = cleanText(action).replace(/\s+/g, ' ');
-        const splitAction = doc.splitTextToSize(cleanedAction, 170);
-        doc.text(splitAction, 20, actionY);
-        actionY += (splitAction.length * 5) + 3;
-    });
-
-    // PAGE 2: Detailed Analysis
+    // PAGE 2: Detailed Analysis & Strategic Action Plan
     doc.addPage();
     
     // Header for Page 2
@@ -1305,7 +1392,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     doc.setFontSize(18);
     doc.text("Detailed Analysis & Recommendations", 20, 16);
 
-    // Strategic Action Plan (with examples)
+    // Strategic Action Plan
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
@@ -1318,17 +1405,40 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     doc.setTextColor(51, 65, 85);
     
     y = 48;
-    res.tips.slice(0, 5).forEach((tip, idx) => {
-        const cleanedTip = cleanText(tip);
-        const splitTip = doc.splitTextToSize(`${idx + 1}. ${cleanedTip}`, 170);
+    res.tips.forEach((tipObj, idx) => {
+        // Handle new tip object structure {type, html}
+        const tipHtml = tipObj.html || tipObj;
+        const tipType = tipObj.type || 'info';
+
+        // Convert <br> to newlines to preserve formatting, THEN strip HTML tags AND emojis
+        let rawText = tipHtml.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+        // Remove consecutive spaces but preserve newlines
+        rawText = rawText.replace(/[ \t]{2,}/g, ' ');
+        let cleanedTip = cleanText(rawText);
         
-        if (y + (splitTip.length * 5) > 270) {
+        const splitTip = doc.splitTextToSize(cleanedTip, 160);
+        
+        // Add a colored background box for each action item to make it look premium
+        const boxHeight = (splitTip.length * 5) + 12;
+        if (y + boxHeight > 270) {
             doc.addPage();
             y = 20;
         }
         
-        doc.text(splitTip, 20, y);
-        y += (splitTip.length * 5) + 6;
+        doc.setFillColor(248, 250, 252);
+        doc.rect(15, y, 180, boxHeight, 'F');
+        
+        doc.setFont("helvetica", "bold");
+        // Color header based on tip type
+        const headerColor = tipType === 'danger' ? [239, 68, 68] : (tipType === 'warning' ? [245, 158, 11] : [99, 102, 241]);
+        doc.setTextColor(headerColor[0], headerColor[1], headerColor[2]);
+        doc.text(`Action Item #${idx + 1}`, 20, y + 6);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(71, 85, 105);
+        doc.text(splitTip, 20, y + 12);
+        
+        y += boxHeight + 6;
     });
 
     // Keyword Intelligence
@@ -1373,7 +1483,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
         y += (missingText.length * 4) + 12;
     }
 
-    // Before & After Example Section
+    // Before & After Example Section — uses REAL weak bullet from the user's resume if available
     if (y > 220) {
         doc.addPage();
         y = 20;
@@ -1382,29 +1492,70 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("Example Improvements", 20, y);
+    doc.text("Example Improvements (from your resume)", 20, y);
     doc.line(20, y + 2, 190, y + 2);
     y += 10;
     
+    const weakSamples = res.weakBulletSamples && res.weakBulletSamples.length > 0 ? res.weakBulletSamples : null;
+
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(239, 68, 68);
-    doc.text("BEFORE (Weak):", 20, y);
-    doc.setTextColor(71, 85, 105);
-    doc.text('"Responsible for managing team projects and helping with development tasks"', 20, y + 4);
-    
-    y += 10;
-    doc.setTextColor(16, 185, 129);
-    doc.text("AFTER (Strong):", 20, y);
-    doc.setTextColor(71, 85, 105);
-    const afterExample = doc.splitTextToSize('"Led cross-functional team of 8 developers to deliver 5 major features, reducing deployment time by 40% and increasing user engagement by 25%"', 170);
-    doc.text(afterExample, 20, y + 4);
-    
-    y += (afterExample.length * 4) + 10;
-    
-    doc.setTextColor(100, 116, 139);
-    doc.setFontSize(7);
-    doc.text("Notice: Specific numbers (8, 5, 40%, 25%), action verbs (Led, deliver), and measurable outcomes", 20, y);
+
+    if (weakSamples) {
+        // Use the real bullet from the user's resume
+        weakSamples.forEach((bullet, idx) => {
+            const beforeText = `"${cleanText(bullet)}"`;
+            const splitBefore = doc.splitTextToSize(beforeText, 150);
+            
+            const suggestion = idx === 0
+                ? `Quantify with a number or % — e.g., add "reduced X by 30%", "managed team of N", or "delivered Y in Z weeks".`
+                : `Add a strong action verb at the start ("Led", "Built", "Drove", "Reduced") and at least one measurable outcome.`;
+            const splitSuggestion = doc.splitTextToSize(suggestion, 150);
+
+            const boxHeight = (splitBefore.length * 4) + (splitSuggestion.length * 4) + 20;
+            if (y + boxHeight > 270) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setDrawColor(226, 232, 240);
+            doc.setFillColor(255, 255, 255);
+            doc.rect(15, y, 180, boxHeight, 'FD');
+
+            doc.setTextColor(239, 68, 68);
+            doc.setFont("helvetica", "bold");
+            doc.text(`BEFORE (your resume - bullet ${idx + 1}):`, 20, y + 6);
+            y += 10;
+            doc.setTextColor(71, 85, 105);
+            doc.setFont("helvetica", "italic");
+            doc.text(splitBefore, 20, y);
+            y += (splitBefore.length * 4) + 4;
+
+            doc.setTextColor(16, 185, 129);
+            doc.setFont("helvetica", "bold");
+            doc.text(`AFTER (suggested improvement):`, 20, y);
+            y += 4;
+            doc.setTextColor(71, 85, 105);
+            doc.setFont("helvetica", "normal");
+            doc.text(splitSuggestion, 20, y);
+            y += (splitSuggestion.length * 4) + 12;
+        });
+
+        doc.setTextColor(100, 116, 139);
+        doc.setFontSize(7);
+        const notice = doc.splitTextToSize("Tip: The bullets above are from your resume that have no metrics detected. Adding specific numbers, percentages, or team sizes will dramatically increase your Impact score.", 170);
+        doc.text(notice, 20, y);
+        y += (notice.length * 4) + 4;
+    } else {
+        // Fallback: generic example when all bullets already have metrics (great resume!)
+        doc.setTextColor(16, 185, 129);
+        doc.text("Great news: All detected bullet points in your resume already contain metrics!", 20, y);
+        y += 6;
+        doc.setTextColor(100, 116, 139);
+        const genericNote = doc.splitTextToSize("Generic example for reference — BEFORE: \"Responsible for managing team projects and helping with development tasks\" — AFTER: \"Led cross-functional team of 8 to deliver 5 features, reducing deployment time by 40%\"", 170);
+        doc.text(genericNote, 20, y);
+        y += (genericNote.length * 4) + 4;
+    }
 
     // Footer on last page
     y = 280;
