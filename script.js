@@ -415,6 +415,7 @@ function getKeywords(text, isJD = false) {
         'bachelor', 'fields', '15+', 'capacity', 'understanding', 'methodologies', 'editing', 'prioritize', 'effectively', 'tight', 'client', 'aids', 'online', 'educational', 
         'techniques', 'continuous', 'enablement', 'modern', 'proactively', 'contribution', 'improvement', 'practices', 'knowledge', 'understanding', 'lifecycle', 'methods',
         'method', 'methodologies', 'tools', 'technologies', 'technology', 'skills', 'experience', 'years', 'month', 'months', 'degree', 'degrees', 'education',
+        'prior', 'target', 'targeted', 'significant', 'towards', 'meet', 'minimum', 'relatively', 'engagement', 'initiative', 'audience', 'director', 'operations', 'atlassian', 'attributes', 'features', 'certifications',
         // HR soft-skills that read as keywords but aren't searchable skills
         'collaboration', 'collaborative', 'communication', 'communicating', 'partnership', 'partnering',
         'cross', 'functional', 'cross-functional', 'attention', 'detail', 'leadership', 'collaboration',
@@ -726,65 +727,74 @@ analyzeBtn.addEventListener('click', () => {
     
     // Simulate brief processing delay for UX
     setTimeout(() => {
-        const jdFreq = hasJD ? getKeywords(jdText, true) : {};
-        const resumeFreq = getKeywords(resumeText, false);
-        
-        const found = [];
-        const missing = [];
-        let keywordScore = 0;
-        let maxPossibleScore = 0;
+        try {
+            const jdFreq = hasJD ? getKeywords(jdText, true) : {};
+            const resumeFreq = getKeywords(resumeText, false);
+            
+            const found = [];
+            const missing = [];
+            let keywordScore = 0;
+            let maxPossibleScore = 0;
 
-        if (hasJD) {
-            // Helper for Universal (Bi-directional) Synonym Matching
-            const checkMatch = (jdKw, freqMap) => {
-                // 1. Direct Match
-                if (freqMap[jdKw] > 0) return true;
-                
-                // 2. Family Match (Bi-directional lookup)
-                const families = [];
-                for (const [key, values] of Object.entries(SYNONYMS)) {
-                    if (key === jdKw || values.includes(jdKw)) {
-                        families.push(...values, key);
+            if (hasJD) {
+                // Helper for Universal (Bi-directional) Synonym Matching
+                const checkMatch = (jdKw, freqMap) => {
+                    // 1. Direct Match
+                    if (freqMap[jdKw] > 0) return true;
+                    
+                    // 2. Family Match (Bi-directional lookup)
+                    const families = [];
+                    for (const [key, values] of Object.entries(SYNONYMS)) {
+                        if (key === jdKw || values.includes(jdKw)) {
+                            families.push(...values, key);
+                        }
                     }
-                }
-                
-                for (const member of families) {
-                    if (freqMap[member] > 0) return true;
-                    if (member.length >= 3) {
-                        const root = member.substring(0, 4);
-                        if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(member) || member.includes(rk))) return true;
+                    
+                    for (const member of families) {
+                        if (freqMap[member] > 0) return true;
+                        if (member.length >= 3) {
+                            const root = member.substring(0, 4);
+                            if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(member) || member.includes(rk))) return true;
+                        }
                     }
-                }
-                
-                // 3. Fallback: Fuzzy root on the JD keyword itself
-                if (jdKw.length >= 3) {
-                    const root = jdKw.substring(0, 4);
-                    if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(jdKw) || jdKw.includes(rk))) return true;
-                }
-                return false;
-            };
+                    
+                    // 3. Fallback: Fuzzy root on the JD keyword itself
+                    if (jdKw.length >= 3) {
+                        const root = jdKw.substring(0, 4);
+                        if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(jdKw) || jdKw.includes(rk))) return true;
+                    }
+                    return false;
+                };
 
-            // Keyword matching: each JD keyword is scored by frequency (capped at 3 occurrences).
-            // TECH_BOOST removed: the 5x multiplier made scores unpredictable and opaque.
-            // Instead, all keywords are scored equally — the quality of match is what matters.
-            Object.keys(jdFreq).forEach(jdKw => {
-                const jdWeight = Math.min(jdFreq[jdKw], 3);
-                maxPossibleScore += jdWeight * 10;
-                if (checkMatch(jdKw, resumeFreq)) {
-                    found.push(jdKw);
-                    keywordScore += jdWeight * 10;
-                } else {
-                    missing.push(jdKw);
-                }
-            });
+                // Keyword matching: each JD keyword is scored by frequency (capped at 3 occurrences).
+                // TECH_BOOST removed: the 5x multiplier made scores unpredictable and opaque.
+                // Instead, all keywords are scored equally — the quality of match is what matters.
+                Object.keys(jdFreq).forEach(jdKw => {
+                    const jdWeight = Math.min(jdFreq[jdKw], 3);
+                    maxPossibleScore += jdWeight * 10;
+                    if (checkMatch(jdKw, resumeFreq)) {
+                        found.push(jdKw);
+                        keywordScore += jdWeight * 10;
+                    } else {
+                        missing.push(jdKw);
+                    }
+                });
+            }
+
+            displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
+        } catch (analysisError) {
+            console.error('Resume analysis failed:', analysisError);
+            alert('Resume analysis failed. Please refresh the page and try again.');
+        } finally {
+            // Reset button state even if an error occurs
+            try {
+                btnText.style.display = 'inline-block';
+                btnLoader.style.display = 'none';
+                analyzeBtn.disabled = false;
+            } catch (resetError) {
+                console.error('Error resetting analyze button state:', resetError);
+            }
         }
-
-        displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
-        
-        // Reset button state
-        btnText.style.display = 'inline-block';
-        btnLoader.style.display = 'none';
-        analyzeBtn.disabled = false;
     }, 500);
 });
 
@@ -1197,6 +1207,13 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         tipsList.appendChild(li);
     });
 
+    if (tips.length === 0) {
+        const fallbackLi = document.createElement('li');
+        fallbackLi.classList.add('tip-success');
+        fallbackLi.innerHTML = '<strong>🎉 Great news:</strong> No critical action items detected. Your resume is already in strong shape for ATS screening.';
+        tipsList.appendChild(fallbackLi);
+    }
+
     window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics, contactCheck, weakBulletSamples: bulletMetrics.weakBulletSamples };
 }
 
@@ -1217,10 +1234,21 @@ function calculateVocabularyDiversity(text) {
 
 // Download Enhanced PDF Report (Designer Edition with More Details)
 document.getElementById('downloadReport').addEventListener('click', () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
     const res = window.lastResults;
-    const date = new Date().toLocaleDateString();
+    if (!res) {
+        alert('Please analyze your resume first before downloading the report.');
+        return;
+    }
+
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert('PDF generation is unavailable. Please check your internet connection and reload the page.');
+        return;
+    }
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const date = new Date().toLocaleDateString();
 
     // Helper: Strip HTML tags AND emojis/non-ASCII for PDF
     const cleanText = (str) => str
@@ -1601,6 +1629,10 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     doc.text(`Generated: ${date} | ATS Optimizer v3.0`, 105, y + 4, { align: "center" });
 
     doc.save(`ATS-Audit-Enhanced-${date.replace(/\//g, '-')}.pdf`);
+    } catch (reportError) {
+        console.error('PDF report generation failed:', reportError);
+        alert('Unable to create the PDF report. Please try again later.');
+    }
 });
 
 // Tooltip: Viewport-aware positioning + mobile tap support
@@ -1690,11 +1722,22 @@ if (debugBtn) {
     });
 }
 // View Toggle Logic for Raw Text Preview
+function setRawViewMode(mode) {
+    const statusEl = document.getElementById('rawViewStatus');
+    if (!statusEl) return;
+    if (mode === 'stream') {
+        statusEl.textContent = 'ATS Stream mode active — actual extracted word order used by ATS parsers.';
+    } else {
+        statusEl.textContent = 'Visual Reconstruction mode active — readable resume order after parsing layout coordinates.';
+    }
+}
+
 document.getElementById('viewVisual')?.addEventListener('click', () => {
     document.getElementById('viewVisual').classList.add('active');
     document.getElementById('viewStream').classList.remove('active');
     document.getElementById('rawTextPreview').value = resumeText;
     document.getElementById('rawTextDesc').innerHTML = "This is our engine's <strong>Visual Reconstruction</strong>. We sort text by coordinates to make it readable, but horizontal merging across columns is what confuses ATS systems.";
+    setRawViewMode('visual');
 });
 
 document.getElementById('viewStream')?.addEventListener('click', () => {
@@ -1702,4 +1745,21 @@ document.getElementById('viewStream')?.addEventListener('click', () => {
     document.getElementById('viewVisual').classList.remove('active');
     document.getElementById('rawTextPreview').value = resumeStreamText;
     document.getElementById('rawTextDesc').innerHTML = "This is the <strong>ATS Stream View</strong> (the order words appear in the PDF file). If this looks scrambled or 'word salad', an older ATS will almost certainly reject your resume automatically.";
+    setRawViewMode('stream');
 });
+
+document.getElementById('copyRawTextBtn')?.addEventListener('click', () => {
+    const rawPreview = document.getElementById('rawTextPreview');
+    const copyBtn = document.getElementById('copyRawTextBtn');
+    if (!rawPreview || !copyBtn) return;
+    navigator.clipboard.writeText(rawPreview.value).then(() => {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => { copyBtn.textContent = originalText; }, 1600);
+    }).catch(() => {
+        copyBtn.textContent = 'Copy failed';
+        setTimeout(() => { copyBtn.textContent = 'Copy current view'; }, 1800);
+    });
+});
+
+setRawViewMode('visual');
