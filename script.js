@@ -410,6 +410,7 @@ function getKeywords(text, isJD = false) {
         'proficiency', 'evolving', 'championing', 'champion', 'solid', 'bonus', 'inactive', 'comparable',
         'think', 'edits', 'creation', 'expand', 'assurance', 'additional', 'onsite',
         'what', 'where', 'when', 'how', 'why', 'familiarity', 'qualifications', 'required', 'preferred', 'across', 'through', 'from', 'your', 'will', 'must', 'should',
+        'etc', 'prem', 'review', 'templates', 'initiatives', 'standard', 'standards', 'timelines', 'plus', 'exposure', 'etc', 'etc.',
         // HR soft-skills that read as keywords but aren't searchable skills
         'collaboration', 'collaborative', 'communication', 'communicating', 'partnership', 'partnering',
         'cross', 'functional', 'cross-functional', 'attention', 'detail',
@@ -681,8 +682,9 @@ function getBulletMetricsPct(text) {
         
         // 3. Reject if it looks like a section header, job metadata, or title
         const isMetadata = /[|—]/.test(line) || /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/i.test(line);
+        const isSkillList = (line.match(/,/g) || []).length > 2 && line.length < 120;
         
-        return isLikelyBullet && !isMetadata && hasBulletEnd;
+        return isLikelyBullet && !isMetadata && hasBulletEnd && !isSkillList;
     });
     const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+%|\d+x\b|\d+\s*(users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|cycles?|platforms?|members?|roles?|sites?)/i;
     const withMetrics = bullets.filter(line => metricPattern.test(line));
