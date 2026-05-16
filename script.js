@@ -153,7 +153,6 @@ async function handleFile(file) {
             layoutWarnings = [];
             resumeText = await readDocx(file);
             resumeStreamText = resumeText; // Word doesn't have the same stream issues as PDF
-        }
         } else {
             alert("Please upload a PDF or DOCX file.");
             fileNameDisplay.textContent = "";
