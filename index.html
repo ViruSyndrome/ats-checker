@@ -238,8 +238,14 @@
                     </div>
                     
                     <div class="card" style="margin-top: 1rem;">
-                        <div class="card-title">How ATS Reads Your Resume (Raw Extracted Text)</div>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div class="card-title" style="margin-bottom: 0;">How ATS Reads Your Resume</div>
+                            <div class="view-toggle-group">
+                                <button id="viewVisual" class="toggle-btn active">Visual View</button>
+                                <button id="viewStream" class="toggle-btn">ATS Stream (Word Salad)</button>
+                            </div>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="rawTextDesc">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically.</p>
                         <textarea id="rawTextPreview" readonly style="width: 100%; height: 250px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
                     </div>
                 </div>

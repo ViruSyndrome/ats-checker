@@ -9,6 +9,7 @@ const tryExampleBtn = document.getElementById('tryExampleBtn');
 const resultsSection = document.getElementById('results');
 
 let resumeText = "";
+let resumeStreamText = "";
 
 // Analytics Tracking Helper
 function trackEvent(eventName, params = {}) {
@@ -144,11 +145,15 @@ async function handleFile(file) {
     try {
         if (file.type === "application/pdf") {
             isPdfUpload = true;
-            resumeText = await readPdf(file);
+            const pdfData = await readPdf(file);
+            resumeText = pdfData.reconstructed;
+            resumeStreamText = pdfData.stream;
         } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
             isPdfUpload = false;
             layoutWarnings = [];
             resumeText = await readDocx(file);
+            resumeStreamText = resumeText; // Word doesn't have the same stream issues as PDF
+        }
         } else {
             alert("Please upload a PDF or DOCX file.");
             fileNameDisplay.textContent = "";
@@ -180,6 +185,7 @@ async function readPdf(file) {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let text = "";
+    let streamText = "";
     layoutWarnings = [];
 
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -260,11 +266,14 @@ async function readPdf(file) {
                 return lineStr;
             });
         text += sortedLines.join('\n') + '\n';
+        
+        // Capture raw stream order (ATS Stream)
+        streamText += content.items.map(item => item.str).join(' ') + '\n\n';
     }
 
     // Deduplicate warnings
     layoutWarnings = [...new Set(layoutWarnings)];
-    return text;
+    return { reconstructed: text, stream: streamText };
 }
 
 async function readDocx(file) {
@@ -1665,3 +1674,17 @@ if (debugBtn) {
         alert("Debug log downloaded! Please email this file to hello@getatsready.com for support.");
     });
 }
+// View Toggle Logic for Raw Text Preview
+document.getElementById('viewVisual')?.addEventListener('click', () => {
+    document.getElementById('viewVisual').classList.add('active');
+    document.getElementById('viewStream').classList.remove('active');
+    document.getElementById('rawTextPreview').value = resumeText;
+    document.getElementById('rawTextDesc').innerHTML = "This is our engine's <strong>Visual Reconstruction</strong>. We sort text by coordinates to make it readable, but horizontal merging across columns is what confuses ATS systems.";
+});
+
+document.getElementById('viewStream')?.addEventListener('click', () => {
+    document.getElementById('viewStream').classList.add('active');
+    document.getElementById('viewVisual').classList.remove('active');
+    document.getElementById('rawTextPreview').value = resumeStreamText;
+    document.getElementById('rawTextDesc').innerHTML = "This is the <strong>ATS Stream View</strong> (the order words appear in the PDF file). If this looks scrambled or 'word salad', an older ATS will almost certainly reject your resume automatically.";
+});
