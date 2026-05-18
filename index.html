@@ -77,7 +77,7 @@
     <div class="container">
         <header>
             <div class="header-top-row">
-                <a href="index.html" class="logo-link">
+                <a href="/" class="logo-link">
                     <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
                         <path d="M18 4v5h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
@@ -93,7 +93,7 @@
                 </button>
             </div>
             <nav class="main-nav" id="atsNavLinks">
-                <a href="index.html" class="active">Home</a>
+                <a href="/" class="active">Home</a>
                 <a href="about.html">About Us</a>
                 <a href="guides/index.html">Guides</a>
                 <a href="contact.html">Contact Us</a>
@@ -212,6 +212,7 @@
                     <div class="card">
                         <div class="card-title">❌ Missing Keywords <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;">Add these to pass ATS screening</span></div>
                         <div id="missingKeywords"></div>
+                        <p class="muted-note">We filter boilerplate terms like “etc.” and “prem.” so the missing keyword list stays focused on meaningful skills and role-specific terms.</p>
                     </div>
                     <div class="card">
                         <div class="card-title">✅ Found Keywords <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;">Already matched in your resume</span></div>
@@ -245,7 +246,11 @@
                                 <button id="viewStream" class="toggle-btn">ATS Stream (Word Salad)</button>
                             </div>
                         </div>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="rawTextDesc">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically.</p>
+                        <div class="raw-preview-meta">
+                            <span id="rawViewStatus" class="raw-view-status">Visual Reconstruction mode active — showing your resume in parsed order for readability.</span>
+                            <button id="copyRawTextBtn" class="secondary-btn small-btn" type="button">Copy current view</button>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="rawTextDesc">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically. Use the copy button to save or share the current view.</p>
                         <textarea id="rawTextPreview" readonly style="width: 100%; height: 250px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
                     </div>
                 </div>
