@@ -1923,3 +1923,31 @@ function injectFaqSchema() {
     script.text = JSON.stringify(schema);
     document.head.appendChild(script);
 }
+
+// ── Native High-Performance Scroll-Reveal ──
+window.addEventListener('load', () => {
+    const targets = document.querySelectorAll('.card, .faq-item, .secondary-btn, .privacy-badge, #historyCard');
+    
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Clean up classes after transition to preserve hover mechanics
+                entry.target.addEventListener('transitionend', function handler() {
+                    entry.target.classList.remove('reveal-scroll', 'visible');
+                    entry.target.removeEventListener('transitionend', handler);
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.05,
+        rootMargin: '0px 0px -20px 0px'
+    });
+
+    targets.forEach(target => {
+        target.classList.add('reveal-scroll');
+        observer.observe(target);
+    });
+});
+
