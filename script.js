@@ -28,6 +28,8 @@ window.addEventListener('load', () => {
     if (localStorage.getItem('cookieConsent') === 'true') {
         document.getElementById('cookieConsent').classList.add('hidden');
     }
+    renderHistory();
+    injectFaqSchema();
 });
 
 // Example Resume Data
@@ -725,6 +727,12 @@ analyzeBtn.addEventListener('click', () => {
     btnLoader.style.display = 'inline-block';
     analyzeBtn.disabled = true;
     
+    // Reset score circle visual offset
+    const circle = document.getElementById('scoreBarCircle');
+    if (circle) {
+        circle.style.strokeDashoffset = 283;
+    }
+    
     // Simulate brief processing delay for UX
     setTimeout(() => {
         try {
@@ -911,8 +919,43 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         }
     }
 
-    // Update UI
-    document.getElementById('scoreValue').textContent = finalScore;
+    // Update UI (Animate score value text count-up)
+    const scoreValEl = document.getElementById('scoreValue');
+    if (scoreValEl) {
+        let startVal = 0;
+        const duration = 1200;
+        const startTime = performance.now();
+        
+        function animateNumber(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easeOutQuad = progress * (2 - progress);
+            const currentVal = Math.round(startVal + easeOutQuad * (finalScore - startVal));
+            scoreValEl.textContent = currentVal;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateNumber);
+            }
+        }
+        requestAnimationFrame(animateNumber);
+    }
+    
+    // Animate SVG stroke offset
+    const scoreCircleElement = document.getElementById('scoreBarCircle');
+    if (scoreCircleElement) {
+        const radius = 45;
+        const circumference = 2 * Math.PI * radius; // 282.74
+        const offset = circumference - (finalScore / 100) * circumference;
+        scoreCircleElement.style.strokeDashoffset = offset;
+        
+        let strokeColor;
+        if (finalScore >= 80) strokeColor = 'var(--success)';
+        else if (finalScore >= 65) strokeColor = 'var(--primary)';
+        else if (finalScore >= 45) strokeColor = 'var(--warning)';
+        else strokeColor = 'var(--danger)';
+        scoreCircleElement.style.stroke = strokeColor;
+    }
+
     document.getElementById('formatBar').style.width = formatScore + '%';
     document.getElementById('formatPct').textContent  = formatScore + '%';
     document.getElementById('structureBar').style.width = structureScore + '%';
@@ -1215,6 +1258,9 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     }
 
     window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics, contactCheck, weakBulletSamples: bulletMetrics.weakBulletSamples };
+
+    // Save to Local Scan History (100% Client-Side, fully private)
+    saveScanToHistory(fileMetadata.name, finalScore);
 }
 
 function calculateVocabularyDiversity(text) {
@@ -1763,3 +1809,117 @@ document.getElementById('copyRawTextBtn')?.addEventListener('click', () => {
 });
 
 setRawViewMode('visual');
+
+// ── Private Scan History Management (Stored client-side in user's browser localStorage) ──
+function saveScanToHistory(filename, score) {
+    const historyKey = 'ats_score_history';
+    let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+    const jdText = document.getElementById('jobDescription')?.value.trim() || '';
+    
+    let jobTitle = 'General Analysis';
+    if (jdText) {
+        const firstLine = jdText.split('\n')[0].trim();
+        if (firstLine.length > 5) {
+            jobTitle = firstLine.substring(0, 35);
+            if (firstLine.length > 35) jobTitle += '...';
+        }
+    }
+    
+    const timestamp = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    const historyItem = {
+        id: Date.now(),
+        filename: filename || 'Resume.pdf',
+        score: score,
+        timestamp: timestamp,
+        jobTitle: jobTitle
+    };
+    
+    // Avoid double entries
+    const isDuplicate = history.length > 0 && 
+                        history[0].filename === historyItem.filename && 
+                        history[0].score === historyItem.score;
+                        
+    if (!isDuplicate) {
+        history.unshift(historyItem);
+        if (history.length > 5) history.pop();
+        localStorage.setItem(historyKey, JSON.stringify(history));
+    }
+    
+    renderHistory();
+}
+
+function renderHistory() {
+    const history = JSON.parse(localStorage.getItem('ats_score_history') || '[]');
+    const historyCard = document.getElementById('historyCard');
+    const historyList = document.getElementById('historyList');
+    if (!historyList || !historyCard) return;
+    
+    if (history.length === 0) {
+        historyCard.style.display = 'none';
+        return;
+    }
+    
+    historyCard.style.display = 'block';
+    
+    historyList.innerHTML = history.map(item => {
+        let badgeColor = 'var(--danger)';
+        if (item.score >= 80) badgeColor = 'var(--success)';
+        else if (item.score >= 65) badgeColor = 'var(--primary)';
+        else if (item.score >= 45) badgeColor = 'var(--warning)';
+        
+        return `
+            <div class="history-item">
+                <div class="history-item-left">
+                    <span class="history-item-name">${item.filename}</span>
+                    <span class="history-item-sub">${item.jobTitle}</span>
+                </div>
+                <div class="history-item-right">
+                    <span class="history-item-date">${item.timestamp}</span>
+                    <span class="keyword-badge" style="border: 1px solid ${badgeColor}; color: ${badgeColor}; font-weight: 700; background: transparent; padding: 4px 10px; margin: 0;">${item.score}%</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ── Google Translate Helper ──
+function changeLanguage(langCode) {
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+        select.value = langCode;
+        select.dispatchEvent(new Event('change'));
+    }
+}
+window.changeLanguage = changeLanguage;
+
+// ── SEO FAQ Schema Dynamic Injector ──
+function injectFaqSchema() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    if (faqItems.length === 0) return;
+    
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": []
+    };
+    
+    faqItems.forEach(item => {
+        const q = item.querySelector('h3');
+        const a = item.querySelector('p');
+        if (q && a) {
+            schema.mainEntity.push({
+                "@type": "Question",
+                "name": q.textContent.trim(),
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": a.textContent.trim()
+                }
+            });
+        }
+    });
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+}
