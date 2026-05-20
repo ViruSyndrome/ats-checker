@@ -1882,15 +1882,7 @@ function renderHistory() {
     }).join('');
 }
 
-// ── Google Translate Helper ──
-function changeLanguage(langCode) {
-    const select = document.querySelector('.goog-te-combo');
-    if (select) {
-        select.value = langCode;
-        select.dispatchEvent(new Event('change'));
-    }
-}
-window.changeLanguage = changeLanguage;
+
 
 // ── SEO FAQ Schema Dynamic Injector ──
 function injectFaqSchema() {
@@ -1926,28 +1918,22 @@ function injectFaqSchema() {
 
 // ── Native High-Performance Scroll-Reveal ──
 window.addEventListener('load', () => {
-    const targets = document.querySelectorAll('.card, .faq-item, .secondary-btn, .privacy-badge, #historyCard');
-    
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Clean up classes after transition to preserve hover mechanics
-                entry.target.addEventListener('transitionend', function handler() {
-                    entry.target.classList.remove('reveal-scroll', 'visible');
-                    entry.target.removeEventListener('transitionend', handler);
-                });
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.05,
-        rootMargin: '0px 0px -20px 0px'
+  const targets = document.querySelectorAll('.card, .faq-item, .secondary-btn, .privacy-badge, #historyCard');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      } else {
+        entry.target.classList.remove('visible');
+      }
     });
-
-    targets.forEach(target => {
-        target.classList.add('reveal-scroll');
-        observer.observe(target);
-    });
+  }, {
+    threshold: 0.05,
+    rootMargin: '0px 0px -10px 0px'
+  });
+  targets.forEach(target => {
+    target.classList.add('reveal-scroll');
+    observer.observe(target);
+  });
 });
 
