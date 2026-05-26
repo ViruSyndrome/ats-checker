@@ -418,7 +418,7 @@ function getKeywords(text, isJD = false) {
 
     const words = processingText.toLowerCase()
         .replace(/([a-z])([A-Z])/g, '$1 $2') 
-        .replace(/[^\w\s+#+]/g, ' ') 
+        .replace(/[^\w\s+#+-]/g, ' ') 
         .split(/\s+/)
         .map(w => w.trim())
         .filter(w => w.length > 2 || /^(ai|js|ip|5g|ui|ux|c#|xml)$/.test(w));
