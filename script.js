@@ -1097,8 +1097,9 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
 
     // 1. Keyword Gap Strategy with SPECIFIC EXAMPLES
     if (keywordMatchPct < 85 && missing.length > 0) {
-        const filteredMissing = missing.filter(kw => kw.length > 3 && !noiseWords.has(kw));
-        const topMissing = filteredMissing.slice(0, 5);
+        let filteredMissing = missing.filter(kw => kw.length > 4 && !noiseWords.has(kw));
+        filteredMissing = Array.from(new Set(filteredMissing));
+        const topMissing = filteredMissing.slice(0, 3);
         
         const templates = [
             (kw) => `<em>"Optimized ${kw} workflows, resulting in a 20% increase in team productivity."</em>`,
@@ -1107,7 +1108,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             (kw) => `<em>"Directed cross-functional initiatives involving ${kw} to deliver project 3 weeks early."</em>`
         ];
 
-        const examples = topMissing.slice(0, 3).map((kw, idx) => {
+        const examples = topMissing.map((kw, idx) => {
             const lowerKw = kw.toLowerCase();
             if (lowerKw.includes('aws') || lowerKw.includes('cloud') || lowerKw.includes('azure')) {
                 return `<em>"Deployed microservices on ${kw.toUpperCase()}, reducing infrastructure costs by 30%"</em>`;
@@ -1122,7 +1123,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         
         tips.push({
             type: 'warning',
-            html: `<strong>🎯 Critical Keywords Missing (${keywordMatchPct}% match):</strong> Add these to your resume: <strong>${topMissing.slice(0, 5).join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`
+            html: `<strong>🎯 Top Missing Keywords (${keywordMatchPct}% match):</strong> Add these to your resume: <strong>${topMissing.join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`
         });
     }
 
