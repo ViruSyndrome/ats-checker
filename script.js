@@ -794,7 +794,11 @@ analyzeBtn.addEventListener('click', () => {
             displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
         } catch (analysisError) {
             console.error('Resume analysis failed:', analysisError);
-            alert('Resume analysis failed. Please refresh the page and try again.');
+            if (!window.lastResults || !resultsSection || resultsSection.style.display === 'none') {
+                alert('Resume analysis failed. Please refresh the page and try again.');
+            } else {
+                console.warn('Partial analysis completed despite error:', analysisError);
+            }
         } finally {
             // Reset button state even if an error occurs
             try {
@@ -991,9 +995,11 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             .sort((a, b) => jdFreq[b] - jdFreq[a])
             .map(kw => `<span class="keyword-badge keyword-found">${kw}</span> `)
             .join(' ');
-        document.getElementById('missingKeywords').innerHTML = missing
+        const displayMissing = missing
+            .filter(kw => kw.length > 4 && !noiseWords.has(kw))
             .sort((a, b) => jdFreq[b] - jdFreq[a])
-            .slice(0, 25)
+            .slice(0, 3);
+        document.getElementById('missingKeywords').innerHTML = displayMissing
             .map(kw => `<span class="keyword-badge keyword-missing">${kw}</span> `)
             .join(' ');
     } else {
