@@ -321,6 +321,69 @@ function getFormatChecklist(fullText) {
     return { score, issues };
 }
 
+const PROTECTED_KEYWORDS = new Set(['data', 'training', 'software', 'web', 'agile', 'scrum', 'code', 'writing', 'user', 'seo', 'api']);
+const NOISE_KEYWORDS = new Set([
+    'the', 'and', 'for', 'with', 'from', 'that', 'this', 'into', 'over', 'per', 'off', 'out', 'down',
+    'its', 'our', 'you', 'they', 'who', 'we', 'are', 'was', 'were', 'has', 'had', 'been', 'will',
+    'can', 'may', 'all', 'any', 'both', 'each', 'few', 'some', 'such', 'only', 'own', 'same',
+    'than', 'too', 'very', 'just', 'now', 'then', 'when', 'where', 'why', 'how', 'also', 'back',
+    'more', 'most', 'much', 'many', 'even', 'well', 'still', 'since', 'while', 'after', 'before',
+    'above', 'below', 'near', 'far', 'upon', 'against', 'under', 'around', 'there', 'here', 'these',
+    'during', 'between', 'without', 'himself', 'herself', 'themselves', 'whether',
+    'have', 'make', 'take', 'give', 'show', 'find', 'come', 'get', 'see', 'look', 'use', 'help',
+    'need', 'want', 'keep', 'let', 'put', 'seem', 'ask', 'work', 'turn', 'move', 'live', 'feel',
+    'build', 'identify', 'improve', 'manage', 'provide', 'ensure', 'maintain', 'understand',
+    'leverage', 'enable', 'support', 'deliver', 'create', 'develop', 'bring', 'grow', 'follow',
+    'join', 'become', 'execute', 'drive', 'align', 'evolve', 'advance', 'include',
+    'good', 'best', 'great', 'new', 'old', 'big', 'large', 'small', 'long', 'short', 'high', 'low',
+    'fast', 'slow', 'deep', 'bold', 'solid', 'robust', 'active', 'diverse', 'inclusive', 'critical',
+    'complex', 'effective', 'innovative', 'impactful', 'comparable', 'confident', 'different',
+    'several', 'various', 'another', 'every', 'often', 'always', 'never', 'usually', 'sometimes',
+    'today', 'highly', 'truly', 'deeply', 'closely', 'actively', 'primarily', 'primarily', 'directly',
+    'experience', 'skills', 'ability', 'knowledge', 'responsible', 'excellent', 'strong', 'required',
+    'requirements', 'preferred', 'preferably', 'familiarity', 'openness', 'interest', 'similar',
+    'proven', 'demonstrated', 'commitment', 'attention', 'detail', 'quality', 'learn', 'learning',
+    'think', 'thinking', 'adaptable', 'flexible', 'quick', 'quickly', 'ability', 'able', 'being',
+    'areas', 'area', 'sets', 'surfaces', 'feature', 'planning', 'solutions', 'feedback', 'processes',
+    'process', 'processes', 'effectiveness', 'automation', 'needed', 'needed', 'similar', 'approach',
+    'approaches', 'outcomes', 'impact', 'impacts', 'results', 'goals', 'vision', 'mission', 'missions',
+    'responsibilities', 'opportunity', 'opportunities', 'candidate', 'candidates', 'ideal', 'position',
+    'role', 'roles', 'team', 'teams', 'project', 'projects', 'management', 'development', 'tools',
+    'using', 'within', 'across', 'including', 'based', 'related', 'field', 'concept', 'concepts',
+    'people', 'ways', 'way', 'needs', 'part', 'year', 'years', 'month', 'months', 'week', 'weeks',
+    'day', 'days', 'finding', 'joining', 'growing', 'bringing', 'advancing', 'accelerate', 'industry',
+    'world', 'business', 'businesses', 'company', 'enterprise', 'organization', 'organizations',
+    'culture', 'mindset', 'empathy', 'bias', 'listening', 'accountability', 'creativity', 'behaviors',
+    'diversity', 'maturity', 'awareness', 'viewpoints', 'behaviors', 'proficiency', 'standards',
+    'models', 'model', 'systems', 'system', 'samples', 'sample', 'simple', 'simply', 'guide', 'done',
+    'get', 'started', 'starter', 'entire', 'journey', 'mark', 'engaging', 'helpful', 'expert',
+    'degree', 'degrees', 'science', 'journalism', 'english', 'field', 'assurance', 'additional',
+    'policies', 'controls', 'administrative', 'procedures', 'maintenance', 'history', 'oriented',
+    'demonstrates', 'demonstrates', 'strategy', 'strategic', 'execute', 'executing', 'driven',
+    'drives', 'aligns', 'aligned', 'differentiators', 'differentiator', 'simplifying', 'seeking',
+    'seek', 'seeks', 'head', 'heads', 'sensitive', 'deriving', 'derive', 'greater', 'careers',
+    'increasing', 'workers', 'confident', 'shift', 'left', 'key', 'value', 'like', 'ideas', 'least',
+    'one', 'address', 'object', 'problem', 'solving', 'track', 'record', 'tooling', 'streamline',
+    'proficiency', 'evolving', 'championing', 'champion', 'solid', 'bonus', 'inactive', 'comparable',
+    'think', 'edits', 'creation', 'expand', 'assurance', 'additional', 'onsite',
+    'what', 'where', 'when', 'how', 'why', 'familiarity', 'qualifications', 'required', 'preferred', 'across', 'through', 'from', 'your', 'will', 'must', 'should',
+    'etc', 'prem', 'review', 'templates', 'initiatives', 'standard', 'standards', 'timelines', 'plus', 'exposure', 'etc', 'etc.',
+    'base', 'customer', 'notes', 'appropriate', 'beyond', 'traditional', 'videos', 'demos', 'tours', 'other', 'passion', 'their', 'proofreading', 'generation', 'scripting',
+    'bachelor', 'fields', '15+', 'capacity', 'understanding', 'methodologies', 'editing', 'prioritize', 'effectively', 'tight', 'client', 'aids', 'online', 'educational',
+    'techniques', 'continuous', 'enablement', 'modern', 'proactively', 'contribution', 'improvement', 'practices', 'knowledge', 'understanding', 'lifecycle', 'methods',
+    'method', 'methodologies', 'tools', 'technologies', 'technology', 'skills', 'technologies', 'technology', 'skills', 'experience', 'years', 'month', 'months', 'degree', 'degrees', 'education',
+    'prior', 'target', 'targeted', 'significant', 'towards', 'meet', 'minimum', 'relatively', 'engagement', 'initiative', 'audience', 'director', 'operations', 'atlassian', 'attributes', 'features', 'certifications',
+    'collaboration', 'collaborative', 'communication', 'communicating', 'partnership', 'partnering',
+    'cross', 'functional', 'cross-functional', 'attention', 'detail', 'leadership', 'collaboration',
+    'ibm', 'microsoft', 'google', 'amazon', 'oracle', 'sap', 'meta', 'apple', 'hewlett', 'packard',
+    'hpe', 'salesforce', 'cisco', 'synopsys', 'vmware', 'nokia', 'dell', 'reltio',
+    'millions', 'thousands', 'hundreds', 'large', 'small', 'big', 'new', 'old', 'senior', 'junior',
+    'not', 'individual', 'topics', 'topic', 'feel', 'feeling', 'felt', 'feels',
+    'enabling', 'enables', 'enabled', 'businesses', 'sensitive', 'deriving', 'derived', 'derives',
+    'smes', 'environments', 'accurate', 'accurately', 'concise', 'style', 'styles', 'update', 'updates',
+    'meet', 'meets', 'abilities', 'proactive', 'self', 'driven', 'background', 'detail', 'details'
+]);
+
 // Professional Keyword Extraction Logic
 function getKeywords(text, isJD = false) {
     if (!text) return {};
@@ -360,82 +423,9 @@ function getKeywords(text, isJD = false) {
         .map(w => w.trim())
         .filter(w => w.length > 2 || /^(ai|js|ip|5g|ui|ux|c#|xml)$/.test(w));
 
-// PROTECT List: Words that should NEVER be filtered out
-    const protectedWords = new Set(['data', 'training', 'software', 'web', 'agile', 'scrum', 'code', 'writing', 'user', 'seo', 'api']);
-
-    const noiseWords = new Set([
-        // Articles, prepositions, conjunctions
-        'the', 'and', 'for', 'with', 'from', 'that', 'this', 'into', 'over', 'per', 'off', 'out', 'down',
-        'its', 'our', 'you', 'they', 'who', 'we', 'are', 'was', 'were', 'has', 'had', 'been', 'will',
-        'can', 'may', 'all', 'any', 'both', 'each', 'few', 'some', 'such', 'only', 'own', 'same',
-        'than', 'too', 'very', 'just', 'now', 'then', 'when', 'where', 'why', 'how', 'also', 'back',
-        'more', 'most', 'much', 'many', 'even', 'well', 'still', 'since', 'while', 'after', 'before',
-        'above', 'below', 'near', 'far', 'upon', 'against', 'under', 'around', 'there', 'here', 'these',
-        'during', 'between', 'without', 'himself', 'herself', 'themselves', 'whether',
-        // Generic verbs too vague to be keywords
-        'have', 'make', 'take', 'give', 'show', 'find', 'come', 'get', 'see', 'look', 'use', 'help',
-        'need', 'want', 'keep', 'let', 'put', 'seem', 'ask', 'work', 'turn', 'move', 'live', 'feel',
-        'build', 'identify', 'improve', 'manage', 'provide', 'ensure', 'maintain', 'understand',
-        'leverage', 'enable', 'support', 'deliver', 'create', 'develop', 'bring', 'grow', 'follow',
-        'join', 'become', 'execute', 'drive', 'align', 'evolve', 'advance', 'include',
-        // Generic adjectives / adverbs that are NOT skills
-        'good', 'best', 'great', 'new', 'old', 'big', 'large', 'small', 'long', 'short', 'high', 'low',
-        'fast', 'slow', 'deep', 'bold', 'solid', 'robust', 'active', 'diverse', 'inclusive', 'critical',
-        'complex', 'effective', 'innovative', 'impactful', 'comparable', 'confident', 'different',
-        'several', 'various', 'another', 'every', 'often', 'always', 'never', 'usually', 'sometimes',
-        'today', 'highly', 'truly', 'deeply', 'closely', 'actively', 'primarily', 'primarily', 'directly',
-        // HR / JD boilerplate words — appear in every JD, carry zero differentiation
-        'experience', 'skills', 'ability', 'knowledge', 'responsible', 'excellent', 'strong', 'required',
-        'requirements', 'preferred', 'preferably', 'familiarity', 'openness', 'interest', 'similar',
-        'proven', 'demonstrated', 'commitment', 'attention', 'detail', 'quality', 'learn', 'learning',
-        'think', 'thinking', 'adaptable', 'flexible', 'quick', 'quickly', 'ability', 'able', 'being',
-        'areas', 'area', 'sets', 'surfaces', 'feature', 'planning', 'solutions', 'feedback', 'processes',
-        'process', 'processes', 'effectiveness', 'automation', 'needed', 'needed', 'similar', 'approach',
-        'approaches', 'outcomes', 'impact', 'impacts', 'results', 'goals', 'vision', 'mission', 'missions',
-        'responsibilities', 'opportunity', 'opportunities', 'candidate', 'candidates', 'ideal', 'position',
-        'role', 'roles', 'team', 'teams', 'project', 'projects', 'management', 'development', 'tools',
-        'using', 'within', 'across', 'including', 'based', 'related', 'field', 'concept', 'concepts',
-        'people', 'ways', 'way', 'needs', 'part', 'year', 'years', 'month', 'months', 'week', 'weeks',
-        'day', 'days', 'finding', 'joining', 'growing', 'bringing', 'advancing', 'accelerate', 'industry',
-        'world', 'business', 'businesses', 'company', 'enterprise', 'organization', 'organizations',
-        'culture', 'mindset', 'empathy', 'bias', 'listening', 'accountability', 'creativity', 'behaviors',
-        'diversity', 'maturity', 'awareness', 'viewpoints', 'behaviors', 'proficiency', 'standards',
-        'models', 'model', 'systems', 'system', 'samples', 'sample', 'simple', 'simply', 'guide', 'done',
-        'get', 'started', 'starter', 'entire', 'journey', 'mark', 'engaging', 'helpful', 'expert',
-        'degree', 'degrees', 'science', 'journalism', 'english', 'field', 'assurance', 'additional',
-        'policies', 'controls', 'administrative', 'procedures', 'maintenance', 'history', 'oriented',
-        'demonstrates', 'demonstrates', 'strategy', 'strategic', 'execute', 'executing', 'driven',
-        'drives', 'aligns', 'aligned', 'differentiators', 'differentiator', 'simplifying', 'seeking',
-        'seek', 'seeks', 'head', 'heads', 'sensitive', 'deriving', 'derive', 'greater', 'careers',
-        'increasing', 'workers', 'confident', 'shift', 'left', 'key', 'value', 'like', 'ideas', 'least',
-        'one', 'address', 'object', 'problem', 'solving', 'track', 'record', 'tooling', 'streamline',
-        'proficiency', 'evolving', 'championing', 'champion', 'solid', 'bonus', 'inactive', 'comparable',
-        'think', 'edits', 'creation', 'expand', 'assurance', 'additional', 'onsite',
-        'what', 'where', 'when', 'how', 'why', 'familiarity', 'qualifications', 'required', 'preferred', 'across', 'through', 'from', 'your', 'will', 'must', 'should',
-        'etc', 'prem', 'review', 'templates', 'initiatives', 'standard', 'standards', 'timelines', 'plus', 'exposure', 'etc', 'etc.',
-        'base', 'customer', 'notes', 'appropriate', 'beyond', 'traditional', 'videos', 'demos', 'tours', 'other', 'passion', 'their', 'proofreading', 'generation', 'scripting', 
-        'bachelor', 'fields', '15+', 'capacity', 'understanding', 'methodologies', 'editing', 'prioritize', 'effectively', 'tight', 'client', 'aids', 'online', 'educational', 
-        'techniques', 'continuous', 'enablement', 'modern', 'proactively', 'contribution', 'improvement', 'practices', 'knowledge', 'understanding', 'lifecycle', 'methods',
-        'method', 'methodologies', 'tools', 'technologies', 'technology', 'skills', 'experience', 'years', 'month', 'months', 'degree', 'degrees', 'education',
-        'prior', 'target', 'targeted', 'significant', 'towards', 'meet', 'minimum', 'relatively', 'engagement', 'initiative', 'audience', 'director', 'operations', 'atlassian', 'attributes', 'features', 'certifications',
-        // HR soft-skills that read as keywords but aren't searchable skills
-        'collaboration', 'collaborative', 'communication', 'communicating', 'partnership', 'partnering',
-        'cross', 'functional', 'cross-functional', 'attention', 'detail', 'leadership', 'collaboration',
-        // Company names — never resume skills
-        'ibm', 'microsoft', 'google', 'amazon', 'oracle', 'sap', 'meta', 'apple', 'hewlett', 'packard',
-        'hpe', 'salesforce', 'cisco', 'synopsys', 'vmware', 'nokia', 'dell', 'reltio',
-        // Size/quantity adjectives
-        'millions', 'thousands', 'hundreds', 'large', 'small', 'big', 'new', 'old', 'senior', 'junior',
-        // Split fragments from compound phrases
-        'not', 'individual', 'topics', 'topic', 'feel', 'feeling', 'felt', 'feels',
-        'enabling', 'enables', 'enabled', 'businesses', 'sensitive', 'deriving', 'derived', 'derives',
-        'smes', 'environments', 'accurate', 'accurately', 'concise', 'style', 'styles', 'update', 'updates',
-        'meet', 'meets', 'abilities', 'proactive', 'self', 'driven', 'background', 'detail', 'details'
-    ]);
-
     const frequencyMap = {};
     words.forEach(w => {
-        if (protectedWords.has(w) || !noiseWords.has(w)) {
+        if (PROTECTED_KEYWORDS.has(w) || !NOISE_KEYWORDS.has(w)) {
             frequencyMap[w] = (frequencyMap[w] || 0) + 1;
         }
     });
@@ -996,7 +986,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             .map(kw => `<span class="keyword-badge keyword-found">${kw}</span> `)
             .join(' ');
         const displayMissing = missing
-            .filter(kw => kw.length > 4 && !noiseWords.has(kw))
+            .filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw))
             .sort((a, b) => jdFreq[b] - jdFreq[a])
             .slice(0, 3);
         document.getElementById('missingKeywords').innerHTML = displayMissing
@@ -1103,7 +1093,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
 
     // 1. Keyword Gap Strategy with SPECIFIC EXAMPLES
     if (keywordMatchPct < 85 && missing.length > 0) {
-        let filteredMissing = missing.filter(kw => kw.length > 4 && !noiseWords.has(kw));
+        let filteredMissing = missing.filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw));
         filteredMissing = Array.from(new Set(filteredMissing));
         const topMissing = filteredMissing.slice(0, 3);
         
