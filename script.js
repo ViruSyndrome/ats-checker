@@ -985,13 +985,30 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             .sort((a, b) => jdFreq[b] - jdFreq[a])
             .map(kw => `<span class="keyword-badge keyword-found">${kw}</span> `)
             .join(' ');
-        const displayMissing = missing
+        const filteredMissing = Array.from(new Set(
+            missing
             .filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw))
             .sort((a, b) => jdFreq[b] - jdFreq[a])
-            .slice(0, 3);
+        ));
+        const displayMissing = filteredMissing.slice(0, 3);
+        const extraMissingCount = Math.max(0, filteredMissing.length - displayMissing.length);
         document.getElementById('missingKeywords').innerHTML = displayMissing
             .map(kw => `<span class="keyword-badge keyword-missing">${kw}</span> `)
-            .join(' ');
+            .join(' ') +
+            (extraMissingCount > 0
+                ? `<div style="margin-top:0.75rem;color:var(--text-muted);font-size:0.82rem;">Showing the top ${displayMissing.length} of ${filteredMissing.length} missing keywords.</div>
+                   <button id="showMissingKeywordsBtn" style="margin-top:0.75rem; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 0.55rem 0.9rem; border-radius: 999px; font-size: 0.82rem; cursor:pointer;">Show all ${filteredMissing.length} missing keywords</button>
+                   <div id="allMissingKeywords" style="display:none; margin-top:0.75rem; line-height:1.6;">${filteredMissing.map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ')}</div>`
+                : '');
+        const showMissingBtn = document.getElementById('showMissingKeywordsBtn');
+        if (showMissingBtn) {
+            showMissingBtn.addEventListener('click', () => {
+                document.getElementById('allMissingKeywords').style.display = 'block';
+                showMissingBtn.style.display = 'none';
+            });
+        }
+        window.lastResults = window.lastResults || {};
+        window.lastResults.filteredMissing = filteredMissing;
     } else {
         document.getElementById('missingKeywords').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;margin:0;">Paste a job description and re-analyse to see which keywords your resume is missing for that specific role.</p>';
         document.getElementById('foundKeywords').innerHTML = '';
@@ -1119,7 +1136,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         
         tips.push({
             type: 'warning',
-            html: `<strong>🎯 Top Missing Keywords (${keywordMatchPct}% match):</strong> Add these to your resume: <strong>${topMissing.join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`
+            html: `<strong>🎯 Top Missing Keywords (${keywordMatchPct}% match):</strong> Showing the top ${topMissing.length}${extraMissingCount > 0 ? ` of ${filteredMissing.length}` : ''} missing keywords. Add these to your resume: <strong>${topMissing.join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`
         });
     }
 
@@ -1256,7 +1273,24 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         tipsList.appendChild(fallbackLi);
     }
 
-    window.lastResults = { finalScore, found, missing, tips, structureScore, impactScore, keywordMatchPct, formatScore, formatCheck, effectiveKeywordScore, projectedWithFix, hasJD, bulletMetrics, contactCheck, weakBulletSamples: bulletMetrics.weakBulletSamples };
+    window.lastResults = {
+        finalScore,
+        found,
+        missing,
+        filteredMissing: window.lastResults && window.lastResults.filteredMissing ? window.lastResults.filteredMissing : [],
+        tips,
+        structureScore,
+        impactScore,
+        keywordMatchPct,
+        formatScore,
+        formatCheck,
+        effectiveKeywordScore,
+        projectedWithFix,
+        hasJD,
+        bulletMetrics,
+        contactCheck,
+        weakBulletSamples: bulletMetrics.weakBulletSamples
+    };
 
     // Save to Local Scan History (100% Client-Side, fully private)
     saveScanToHistory(fileMetadata.name, finalScore);
@@ -1579,15 +1613,16 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     }
 
     // Missing Keywords
-    if (res.missing.length > 0) {
+    const missingList = (res.filteredMissing && res.filteredMissing.length > 0) ? res.filteredMissing : res.missing;
+    if (missingList.length > 0) {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(10);
         doc.setTextColor(239, 68, 68);
-        doc.text(`Missing Skills (${Math.min(res.missing.length, 25)}):`, 20, y);
+        doc.text(`Missing Skills (${Math.min(missingList.length, 25)}${missingList.length > 25 ? ` of ${missingList.length}` : ''}):`, 20, y);
         doc.setFontSize(8);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(71, 85, 85);
-        const missingText = doc.splitTextToSize(res.missing.slice(0, 25).join(" • "), 170);
+        const missingText = doc.splitTextToSize(missingList.slice(0, 25).join(" • "), 170);
         doc.text(missingText, 20, y + 6);
         y += (missingText.length * 4) + 12;
     }
