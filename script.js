@@ -350,6 +350,7 @@ const NOISE_KEYWORDS = new Set([
     'its', 'our', 'you', 'they', 'who', 'we', 'are', 'was', 'were', 'has', 'had', 'been', 'will',
     'can', 'may', 'all', 'any', 'both', 'each', 'few', 'some', 'such', 'only', 'own', 'same',
     'than', 'too', 'very', 'just', 'now', 'then', 'when', 'where', 'why', 'how', 'also', 'back',
+    'about', 'emerging', 'environment', 'others', 'source', 'materials', 'draft', 'initial', 'updated', 'regular', 'manner', 'easily', 'understood', 'adapt', 'quickly', 'perspective',
     'more', 'most', 'much', 'many', 'even', 'well', 'still', 'since', 'while', 'after', 'before',
     'above', 'below', 'near', 'far', 'upon', 'against', 'under', 'around', 'there', 'here', 'these',
     'during', 'between', 'without', 'himself', 'herself', 'themselves', 'whether',
