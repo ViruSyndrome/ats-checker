@@ -321,6 +321,29 @@ function getFormatChecklist(fullText) {
     return { score, issues };
 }
 
+function getCompanyNameCandidates(text) {
+    if (!text) return new Set();
+    const snippet = text.split(/\r?\n/).slice(0, 2).join(' ');
+    const companyPattern = /\b([A-Z][A-Za-z0-9&\-\.\s]{2,100}?)\s+(provides|is|offers|creates|delivers|builds|develops|seeks|looks|specializes|serves|supports|manufactures|designs|consults|helps|partners)/i;
+    const match = snippet.match(companyPattern);
+    const candidates = new Set();
+
+    const addCandidate = (name) => {
+        if (!name) return;
+        name.split(/[\s&\/-]+/).forEach(part => {
+            const normalized = part.trim().toLowerCase();
+            if (normalized.length > 2 && !/^(inc|llc|ltd|corp|co|company|group|solutions|services|technologies|systems)$/.test(normalized)) {
+                candidates.add(normalized);
+            }
+        });
+    };
+
+    if (match) {
+        addCandidate(match[1]);
+    }
+    return candidates;
+}
+
 const PROTECTED_KEYWORDS = new Set(['data', 'training', 'software', 'web', 'agile', 'scrum', 'code', 'writing', 'user', 'seo', 'api']);
 const NOISE_KEYWORDS = new Set([
     'the', 'and', 'for', 'with', 'from', 'that', 'this', 'into', 'over', 'per', 'off', 'out', 'down',
@@ -416,6 +439,7 @@ function getKeywords(text, isJD = false) {
         }
     }
 
+    const companyCandidates = isJD ? getCompanyNameCandidates(processingText) : new Set();
     const words = processingText.toLowerCase()
         .replace(/([a-z])([A-Z])/g, '$1 $2') 
         .replace(/[^\w\s+#+-]/g, ' ') 
@@ -425,6 +449,7 @@ function getKeywords(text, isJD = false) {
 
     const frequencyMap = {};
     words.forEach(w => {
+        if (companyCandidates.has(w)) return;
         if (PROTECTED_KEYWORDS.has(w) || !NOISE_KEYWORDS.has(w)) {
             frequencyMap[w] = (frequencyMap[w] || 0) + 1;
         }
