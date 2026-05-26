@@ -428,7 +428,9 @@ function getKeywords(text, isJD = false) {
         'millions', 'thousands', 'hundreds', 'large', 'small', 'big', 'new', 'old', 'senior', 'junior',
         // Split fragments from compound phrases
         'not', 'individual', 'topics', 'topic', 'feel', 'feeling', 'felt', 'feels',
-        'enabling', 'enables', 'enabled', 'businesses', 'sensitive', 'deriving', 'derived', 'derives'
+        'enabling', 'enables', 'enabled', 'businesses', 'sensitive', 'deriving', 'derived', 'derives',
+        'smes', 'environments', 'accurate', 'accurately', 'concise', 'style', 'styles', 'update', 'updates',
+        'meet', 'meets', 'abilities', 'proactive', 'self', 'driven', 'background', 'detail', 'details'
     ]);
 
     const frequencyMap = {};
@@ -1812,40 +1814,44 @@ setRawViewMode('visual');
 
 // ── Private Scan History Management (Stored client-side in user's browser localStorage) ──
 function saveScanToHistory(filename, score) {
-    const historyKey = 'ats_score_history';
-    let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-    const jdText = document.getElementById('jobDescription')?.value.trim() || '';
-    
-    let jobTitle = 'General Analysis';
-    if (jdText) {
-        const firstLine = jdText.split('\n')[0].trim();
-        if (firstLine.length > 5) {
-            jobTitle = firstLine.substring(0, 35);
-            if (firstLine.length > 35) jobTitle += '...';
+    try {
+        const historyKey = 'ats_score_history';
+        let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        const jdText = document.getElementById('jobDescription')?.value.trim() || '';
+        
+        let jobTitle = 'General Analysis';
+        if (jdText) {
+            const firstLine = jdText.split('\n')[0].trim();
+            if (firstLine.length > 5) {
+                jobTitle = firstLine.substring(0, 35);
+                if (firstLine.length > 35) jobTitle += '...';
+            }
         }
+        
+        const timestamp = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        const historyItem = {
+            id: Date.now(),
+            filename: filename || 'Resume.pdf',
+            score: score,
+            timestamp: timestamp,
+            jobTitle: jobTitle
+        };
+        
+        // Avoid double entries
+        const isDuplicate = history.length > 0 && 
+                            history[0].filename === historyItem.filename && 
+                            history[0].score === historyItem.score;
+                            
+        if (!isDuplicate) {
+            history.unshift(historyItem);
+            if (history.length > 5) history.pop();
+            localStorage.setItem(historyKey, JSON.stringify(history));
+        }
+        
+        renderHistory();
+    } catch (storageError) {
+        console.warn('Unable to save scan history:', storageError);
     }
-    
-    const timestamp = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-    const historyItem = {
-        id: Date.now(),
-        filename: filename || 'Resume.pdf',
-        score: score,
-        timestamp: timestamp,
-        jobTitle: jobTitle
-    };
-    
-    // Avoid double entries
-    const isDuplicate = history.length > 0 && 
-                        history[0].filename === historyItem.filename && 
-                        history[0].score === historyItem.score;
-                        
-    if (!isDuplicate) {
-        history.unshift(historyItem);
-        if (history.length > 5) history.pop();
-        localStorage.setItem(historyKey, JSON.stringify(history));
-    }
-    
-    renderHistory();
 }
 
 function renderHistory() {
