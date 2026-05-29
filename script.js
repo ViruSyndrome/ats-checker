@@ -344,34 +344,12 @@ function getCompanyNameCandidates(text) {
     return candidates;
 }
 
-const PHRASE_KEYWORDS = [
-    'visual studio',
-    'visual studio code',
-    'load balancers',
-    'customer facing',
-    'task oriented',
-    'technical documentation',
-    'cloud networking',
-    'one drive'
-];
-
-function preservePhraseKeywords(text) {
-    let normalized = text;
-    PHRASE_KEYWORDS.forEach(phrase => {
-        const esc = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(`\\b${esc}\\b`, 'gi');
-        normalized = normalized.replace(regex, phrase.replace(/\s+/g, '_'));
-    });
-    return normalized;
-}
-
 const PROTECTED_KEYWORDS = new Set(['data', 'training', 'software', 'web', 'agile', 'scrum', 'code', 'writing', 'user', 'seo', 'api']);
 const NOISE_KEYWORDS = new Set([
     'the', 'and', 'for', 'with', 'from', 'that', 'this', 'into', 'over', 'per', 'off', 'out', 'down',
     'its', 'our', 'you', 'they', 'who', 'we', 'are', 'was', 'were', 'has', 'had', 'been', 'will',
     'can', 'may', 'all', 'any', 'both', 'each', 'few', 'some', 'such', 'only', 'own', 'same',
     'than', 'too', 'very', 'just', 'now', 'then', 'when', 'where', 'why', 'how', 'also', 'back',
-    'about', 'emerging', 'environment', 'others', 'source', 'materials', 'draft', 'initial', 'updated', 'regular', 'manner', 'easily', 'understood', 'adapt', 'quickly', 'perspective', 'trends', 'changes', 'languages', 'verbal', 'fast-paced',
     'more', 'most', 'much', 'many', 'even', 'well', 'still', 'since', 'while', 'after', 'before',
     'above', 'below', 'near', 'far', 'upon', 'against', 'under', 'around', 'there', 'here', 'these',
     'during', 'between', 'without', 'himself', 'herself', 'themselves', 'whether',
@@ -462,13 +440,11 @@ function getKeywords(text, isJD = false) {
     }
 
     const companyCandidates = isJD ? getCompanyNameCandidates(processingText) : new Set();
-    const preservedText = preservePhraseKeywords(processingText);
-    const words = preservedText.toLowerCase()
+    const words = processingText.toLowerCase()
         .replace(/([a-z])([A-Z])/g, '$1 $2') 
         .replace(/[^\w\s+#+-]/g, ' ') 
         .split(/\s+/)
         .map(w => w.trim())
-        .map(w => w.replace(/_/g, ' '))
         .filter(w => w.length > 2 || /^(ai|js|ip|5g|ui|ux|c#|xml)$/.test(w));
 
     const frequencyMap = {};
