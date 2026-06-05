@@ -437,7 +437,15 @@ const NOISE_KEYWORDS = new Set([
     'personnel', 'executive', 'executives', 'owner', 'owners', 'member', 'members',
     'adviser', 'advisers', 'advisor', 'advisors', 'consultant', 'consultants',
     'success', 'successes', 'growth', 'strategic', 'strategy', 'strategies',
-    'passionate', 'empathy'
+    'passionate', 'empathy',
+
+    // Generic JD filler that is NOT a real skill (prevents misleading "missing keyword" advice)
+    'experienced', 'growing', 'grow', 'grows', 'join', 'joining', 'joins', 'nice',
+    'modern', 'million', 'millions', 'proficiency', 'proficient', 'familiarity',
+    'familiar', 'looking', 'seeking', 'seek', 'seeks', 'world', 'class', 'paced',
+    'cutting', 'edge', 'hands', 'bonus', 'preferred', 'preferable', 'desired',
+    'ideal', 'strong', 'solid', 'excellent', 'exciting', 'dynamic', 'leading',
+    'fast', 'growing', 'scalable', 'robust', 'modern', 'across', 'within', 'every'
 ]);
 
 
