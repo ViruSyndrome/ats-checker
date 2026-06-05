@@ -1389,8 +1389,35 @@ document.getElementById('downloadReport').addEventListener('click', () => {
         const doc = new jsPDF();
         const date = new Date().toLocaleDateString();
 
+    // Normalize result shape so the report never crashes on partial/missing data
+    // (e.g., if analysis was interrupted and only a partial lastResults exists)
+    const num = (v, fallback = 0) => (Number.isFinite(v) ? v : fallback);
+    res.found = Array.isArray(res.found) ? res.found : [];
+    res.missing = Array.isArray(res.missing) ? res.missing : [];
+    res.filteredMissing = Array.isArray(res.filteredMissing) ? res.filteredMissing : [];
+    res.tips = Array.isArray(res.tips) ? res.tips.filter(Boolean) : [];
+    res.finalScore = num(res.finalScore);
+    res.structureScore = num(res.structureScore);
+    res.impactScore = num(res.impactScore);
+    res.keywordMatchPct = num(res.keywordMatchPct);
+    res.formatScore = num(res.formatScore);
+    res.effectiveKeywordScore = num(res.effectiveKeywordScore, res.keywordMatchPct);
+    res.projectedWithFix = num(res.projectedWithFix, res.finalScore);
+    res.hasJD = !!res.hasJD;
+    res.formatCheck = (res.formatCheck && Array.isArray(res.formatCheck.issues))
+        ? res.formatCheck
+        : { score: res.formatScore, issues: [] };
+    res.contactCheck = res.contactCheck || {};
+    res.contactCheck.issues = Array.isArray(res.contactCheck.issues) ? res.contactCheck.issues : [];
+    res.contactCheck.warnings = Array.isArray(res.contactCheck.warnings) ? res.contactCheck.warnings : [];
+    res.bulletMetrics = res.bulletMetrics || {};
+    res.bulletMetrics.withMetrics = num(res.bulletMetrics.withMetrics);
+    res.bulletMetrics.total = num(res.bulletMetrics.total);
+    res.bulletMetrics.pct = num(res.bulletMetrics.pct);
+    res.weakBulletSamples = Array.isArray(res.weakBulletSamples) ? res.weakBulletSamples : [];
+
     // Helper: Strip HTML tags AND emojis/non-ASCII for PDF
-    const cleanText = (str) => str
+    const cleanText = (str) => String(str == null ? '' : str)
         .replace(/<\/?[^>]+(>|$)/g, "")
         .replace(/&nbsp;/g, ' ')
         .replace(/[^\x00-\x7E]/g, '')  // strip emojis and non-ASCII
@@ -1610,8 +1637,8 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     y = 48;
     res.tips.forEach((tipObj, idx) => {
         // Handle new tip object structure {type, html}
-        const tipHtml = tipObj.html || tipObj;
-        const tipType = tipObj.type || 'info';
+        const tipHtml = (tipObj && tipObj.html) ? tipObj.html : (typeof tipObj === 'string' ? tipObj : '');
+        const tipType = (tipObj && tipObj.type) || 'info';
 
         // Convert <br> to newlines to preserve formatting, THEN strip HTML tags AND emojis
         let rawText = tipHtml.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
