@@ -113,9 +113,9 @@
                 <div class="card">
                     <div class="card-title">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                        Job Description <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;align-self:center;padding:2px 8px;background:rgba(148,163,184,0.1);border-radius:99px;white-space:nowrap;">(optional — for keyword match)</span>
+                        Job Description <span class="inline-style-c4cdb0">(optional — for keyword match)</span>
                     </div>
-                    <textarea id="jobDescription" placeholder="Paste the job description here to get keyword match score. Leave empty for a base resume score."></textarea>
+                    <textarea id="jobDescription" aria-label="Job Description" placeholder="Paste the job description here to get keyword match score. Leave empty for a base resume score."></textarea>
                 </div>
 
                 <!-- Right: Resume Upload -->
@@ -127,30 +127,30 @@
                     <div class="upload-area" id="dropZone">
                         <div class="upload-icon">📄</div>
                         <p>Drag & drop your resume (PDF or DOCX)</p>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">or click to browse</p>
+                        <p class="inline-style-a71c0e">or click to browse</p>
                         <input type="file" id="fileInput" hidden accept=".pdf,.docx">
-                        <p id="fileName" style="margin-top: 1rem; font-weight: 600; color: var(--success); word-break: break-word; overflow-wrap: break-word; max-width: 100%; font-size: 0.88rem; line-height: 1.4; text-align: center;"></p>
+                        <p id="fileName" class="inline-style-f4f939"></p>
                     </div>
-                    <button class="secondary-btn" id="tryExampleBtn" style="width: 100%; margin-top: 1rem;">Try with Example Resume</button>
+                    <button class="secondary-btn inline-style-d521cd" id="tryExampleBtn">Try with Example Resume</button>
                     <button class="analyze-btn" id="analyzeBtn">
                         <span class="btn-text">Analyze Resume</span>
-                        <span class="btn-loader" style="display: none;">⏳ Analyzing...</span>
+                        <span class="btn-loader inline-style-224b51">⏳ Analyzing...</span>
                     </button>
                 </div>
             </div>
 
             <!-- Client-Side Scan History (100% Private, stored in user's browser localStorage) -->
-            <div class="card" id="historyCard" style="display: none; margin-top: 1.5rem; margin-bottom: 2rem;">
-                <div class="card-title" style="margin-bottom: 1rem;">
+            <div class="card inline-style-f3ef69" id="historyCard">
+                <div class="card-title inline-style-4986ec">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    Recent Scans <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;align-self:center;padding:2px 8px;background:rgba(34,197,94,0.1);color:var(--success);border-radius:99px;white-space:nowrap;">100% Private (Local Storage)</span>
+                    Recent Scans <span class="inline-style-147513">100% Private (Local Storage)</span>
                 </div>
                 <div id="historyList"></div>
             </div>
 
             <div id="results" class="results-section">
                 <!-- 1. CRITICAL ALERT ZONE (High-Intensity warnings like Template issues) -->
-                <div id="criticalAlert" style="display:none; margin-bottom: 2rem;"></div>
+                <div id="criticalAlert" class="inline-style-60021d"></div>
 
                 <!-- 2. SCORE + BREAKDOWN -->
                 <div class="results-grid">
@@ -163,9 +163,9 @@
                             <div id="scoreValue" class="score-value">0</div>
                         </div>
                         <h2>ATS Compatibility Score</h2>
-                        <div id="scoreVerdictBadge" style="display:inline-block; margin: 0.4rem 0 0.6rem; padding: 4px 16px; border-radius: 99px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; background: rgba(99,102,241,0.15); color: var(--accent);">Analyzing...</div>
-                        <p id="scoreText" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.3rem;">Keyword match x template compliance x structure x impact — mirroring how enterprise ATS systems rank candidates.</p>
-                        <button id="downloadReport" class="secondary-btn" style="margin-top: 1rem; width: 100%;">&#8595; Download Full PDF Report</button>
+                        <div id="scoreVerdictBadge" class="inline-style-df703b">Analyzing...</div>
+                        <p id="scoreText" class="inline-style-1f8f6c">Keyword match x template compliance x structure x impact — mirroring how enterprise ATS systems rank candidates.</p>
+                        <button id="downloadReport" class="secondary-btn inline-style-8a5dc8">&#8595; Download Full PDF Report</button>
                     </div>
 
                     <div class="stats-card">
@@ -178,7 +178,7 @@
                                 </span>
                                 <span id="formatPct">0%</span>
                             </div>
-                            <div class="progress-bar"><div id="formatBar" class="progress-fill" style="width: 0%"></div></div>
+                            <div class="progress-bar"><div id="formatBar" class="progress-fill inline-style-759002"></div></div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-header">
@@ -189,7 +189,7 @@
                                 </span>
                                 <span id="structurePct">0%</span>
                             </div>
-                            <div class="progress-bar"><div id="structureBar" class="progress-fill" style="width: 0%"></div></div>
+                            <div class="progress-bar"><div id="structureBar" class="progress-fill inline-style-759002"></div></div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-header">
@@ -200,7 +200,7 @@
                                 </span>
                                 <span id="keywordPct">0%</span>
                             </div>
-                            <div class="progress-bar"><div id="keywordBar" class="progress-fill" style="width: 0%"></div></div>
+                            <div class="progress-bar"><div id="keywordBar" class="progress-fill inline-style-759002"></div></div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-header">
@@ -211,34 +211,34 @@
                                 </span>
                                 <span id="impactPct">0%</span>
                             </div>
-                            <div class="progress-bar"><div id="impactBar" class="progress-fill" style="width: 0%"></div></div>
+                            <div class="progress-bar"><div id="impactBar" class="progress-fill inline-style-759002"></div></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3. PRIORITY ACTION PLAN -->
-                <div class="card" style="margin-top: 1.5rem; border-left: 3px solid var(--accent);">
+                <div class="card inline-style-aa14bf">
                     <div class="card-title">🎯 Your Priority Action Plan</div>
-                    <p style="color: var(--text-muted); font-size: 0.83rem; margin-bottom: 1rem;">Fixes are ranked by impact. Address #1 before working on anything else.</p>
+                    <p class="inline-style-05a4b0">Fixes are ranked by impact. Address #1 before working on anything else.</p>
                     <ul id="tipsList"></ul>
                 </div>
 
                 <!-- 4. KEYWORDS: Missing then Found -->
-                <div class="tool-grid" style="margin-top: 1rem;">
+                <div class="tool-grid inline-style-988c5f">
                     <div class="card">
-                        <div class="card-title">❌ Missing Keywords <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;">Top keywords shown for clarity</span></div>
+                        <div class="card-title">❌ Missing Keywords <span class="inline-style-e9d0b4">Top keywords shown for clarity</span></div>
                         <div id="missingKeywords"></div>
                         <p class="muted-note">We filter boilerplate terms like “etc.” and “prem.” so the missing keyword list stays focused on meaningful skills and role-specific terms.</p>
                     </div>
                     <div class="card">
-                        <div class="card-title">✅ Found Keywords <span style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:8px;">Already matched in your resume</span></div>
+                        <div class="card-title">✅ Found Keywords <span class="inline-style-e9d0b4">Already matched in your resume</span></div>
                         <div id="foundKeywords"></div>
                     </div>
                 </div>
 
                 <!-- 5. TECHNICAL DETAILS — Always visible now -->
-                <div class="technical-breakdown" style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 2rem;">
-                    <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 1.1rem;">
+                <div class="technical-breakdown inline-style-5e5ffb">
+                    <h3 class="inline-style-972078">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                         Technical Breakdown & Raw Analysis
                     </h3>
@@ -254,9 +254,9 @@
                         </div>
                     </div>
                     
-                    <div class="card" style="margin-top: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <div class="card-title" style="margin-bottom: 0;">How ATS Reads Your Resume</div>
+                    <div class="card inline-style-988c5f">
+                        <div class="inline-style-6e2da4">
+                            <div class="card-title inline-style-c42e0e">How ATS Reads Your Resume</div>
                             <div class="view-toggle-group">
                                 <button id="viewVisual" class="toggle-btn active">Visual View</button>
                                 <button id="viewStream" class="toggle-btn">ATS Stream (Word Salad)</button>
@@ -266,16 +266,15 @@
                             <span id="rawViewStatus" class="raw-view-status">Visual Reconstruction mode active — showing your resume in parsed order for readability.</span>
                             <button id="copyRawTextBtn" class="secondary-btn small-btn" type="button">Copy current view</button>
                         </div>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="rawTextDesc">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically. Use the copy button to save or share the current view.</p>
-                        <textarea id="rawTextPreview" readonly style="width: 100%; height: 250px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
+                        <p class="inline-style-bc6d37" id="rawTextDesc">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically. Use the copy button to save or share the current view.</p>
+                        <textarea id="rawTextPreview" aria-label="Raw Text Preview" readonly class="inline-style-9af1f2"></textarea>
                     </div>
                 </div>
             </div>
 
             <!-- Ad Zone: In-Content -->
             <div class="ad-zone ad-content" aria-label="Advertisement">
-                <ins class="adsbygoogle"
-                     style="display:block;text-align:center;"
+                <ins class="adsbygoogle inline-style-cb6278"
                      data-ad-layout="in-article"
                      data-ad-format="fluid"
                      data-ad-client="ca-pub-2959862133855422"
@@ -295,8 +294,8 @@
             </div>
 
             <!-- FAQ Section for SEO -->
-            <div class="card" id="faq" style="margin-top: 3rem;">
-                <h2 style="margin-bottom: 2rem;">Frequently Asked Questions</h2>
+            <div class="card inline-style-3c92e1" id="faq">
+                <h2 class="inline-style-257995">Frequently Asked Questions</h2>
                 
                 <div class="faq-item">
                     <h3>How does the scoring work?</h3>
@@ -366,40 +365,40 @@
                 </div>
             </div>
 
-            <section class="featured-guides" style="margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--glass-border);">
-                <div style="text-align: center; margin-bottom: 2.5rem;">
-                    <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Learn How to Beat the ATS</h2>
-                    <p style="color: var(--text-muted);">Master the technology and keywords behind the modern recruitment filter.</p>
+            <section class="featured-guides inline-style-54a232">
+                <div class="inline-style-dab081">
+                    <h2 class="inline-style-fe9dcb">Learn How to Beat the ATS</h2>
+                    <p class="inline-style-7abb3a">Master the technology and keywords behind the modern recruitment filter.</p>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                    <a href="guides/how-ats-works.html" style="text-decoration: none; color: inherit;">
-                        <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
-                            <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">How ATS Works: The Complete Guide</h3>
-                            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">Understand exactly how Workday, Taleo, and Greenhouse parse and score your resume.</p>
-                            <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
+                <div class="inline-style-1974fe">
+                    <a href="guides/how-ats-works.html" class="inline-style-09a36b">
+                        <div class="card inline-style-bf4089">
+                            <h3 class="inline-style-10ed18">How ATS Works: The Complete Guide</h3>
+                            <p class="inline-style-be958b">Understand exactly how Workday, Taleo, and Greenhouse parse and score your resume.</p>
+                            <span class="inline-style-c39962">Read Guide →</span>
                         </div>
                     </a>
                     
-                    <a href="guides/resume-keywords-mastery.html" style="text-decoration: none; color: inherit;">
-                        <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
-                            <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">Mastering Resume Keywords</h3>
-                            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">Learn the difference between keyword stuffing and strategic semantic optimization.</p>
-                            <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
+                    <a href="guides/resume-keywords-mastery.html" class="inline-style-09a36b">
+                        <div class="card inline-style-bf4089">
+                            <h3 class="inline-style-10ed18">Mastering Resume Keywords</h3>
+                            <p class="inline-style-be958b">Learn the difference between keyword stuffing and strategic semantic optimization.</p>
+                            <span class="inline-style-c39962">Read Guide →</span>
                         </div>
                     </a>
                     
-                    <a href="guides/pdf-vs-docx-resume.html" style="text-decoration: none; color: inherit;">
-                        <div class="card" style="padding: 1.5rem; transition: transform 0.2s; height: 100%; display: flex; flex-direction: column;">
-                            <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.75rem;">PDF vs. DOCX: Best Format</h3>
-                            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; flex-grow: 1;">The technical breakdown of file structures and which one guarantees your resume passes.</p>
-                            <span style="display: block; margin-top: 1rem; font-weight: 600; font-size: 0.85rem;">Read Guide →</span>
+                    <a href="guides/pdf-vs-docx-resume.html" class="inline-style-09a36b">
+                        <div class="card inline-style-bf4089">
+                            <h3 class="inline-style-10ed18">PDF vs. DOCX: Best Format</h3>
+                            <p class="inline-style-be958b">The technical breakdown of file structures and which one guarantees your resume passes.</p>
+                            <span class="inline-style-c39962">Read Guide →</span>
                         </div>
                     </a>
                 </div>
                 
-                <div style="text-align: center; margin-top: 2rem;">
-                    <a href="guides/index.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">View All Guides →</a>
+                <div class="inline-style-6d56db">
+                    <a href="guides/index.html" class="inline-style-c127c3">View All Guides →</a>
                 </div>
             </section>
         </main>
@@ -413,7 +412,7 @@
                     <a href="contact.html">Contact Us</a>
                     <a href="about.html">About Us</a>
                     <a href="guides/index.html">Guides</a>
-                    <a href="#" id="debugBtn" style="opacity:0.6;font-size:0.8rem">🐞 Issues? Download Debug Log</a>
+                    <a href="#" id="debugBtn" class="inline-style-c39ed1">🐞 Issues? Download Debug Log</a>
                 </div>
             </div>
         </footer>
