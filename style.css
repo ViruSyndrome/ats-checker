@@ -1096,6 +1096,74 @@ h1, h2, h3, .logo-text, .logo-accent, .score-value, .card-title, .stat-header sp
 
 
 
+/* =============================================
+   STATIC PAGE STYLES (About, Guides)
+   ============================================= */
+.maker-card {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  background: rgba(255,255,255,0.03);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  margin: 2rem 0;
+}
+.maker-card-body {
+  flex: 1;
+}
+.maker-card-p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+.scoring-box {
+  background: rgba(99, 102, 241, 0.05);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  margin-bottom: 2rem;
+}
+.scoring-box h4 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+.scoring-list { margin-bottom: 1.5rem; }
+.scoring-list-last { margin-bottom: 0; }
+.contribute-section {
+  margin-top: 60px;
+  padding: 30px;
+  background: rgba(0,0,0,0.02);
+  border-radius: 16px;
+  text-align: center;
+  border: 1px dashed var(--primary);
+}
+.contribute-section h2 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+.contribute-section p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin-bottom: 24px;
+  line-height: 1.8;
+}
+.btn-support {
+  display: inline-block;
+  font-size: 1.1rem;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, var(--primary), #6366f1);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.guide-main { padding: 2rem 0 4rem; }
+.guides-main { padding: 4rem 0 6rem; }
+
 /* Auto-extracted inline styles */
 .inline-style-c4cdb0 {
     font-size:0.72rem;
