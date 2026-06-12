@@ -1,3 +1,50 @@
+// ── Safe localStorage Wrapper ──────────────────────────────────────────────
+// Catches QuotaExceededError and private-browsing SecurityError silently.
+// Usage: lsSet('key', value)  lsGet('key', fallback)  lsDel('key')
+// ──────────────────────────────────────────────────────────────────────────
+const _ls = (() => {
+  const _ok = (() => { try { _ls.setRaw('__ls_test__', '1'); _ls.del('__ls_test__'); return true; } catch { return false; } })();
+  return {
+    get(key, fallback = null) {
+      if (!_ok) return fallback;
+      try { const v = _ls.getRaw(key); return v !== null ? JSON.parse(v) : fallback; } catch { return fallback; }
+    },
+    set(key, val) {
+      if (!_ok) return false;
+      try { _ls.setRaw(key, JSON.stringify(val)); return true; }
+      catch (e) {
+        if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+          console.warn('[Storage] Quota exceeded — clearing old data to make room.');
+          try { _ls.clear(); _ls.setRaw(key, JSON.stringify(val)); } catch { return false; }
+        }
+        return false;
+      }
+    },
+    setRaw(key, val) {
+      if (!_ok) return false;
+      try { _ls.setRaw(key, val); return true; }
+      catch (e) {
+        if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+          console.warn('[Storage] Quota exceeded — clearing old data to make room.');
+          try { _ls.clear(); _ls.setRaw(key, val); } catch { return false; }
+        }
+        return false;
+      }
+    },
+    getRaw(key, fallback = null) {
+      if (!_ok) return fallback;
+      try { const v = _ls.getRaw(key); return v !== null ? v : fallback; } catch { return fallback; }
+    },
+    del(key)   { if (!_ok) return; try { _ls.del(key); } catch {} },
+    clear()    { if (!_ok) return; try { _ls.clear(); } catch {} },
+  };
+})();
+// Convenience aliases
+function lsGet(key, fallback = null) { return _ls.get(key, fallback); }
+function lsSet(key, val)             { return _ls.set(key, val); }
+function lsDel(key)                  { return _ls.del(key); }
+// ──────────────────────────────────────────────────────────────────────────
+
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
@@ -20,12 +67,12 @@ function trackEvent(eventName, params = {}) {
 
 // Cookie Consent
 function acceptCookies() {
-    localStorage.setItem('cookieConsent', 'true');
+    _ls.setRaw('cookieConsent', 'true');
     document.getElementById('cookieConsent').classList.add('hidden');
 }
 
 window.addEventListener('load', () => {
-    if (localStorage.getItem('cookieConsent') === 'true') {
+    if (_ls.getRaw('cookieConsent') === 'true') {
         document.getElementById('cookieConsent').classList.add('hidden');
     }
     renderHistory();
@@ -1943,7 +1990,7 @@ setRawViewMode('visual');
 function saveScanToHistory(filename, score) {
     try {
         const historyKey = 'ats_score_history';
-        let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        let history = JSON.parse(_ls.getRaw(historyKey) || '[]');
         const jdText = document.getElementById('jobDescription')?.value.trim() || '';
         
         let jobTitle = 'General Analysis';
@@ -1972,7 +2019,7 @@ function saveScanToHistory(filename, score) {
         if (!isDuplicate) {
             history.unshift(historyItem);
             if (history.length > 5) history.pop();
-            localStorage.setItem(historyKey, JSON.stringify(history));
+            _ls.setRaw(historyKey, JSON.stringify(history));
         }
         
         renderHistory();
@@ -1982,7 +2029,7 @@ function saveScanToHistory(filename, score) {
 }
 
 function renderHistory() {
-    const history = JSON.parse(localStorage.getItem('ats_score_history') || '[]');
+    const history = JSON.parse(_ls.getRaw('ats_score_history') || '[]');
     const historyCard = document.getElementById('historyCard');
     const historyList = document.getElementById('historyList');
     if (!historyList || !historyCard) return;
