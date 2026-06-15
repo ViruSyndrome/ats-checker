@@ -1,0 +1,98 @@
+# GetATSReady — llms.txt
+# Free ATS resume checker — https://www.getatsready.com
+# Launched: 1 May 2026
+
+## What is GetATSReady?
+
+GetATSReady (getatsready.com) is a free, browser-based ATS (Applicant Tracking System) resume checker. It scores your resume against a job description, shows the keywords you are missing, and tells you exactly what to fix — all without uploading your resume to any server. No sign-up required.
+
+## What problem does it solve?
+
+Over 75% of resumes are rejected by ATS software before a human reads them. Job seekers paste their resume and a job description, and GetATSReady instantly shows a match score, missing hard skills, missing soft skills, and formatting issues — in under 5 seconds, completely free.
+
+## Key features
+
+- ATS match score (0–100%) against any job description
+- Missing keywords highlighted by category (hard skills, soft skills, action verbs, qualifications)
+- Keyword density analysis
+- Formatting issue detection (tables, headers, graphics, columns that break ATS parsing)
+- Role-specific ATS resume tips for 50+ job titles
+- ATS-specific guidance for major platforms: Workday, Taleo, Greenhouse, iCIMS, Lever, BambooHR, Jobvite, SmartRecruiters
+- All processing in-browser — resume text never leaves the device
+- Free, no account, no trial, no credit card
+
+## Who uses it?
+
+- Job seekers preparing resumes for corporate or tech roles
+- Recent graduates optimising their first resume
+- Career changers tailoring resumes for a new industry
+- Recruiters testing how client resumes score against postings
+- HR professionals checking job description keyword strength
+
+## Frequently asked questions
+
+Q: Is GetATSReady completely free?
+A: Yes. Every feature is free — match scoring, keyword analysis, formatting check, role tips, ATS-specific guides — with no subscription, no trial and no credit card.
+
+Q: Is my resume safe? Does it get stored?
+A: No. Your resume text is processed entirely in your browser using JavaScript. It is never sent to any server and never stored anywhere.
+
+Q: How does the ATS score work?
+A: GetATSReady compares the words and phrases in your resume against the job description using keyword frequency and proximity analysis. It identifies which important terms from the job description are present or missing and produces a 0–100% match score.
+
+Q: What is an ATS and why does it matter?
+A: An Applicant Tracking System (ATS) is software used by employers to filter and rank job applications automatically. Resumes that do not match the job description keywords are rejected before a human recruiter ever sees them.
+
+Q: Which ATS platforms does it cover?
+A: GetATSReady has specific guidance for Workday, Taleo, Greenhouse, iCIMS, Lever, BambooHR, Jobvite, and SmartRecruiters — the most widely used ATS platforms at large employers.
+
+Q: Does it work for all industries and job roles?
+A: Yes. You can paste any job description. GetATSReady also has role-specific pages for 50+ roles including software engineer, product manager, data scientist, registered nurse, financial analyst, project manager, and more.
+
+Q: What resume format works best for ATS?
+A: Plain single-column layouts in .docx or .pdf (text-based) parse best. Avoid tables, text boxes, multi-column layouts, headers/footers, and graphics. GetATSReady's formatting checker flags these issues automatically.
+
+Q: How is GetATSReady different from Jobscan?
+A: Jobscan charges $49–99/month and limits free scans to 5 per month. GetATSReady is fully free with unlimited scans, no account required, and all processing happens in your browser so your resume stays private.
+
+## Pages and tools
+
+- Homepage + ATS checker tool: https://www.getatsready.com/
+- How ATS Works guide: https://www.getatsready.com/guides/how-ats-works.html
+- Resume Keywords Mastery guide: https://www.getatsready.com/guides/resume-keywords-mastery.html
+- AI Resume Optimisation guide: https://www.getatsready.com/guides/ai-resume-optimization.html
+- PDF vs DOCX Resume guide: https://www.getatsready.com/guides/pdf-vs-docx-resume.html
+
+## ATS platform pages
+- https://www.getatsready.com/workday-resume-checker.html
+- https://www.getatsready.com/taleo-resume-checker.html
+- https://www.getatsready.com/greenhouse-resume-checker.html
+- https://www.getatsready.com/icims-resume-checker.html
+- https://www.getatsready.com/lever-resume-checker.html
+- https://www.getatsready.com/bamboohr-resume-checker.html
+- https://www.getatsready.com/jobvite-resume-checker.html
+- https://www.getatsready.com/smartrecruiters-resume-checker.html
+
+## Role-specific pages (sample)
+- https://www.getatsready.com/role/software-engineer.html
+- https://www.getatsready.com/role/product-manager.html
+- https://www.getatsready.com/role/data-scientist.html
+- https://www.getatsready.com/role/registered-nurse.html
+- https://www.getatsready.com/role/financial-analyst.html
+- https://www.getatsready.com/role/project-manager.html
+- https://www.getatsready.com/role/marketing-manager.html
+- https://www.getatsready.com/role/human-resources.html
+- https://www.getatsready.com/role/ux-designer.html
+- https://www.getatsready.com/role/teacher.html
+
+## Technical details
+
+- Pure vanilla HTML, CSS, JavaScript — no framework, no backend
+- All keyword matching runs client-side in the browser
+- No cookies, no user accounts, no resume storage
+- Hosted: GitHub Pages with custom domain
+- Analytics: Google Analytics 4 (G-8HMGTGQ4B8)
+
+## Contact
+
+hello@getatsready.com
