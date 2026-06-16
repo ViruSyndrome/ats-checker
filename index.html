@@ -47,6 +47,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- SEO Schema: Jobscan Level -->
     <script type="application/ld+json">
+    [
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -55,12 +56,60 @@
       "description": "Free, 100% private ATS resume checker. Optimize your resume for job descriptions without signing up.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "All",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does the ATS resume scoring work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "GetATSReady uses a multiplicative scoring model that mimics real ATS behaviour. Template Compliance acts as a multiplier on your keyword score — a broken template (multi-column, tables) can cut your effective score by up to 70%. The four factors are: Template Compliance (multiplier), Keyword Match (50%), Structure (25%), and Impact/Metrics (25%)." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is GetATSReady free and private?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Everything is processed locally in your browser using JavaScript — your resume never leaves your device. There is no sign-up, no account, and no data storage. The tool is completely free with no subscription." }
+        },
+        {
+          "@type": "Question",
+          "name": "What resume file formats are supported?",
+          "acceptedAnswer": { "@type": "Answer", "text": "PDF and DOCX (Microsoft Word) files are supported. PDF is recommended as it preserves formatting and is widely accepted by ATS systems." }
+        },
+        {
+          "@type": "Question",
+          "name": "How accurate is the ATS score?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The algorithm replicates real ATS behaviour based on Jobscan research covering 97.8% of Fortune 500 ATS systems including Workday, Taleo, Greenhouse, and iCIMS. The multiplicative model means a structurally broken template reduces your score even if keyword content is strong, exactly as real ATS software behaves." }
+        },
+        {
+          "@type": "Question",
+          "name": "What ATS score should I aim for?",
+          "acceptedAnswer": { "@type": "Answer", "text": "First ensure Template Compliance is 85% or above — a broken template tanks your score regardless of keyword quality. With a clean template, aim for 75 or above (good) or 85 or above (excellent). The single biggest improvement most candidates can make is switching from a multi-column or Canva-style template to a clean single-column layout." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I improve my ATS score?",
+          "acceptedAnswer": { "@type": "Answer", "text": "In order of impact: (1) Fix your template — switch to single-column if Template Compliance is below 85%. (2) Add missing keywords from the job description naturally into your experience section. (3) Use standard section headers like Professional Experience, Education, Skills, Certifications. (4) Add quantifiable achievements with numbers and percentages." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the Raw Text Preview?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The Raw Text Preview shows exactly what an ATS parser sees when it extracts text from your resume file. If you see scrambled words, merged sentences, or word salad, your template is structurally broken. Many multi-column or graphic-heavy templates look great to humans but are unreadable to ATS software, causing automatic rejection." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does GetATSReady work for all industries and job roles?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. The keyword matching uses semantic analysis that works across industries — tech, finance, healthcare, marketing, engineering, and more. Role-specific ATS tips are also available for over 50 job titles including software engineer, product manager, data scientist, registered nurse, and financial analyst." }
+        },
+        {
+          "@type": "Question",
+          "name": "How is GetATSReady different from Jobscan?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Jobscan charges $49–99 per month and limits free scans to 5 per month. GetATSReady is fully free with unlimited scans, no account required, and all processing happens in your browser so your resume stays completely private." }
+        }
+      ]
     }
+    ]
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959862133855422" crossorigin="anonymous"></script>
     <!-- PDF and DOCX libraries -->
