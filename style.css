@@ -192,7 +192,7 @@ header h1 {
     display: inline-block;
     padding: 0.7rem 1.5rem;
     background: linear-gradient(135deg, #6366f1, #c084fc);
-    color: #fff;
+    color: #fff !important;
     border-radius: 0.75rem;
     font-weight: 700;
     font-size: 0.9rem;
@@ -1155,7 +1155,7 @@ h1, h2, h3, .logo-text, .logo-accent, .score-value, .card-title, .stat-header sp
   font-size: 1.1rem;
   padding: 12px 30px;
   background: linear-gradient(135deg, var(--primary), #6366f1);
-  color: #fff;
+  color: #fff !important;
   border-radius: 12px;
   font-weight: 700;
   text-decoration: none;
