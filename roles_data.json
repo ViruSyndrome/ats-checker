@@ -1,0 +1,452 @@
+[
+    {
+        "role_id": "software-engineer",
+        "title": "Software Engineer",
+        "seo_title": "Free Software Engineer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Software Engineer resume against ATS parsers. Discover exactly which keywords and skills you are missing for Software Engineer jobs.",
+        "hero_h1": "Software Engineer ATS Resume Checker",
+        "hero_sub": "Score your software engineer resume. Discover exactly which skills, like Python, AWS, React, and Java, you are missing.",
+        "seo_paragraph": "As a Software Engineer, your resume will likely be parsed by technical ATS filters like Workday or Greenhouse. These systems specifically scan for hard skills and industry terms. Our scanner ensures your technical stack, frameworks, and programming languages are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "data-analyst",
+        "title": "Data Analyst",
+        "seo_title": "Free Data Analyst ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Data Analyst resume against ATS parsers. Discover exactly which keywords and skills you are missing for Data Analyst jobs.",
+        "hero_h1": "Data Analyst ATS Resume Checker",
+        "hero_sub": "Score your data analyst resume. Discover exactly which skills, like SQL, Tableau, Python, and Excel, you are missing.",
+        "seo_paragraph": "As a Data Analyst, your resume will likely be parsed by data-driven ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your data visualization tools, querying languages, and analytics platforms are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "product-manager",
+        "title": "Product Manager",
+        "seo_title": "Free Product Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Product Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Product Manager jobs.",
+        "hero_h1": "Product Manager ATS Resume Checker",
+        "hero_sub": "Score your product manager resume. Discover exactly which skills, like Agile, Jira, roadmap, and stakeholder management, you are missing.",
+        "seo_paragraph": "As a Product Manager, your resume will likely be parsed by product-focused ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your product lifecycle, cross-functional leadership, and metrics are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "registered-nurse",
+        "title": "Registered Nurse",
+        "seo_title": "Free Registered Nurse ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Registered Nurse resume against ATS parsers. Discover exactly which keywords and skills you are missing for Registered Nurse jobs.",
+        "hero_h1": "Registered Nurse ATS Resume Checker",
+        "hero_sub": "Score your registered nurse resume. Discover exactly which skills, like BLS, patient care, Epic, and triage, you are missing.",
+        "seo_paragraph": "As a Registered Nurse, your resume will likely be parsed by healthcare ATS systems like Taleo. These systems specifically scan for hard skills and industry terms. Our scanner ensures your clinical skills, certifications, and patient care specialties are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "financial-analyst",
+        "title": "Financial Analyst",
+        "seo_title": "Free Financial Analyst ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Financial Analyst resume against ATS parsers. Discover exactly which keywords and skills you are missing for Financial Analyst jobs.",
+        "hero_h1": "Financial Analyst ATS Resume Checker",
+        "hero_sub": "Score your financial analyst resume. Discover exactly which skills, like financial modeling, Excel, forecasting, and ERP, you are missing.",
+        "seo_paragraph": "As a Financial Analyst, your resume will likely be parsed by finance and banking ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your financial modeling, variance analysis, and reporting standards are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "project-manager",
+        "title": "Project Manager",
+        "seo_title": "Free Project Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Project Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Project Manager jobs.",
+        "hero_h1": "Project Manager ATS Resume Checker",
+        "hero_sub": "Score your project manager resume. Discover exactly which skills, like PMP, Agile, risk management, and budget tracking, you are missing.",
+        "seo_paragraph": "As a Project Manager, your resume will likely be parsed by enterprise ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your project lifecycle, budget management, and methodology certifications are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "marketing-manager",
+        "title": "Marketing Manager",
+        "seo_title": "Free Marketing Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Marketing Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Marketing Manager jobs.",
+        "hero_h1": "Marketing Manager ATS Resume Checker",
+        "hero_sub": "Score your marketing manager resume. Discover exactly which skills, like SEO, Google Analytics, campaigns, and CRM, you are missing.",
+        "seo_paragraph": "As a Marketing Manager, your resume will likely be parsed by marketing ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your digital marketing channels, analytics, and campaign ROI are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "data-scientist",
+        "title": "Data Scientist",
+        "seo_title": "Free Data Scientist ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Data Scientist resume against ATS parsers. Discover exactly which keywords and skills you are missing for Data Scientist jobs.",
+        "hero_h1": "Data Scientist ATS Resume Checker",
+        "hero_sub": "Score your data scientist resume. Discover exactly which skills, like Machine Learning, Python, R, and TensorFlow, you are missing.",
+        "seo_paragraph": "As a Data Scientist, your resume will likely be parsed by technical AI and data ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your machine learning algorithms, statistical modeling, and deep learning frameworks are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "human-resources-manager",
+        "title": "Human Resources Manager",
+        "seo_title": "Free Human Resources Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Human Resources Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Human Resources Manager jobs.",
+        "hero_h1": "Human Resources Manager ATS Resume Checker",
+        "hero_sub": "Score your human resources manager resume. Discover exactly which skills, like employee relations, onboarding, HRIS, and compliance, you are missing.",
+        "seo_paragraph": "As a Human Resources Manager, your resume will likely be parsed by HR-specific ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your HR compliance, talent acquisition, and employee lifecycle management are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "graphic-designer",
+        "title": "Graphic Designer",
+        "seo_title": "Free Graphic Designer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Graphic Designer resume against ATS parsers. Discover exactly which keywords and skills you are missing for Graphic Designer jobs.",
+        "hero_h1": "Graphic Designer ATS Resume Checker",
+        "hero_sub": "Score your graphic designer resume. Discover exactly which skills, like Adobe Creative Suite, Figma, typography, and UI/UX, you are missing.",
+        "seo_paragraph": "As a Graphic Designer, your resume will likely be parsed by creative ATS and portfolio parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your design software, visual communication, and digital layout are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "sales-representative",
+        "title": "Sales Representative",
+        "seo_title": "Free Sales Representative ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Sales Representative resume against ATS parsers. Discover exactly which keywords and skills you are missing for Sales Representative jobs.",
+        "hero_h1": "Sales Representative ATS Resume Checker",
+        "hero_sub": "Score your sales representative resume. Discover exactly which skills, like B2B sales, CRM, cold calling, and Salesforce, you are missing.",
+        "seo_paragraph": "As a Sales Representative, your resume will likely be parsed by sales and CRM ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your sales quotas, account management, and lead generation are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "account-executive",
+        "title": "Account Executive",
+        "seo_title": "Free Account Executive ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Account Executive resume against ATS parsers. Discover exactly which keywords and skills you are missing for Account Executive jobs.",
+        "hero_h1": "Account Executive ATS Resume Checker",
+        "hero_sub": "Score your account executive resume. Discover exactly which skills, like closing, SaaS sales, pipeline management, and negotiation, you are missing.",
+        "seo_paragraph": "As a Account Executive, your resume will likely be parsed by enterprise sales ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your quota attainment, pipeline generation, and strategic negotiation are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "customer-success-manager",
+        "title": "Customer Success Manager",
+        "seo_title": "Free Customer Success Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Customer Success Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Customer Success Manager jobs.",
+        "hero_h1": "Customer Success Manager ATS Resume Checker",
+        "hero_sub": "Score your customer success manager resume. Discover exactly which skills, like churn reduction, onboarding, Zendesk, and NPS, you are missing.",
+        "seo_paragraph": "As a Customer Success Manager, your resume will likely be parsed by customer experience ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your client retention, account expansion, and relationship management are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "business-analyst",
+        "title": "Business Analyst",
+        "seo_title": "Free Business Analyst ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Business Analyst resume against ATS parsers. Discover exactly which keywords and skills you are missing for Business Analyst jobs.",
+        "hero_h1": "Business Analyst ATS Resume Checker",
+        "hero_sub": "Score your business analyst resume. Discover exactly which skills, like requirements gathering, SQL, Agile, and process improvement, you are missing.",
+        "seo_paragraph": "As a Business Analyst, your resume will likely be parsed by business operations ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your process mapping, data analysis, and stakeholder alignment are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "operations-manager",
+        "title": "Operations Manager",
+        "seo_title": "Free Operations Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Operations Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Operations Manager jobs.",
+        "hero_h1": "Operations Manager ATS Resume Checker",
+        "hero_sub": "Score your operations manager resume. Discover exactly which skills, like supply chain, logistics, KPI tracking, and Six Sigma, you are missing.",
+        "seo_paragraph": "As a Operations Manager, your resume will likely be parsed by operations and logistics ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your process optimization, vendor management, and operational efficiency are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "executive-assistant",
+        "title": "Executive Assistant",
+        "seo_title": "Free Executive Assistant ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Executive Assistant resume against ATS parsers. Discover exactly which keywords and skills you are missing for Executive Assistant jobs.",
+        "hero_h1": "Executive Assistant ATS Resume Checker",
+        "hero_sub": "Score your executive assistant resume. Discover exactly which skills, like calendar management, travel coordination, expense reporting, and Slack, you are missing.",
+        "seo_paragraph": "As a Executive Assistant, your resume will likely be parsed by administrative ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your C-level support, scheduling, and office administration are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "teacher",
+        "title": "Teacher",
+        "seo_title": "Free Teacher ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Teacher resume against ATS parsers. Discover exactly which keywords and skills you are missing for Teacher jobs.",
+        "hero_h1": "Teacher ATS Resume Checker",
+        "hero_sub": "Score your teacher resume. Discover exactly which skills, like lesson planning, classroom management, curriculum development, and special education, you are missing.",
+        "seo_paragraph": "As a Teacher, your resume will likely be parsed by education district ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your instructional design, student assessment, and pedagogical techniques are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "mechanical-engineer",
+        "title": "Mechanical Engineer",
+        "seo_title": "Free Mechanical Engineer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Mechanical Engineer resume against ATS parsers. Discover exactly which keywords and skills you are missing for Mechanical Engineer jobs.",
+        "hero_h1": "Mechanical Engineer ATS Resume Checker",
+        "hero_sub": "Score your mechanical engineer resume. Discover exactly which skills, like AutoCAD, SolidWorks, thermodynamics, and manufacturing, you are missing.",
+        "seo_paragraph": "As a Mechanical Engineer, your resume will likely be parsed by engineering ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your CAD software, prototyping, and mechanical design are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "civil-engineer",
+        "title": "Civil Engineer",
+        "seo_title": "Free Civil Engineer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Civil Engineer resume against ATS parsers. Discover exactly which keywords and skills you are missing for Civil Engineer jobs.",
+        "hero_h1": "Civil Engineer ATS Resume Checker",
+        "hero_sub": "Score your civil engineer resume. Discover exactly which skills, like AutoCAD Civil 3D, structural analysis, project management, and environmental compliance, you are missing.",
+        "seo_paragraph": "As a Civil Engineer, your resume will likely be parsed by construction and engineering ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your infrastructure design, site planning, and regulatory compliance are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "electrical-engineer",
+        "title": "Electrical Engineer",
+        "seo_title": "Free Electrical Engineer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Electrical Engineer resume against ATS parsers. Discover exactly which keywords and skills you are missing for Electrical Engineer jobs.",
+        "hero_h1": "Electrical Engineer ATS Resume Checker",
+        "hero_sub": "Score your electrical engineer resume. Discover exactly which skills, like circuit design, MATLAB, power systems, and PCB layout, you are missing.",
+        "seo_paragraph": "As a Electrical Engineer, your resume will likely be parsed by technical hardware ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your electrical schematics, power distribution, and testing protocols are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "web-developer",
+        "title": "Web Developer",
+        "seo_title": "Free Web Developer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Web Developer resume against ATS parsers. Discover exactly which keywords and skills you are missing for Web Developer jobs.",
+        "hero_h1": "Web Developer ATS Resume Checker",
+        "hero_sub": "Score your web developer resume. Discover exactly which skills, like HTML, CSS, JavaScript, and responsive design, you are missing.",
+        "seo_paragraph": "As a Web Developer, your resume will likely be parsed by frontend ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your web technologies, UI development, and cross-browser compatibility are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "ux-ui-designer",
+        "title": "UX/UI Designer",
+        "seo_title": "Free UX/UI Designer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your UX/UI Designer resume against ATS parsers. Discover exactly which keywords and skills you are missing for UX/UI Designer jobs.",
+        "hero_h1": "UX/UI Designer ATS Resume Checker",
+        "hero_sub": "Score your ux/ui designer resume. Discover exactly which skills, like Figma, wireframing, user research, and prototyping, you are missing.",
+        "seo_paragraph": "As a UX/UI Designer, your resume will likely be parsed by design and product ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your user experience research, interface design, and interaction flows are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "devops-engineer",
+        "title": "DevOps Engineer",
+        "seo_title": "Free DevOps Engineer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your DevOps Engineer resume against ATS parsers. Discover exactly which keywords and skills you are missing for DevOps Engineer jobs.",
+        "hero_h1": "DevOps Engineer ATS Resume Checker",
+        "hero_sub": "Score your devops engineer resume. Discover exactly which skills, like Docker, Kubernetes, CI/CD, and AWS, you are missing.",
+        "seo_paragraph": "As a DevOps Engineer, your resume will likely be parsed by cloud and infrastructure ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your automation pipelines, containerization, and cloud architecture are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "cloud-architect",
+        "title": "Cloud Architect",
+        "seo_title": "Free Cloud Architect ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Cloud Architect resume against ATS parsers. Discover exactly which keywords and skills you are missing for Cloud Architect jobs.",
+        "hero_h1": "Cloud Architect ATS Resume Checker",
+        "hero_sub": "Score your cloud architect resume. Discover exactly which skills, like AWS, Azure, cloud migration, and security, you are missing.",
+        "seo_paragraph": "As a Cloud Architect, your resume will likely be parsed by enterprise IT ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your cloud infrastructure, security protocols, and scalable architecture are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "cybersecurity-analyst",
+        "title": "Cybersecurity Analyst",
+        "seo_title": "Free Cybersecurity Analyst ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Cybersecurity Analyst resume against ATS parsers. Discover exactly which keywords and skills you are missing for Cybersecurity Analyst jobs.",
+        "hero_h1": "Cybersecurity Analyst ATS Resume Checker",
+        "hero_sub": "Score your cybersecurity analyst resume. Discover exactly which skills, like SIEM, vulnerability scanning, firewalls, and incident response, you are missing.",
+        "seo_paragraph": "As a Cybersecurity Analyst, your resume will likely be parsed by security and IT ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your threat analysis, network security, and risk assessment are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "network-engineer",
+        "title": "Network Engineer",
+        "seo_title": "Free Network Engineer ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Network Engineer resume against ATS parsers. Discover exactly which keywords and skills you are missing for Network Engineer jobs.",
+        "hero_h1": "Network Engineer ATS Resume Checker",
+        "hero_sub": "Score your network engineer resume. Discover exactly which skills, like Cisco, routing, switching, and BGP, you are missing.",
+        "seo_paragraph": "As a Network Engineer, your resume will likely be parsed by IT infrastructure ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your network protocols, hardware configuration, and troubleshooting are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "systems-administrator",
+        "title": "Systems Administrator",
+        "seo_title": "Free Systems Administrator ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Systems Administrator resume against ATS parsers. Discover exactly which keywords and skills you are missing for Systems Administrator jobs.",
+        "hero_h1": "Systems Administrator ATS Resume Checker",
+        "hero_sub": "Score your systems administrator resume. Discover exactly which skills, like Active Directory, Windows Server, Linux, and VMware, you are missing.",
+        "seo_paragraph": "As a Systems Administrator, your resume will likely be parsed by IT operations ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your server maintenance, user provisioning, and virtualization are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "it-support-specialist",
+        "title": "IT Support Specialist",
+        "seo_title": "Free IT Support Specialist ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your IT Support Specialist resume against ATS parsers. Discover exactly which keywords and skills you are missing for IT Support Specialist jobs.",
+        "hero_h1": "IT Support Specialist ATS Resume Checker",
+        "hero_sub": "Score your it support specialist resume. Discover exactly which skills, like helpdesk, troubleshooting, ticketing systems, and hardware, you are missing.",
+        "seo_paragraph": "As a IT Support Specialist, your resume will likely be parsed by helpdesk ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your technical troubleshooting, customer service, and issue resolution are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "pharmacist",
+        "title": "Pharmacist",
+        "seo_title": "Free Pharmacist ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Pharmacist resume against ATS parsers. Discover exactly which keywords and skills you are missing for Pharmacist jobs.",
+        "hero_h1": "Pharmacist ATS Resume Checker",
+        "hero_sub": "Score your pharmacist resume. Discover exactly which skills, like patient counseling, medication dispensing, pharmacology, and compounding, you are missing.",
+        "seo_paragraph": "As a Pharmacist, your resume will likely be parsed by pharmacy and healthcare ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your drug interactions, regulatory compliance, and clinical pharmacology are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "medical-assistant",
+        "title": "Medical Assistant",
+        "seo_title": "Free Medical Assistant ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Medical Assistant resume against ATS parsers. Discover exactly which keywords and skills you are missing for Medical Assistant jobs.",
+        "hero_h1": "Medical Assistant ATS Resume Checker",
+        "hero_sub": "Score your medical assistant resume. Discover exactly which skills, like vitals, EMR, phlebotomy, and patient scheduling, you are missing.",
+        "seo_paragraph": "As a Medical Assistant, your resume will likely be parsed by clinic and hospital ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your clinical procedures, patient communication, and medical records are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "dental-assistant",
+        "title": "Dental Assistant",
+        "seo_title": "Free Dental Assistant ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Dental Assistant resume against ATS parsers. Discover exactly which keywords and skills you are missing for Dental Assistant jobs.",
+        "hero_h1": "Dental Assistant ATS Resume Checker",
+        "hero_sub": "Score your dental assistant resume. Discover exactly which skills, like x-rays, sterilization, chairside assistance, and Dentrix, you are missing.",
+        "seo_paragraph": "As a Dental Assistant, your resume will likely be parsed by dental office ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your dental procedures, infection control, and patient prep are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "physical-therapist",
+        "title": "Physical Therapist",
+        "seo_title": "Free Physical Therapist ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Physical Therapist resume against ATS parsers. Discover exactly which keywords and skills you are missing for Physical Therapist jobs.",
+        "hero_h1": "Physical Therapist ATS Resume Checker",
+        "hero_sub": "Score your physical therapist resume. Discover exactly which skills, like rehabilitation, manual therapy, patient assessment, and exercise prescription, you are missing.",
+        "seo_paragraph": "As a Physical Therapist, your resume will likely be parsed by rehabilitation ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your treatment planning, therapeutic exercises, and mobility assessment are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "occupational-therapist",
+        "title": "Occupational Therapist",
+        "seo_title": "Free Occupational Therapist ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Occupational Therapist resume against ATS parsers. Discover exactly which keywords and skills you are missing for Occupational Therapist jobs.",
+        "hero_h1": "Occupational Therapist ATS Resume Checker",
+        "hero_sub": "Score your occupational therapist resume. Discover exactly which skills, like ADLs, therapeutic interventions, patient evaluation, and sensory integration, you are missing.",
+        "seo_paragraph": "As a Occupational Therapist, your resume will likely be parsed by healthcare ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your functional assessments, adaptive equipment, and treatment plans are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "social-worker",
+        "title": "Social Worker",
+        "seo_title": "Free Social Worker ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Social Worker resume against ATS parsers. Discover exactly which keywords and skills you are missing for Social Worker jobs.",
+        "hero_h1": "Social Worker ATS Resume Checker",
+        "hero_sub": "Score your social worker resume. Discover exactly which skills, like case management, crisis intervention, patient advocacy, and mental health, you are missing.",
+        "seo_paragraph": "As a Social Worker, your resume will likely be parsed by social services ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your psychosocial assessments, community resources, and counseling are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "paralegal",
+        "title": "Paralegal",
+        "seo_title": "Free Paralegal ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Paralegal resume against ATS parsers. Discover exactly which keywords and skills you are missing for Paralegal jobs.",
+        "hero_h1": "Paralegal ATS Resume Checker",
+        "hero_sub": "Score your paralegal resume. Discover exactly which skills, like legal research, drafting, Westlaw, and case management, you are missing.",
+        "seo_paragraph": "As a Paralegal, your resume will likely be parsed by law firm ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your legal documentation, trial preparation, and statutory research are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "attorney",
+        "title": "Attorney",
+        "seo_title": "Free Attorney ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Attorney resume against ATS parsers. Discover exactly which keywords and skills you are missing for Attorney jobs.",
+        "hero_h1": "Attorney ATS Resume Checker",
+        "hero_sub": "Score your attorney resume. Discover exactly which skills, like litigation, legal writing, negotiation, and contract review, you are missing.",
+        "seo_paragraph": "As a Attorney, your resume will likely be parsed by legal ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your case strategy, legal compliance, and courtroom advocacy are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "copywriter",
+        "title": "Copywriter",
+        "seo_title": "Free Copywriter ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Copywriter resume against ATS parsers. Discover exactly which keywords and skills you are missing for Copywriter jobs.",
+        "hero_h1": "Copywriter ATS Resume Checker",
+        "hero_sub": "Score your copywriter resume. Discover exactly which skills, like SEO, content strategy, email marketing, and editing, you are missing.",
+        "seo_paragraph": "As a Copywriter, your resume will likely be parsed by marketing and agency ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your content creation, brand voice, and conversion copywriting are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "social-media-manager",
+        "title": "Social Media Manager",
+        "seo_title": "Free Social Media Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Social Media Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Social Media Manager jobs.",
+        "hero_h1": "Social Media Manager ATS Resume Checker",
+        "hero_sub": "Score your social media manager resume. Discover exactly which skills, like content creation, Hootsuite, engagement, and analytics, you are missing.",
+        "seo_paragraph": "As a Social Media Manager, your resume will likely be parsed by digital marketing ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your social platforms, community engagement, and trend analysis are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "content-creator",
+        "title": "Content Creator",
+        "seo_title": "Free Content Creator ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Content Creator resume against ATS parsers. Discover exactly which keywords and skills you are missing for Content Creator jobs.",
+        "hero_h1": "Content Creator ATS Resume Checker",
+        "hero_sub": "Score your content creator resume. Discover exactly which skills, like video editing, Adobe Premiere, storytelling, and YouTube, you are missing.",
+        "seo_paragraph": "As a Content Creator, your resume will likely be parsed by media and creative ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your multimedia production, audience building, and creative storytelling are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "event-planner",
+        "title": "Event Planner",
+        "seo_title": "Free Event Planner ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Event Planner resume against ATS parsers. Discover exactly which keywords and skills you are missing for Event Planner jobs.",
+        "hero_h1": "Event Planner ATS Resume Checker",
+        "hero_sub": "Score your event planner resume. Discover exactly which skills, like vendor management, budgeting, logistics, and catering, you are missing.",
+        "seo_paragraph": "As a Event Planner, your resume will likely be parsed by hospitality and event ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your event coordination, contract negotiation, and timeline management are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "real-estate-agent",
+        "title": "Real Estate Agent",
+        "seo_title": "Free Real Estate Agent ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Real Estate Agent resume against ATS parsers. Discover exactly which keywords and skills you are missing for Real Estate Agent jobs.",
+        "hero_h1": "Real Estate Agent ATS Resume Checker",
+        "hero_sub": "Score your real estate agent resume. Discover exactly which skills, like client relations, contracts, MLS, and negotiation, you are missing.",
+        "seo_paragraph": "As a Real Estate Agent, your resume will likely be parsed by brokerage ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your property valuation, market analysis, and real estate transactions are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "store-manager",
+        "title": "Store Manager",
+        "seo_title": "Free Store Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Store Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Store Manager jobs.",
+        "hero_h1": "Store Manager ATS Resume Checker",
+        "hero_sub": "Score your store manager resume. Discover exactly which skills, like inventory management, merchandising, P&L, and team leadership, you are missing.",
+        "seo_paragraph": "As a Store Manager, your resume will likely be parsed by retail ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your store operations, customer service, and sales performance are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "restaurant-manager",
+        "title": "Restaurant Manager",
+        "seo_title": "Free Restaurant Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Restaurant Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Restaurant Manager jobs.",
+        "hero_h1": "Restaurant Manager ATS Resume Checker",
+        "hero_sub": "Score your restaurant manager resume. Discover exactly which skills, like scheduling, food safety, customer service, and POS, you are missing.",
+        "seo_paragraph": "As a Restaurant Manager, your resume will likely be parsed by hospitality ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your front-of-house operations, staff training, and cost control are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "chef",
+        "title": "Chef",
+        "seo_title": "Free Chef ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Chef resume against ATS parsers. Discover exactly which keywords and skills you are missing for Chef jobs.",
+        "hero_h1": "Chef ATS Resume Checker",
+        "hero_sub": "Score your chef resume. Discover exactly which skills, like menu development, culinary techniques, food safety, and inventory, you are missing.",
+        "seo_paragraph": "As a Chef, your resume will likely be parsed by culinary ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your food preparation, kitchen management, and recipe creation are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "supply-chain-manager",
+        "title": "Supply Chain Manager",
+        "seo_title": "Free Supply Chain Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Supply Chain Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Supply Chain Manager jobs.",
+        "hero_h1": "Supply Chain Manager ATS Resume Checker",
+        "hero_sub": "Score your supply chain manager resume. Discover exactly which skills, like logistics, procurement, vendor negotiation, and ERP, you are missing.",
+        "seo_paragraph": "As a Supply Chain Manager, your resume will likely be parsed by manufacturing and logistics ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your supply chain optimization, inventory control, and sourcing are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "logistics-coordinator",
+        "title": "Logistics Coordinator",
+        "seo_title": "Free Logistics Coordinator ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Logistics Coordinator resume against ATS parsers. Discover exactly which keywords and skills you are missing for Logistics Coordinator jobs.",
+        "hero_h1": "Logistics Coordinator ATS Resume Checker",
+        "hero_sub": "Score your logistics coordinator resume. Discover exactly which skills, like freight routing, shipping, SAP, and tracking, you are missing.",
+        "seo_paragraph": "As a Logistics Coordinator, your resume will likely be parsed by transportation ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your shipment tracking, customs compliance, and carrier relations are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "quality-assurance-tester",
+        "title": "Quality Assurance Tester",
+        "seo_title": "Free Quality Assurance Tester ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Quality Assurance Tester resume against ATS parsers. Discover exactly which keywords and skills you are missing for Quality Assurance Tester jobs.",
+        "hero_h1": "Quality Assurance Tester ATS Resume Checker",
+        "hero_sub": "Score your quality assurance tester resume. Discover exactly which skills, like manual testing, automated testing, Selenium, and bug tracking, you are missing.",
+        "seo_paragraph": "As a Quality Assurance Tester, your resume will likely be parsed by software QA ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your test cases, defect reporting, and testing methodologies are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "business-development-manager",
+        "title": "Business Development Manager",
+        "seo_title": "Free Business Development Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Business Development Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Business Development Manager jobs.",
+        "hero_h1": "Business Development Manager ATS Resume Checker",
+        "hero_sub": "Score your business development manager resume. Discover exactly which skills, like lead generation, strategic partnerships, sales, and networking, you are missing.",
+        "seo_paragraph": "As a Business Development Manager, your resume will likely be parsed by growth and sales ATS systems. These systems specifically scan for hard skills and industry terms. Our scanner ensures your market expansion, relationship building, and B2B strategies are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "construction-manager",
+        "title": "Construction Manager",
+        "seo_title": "Free Construction Manager ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Construction Manager resume against ATS parsers. Discover exactly which keywords and skills you are missing for Construction Manager jobs.",
+        "hero_h1": "Construction Manager ATS Resume Checker",
+        "hero_sub": "Score your construction manager resume. Discover exactly which skills, like project scheduling, OSHA, estimating, and contractor management, you are missing.",
+        "seo_paragraph": "As a Construction Manager, your resume will likely be parsed by construction ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your site supervision, blueprint reading, and safety compliance are perfectly aligned with the job description so human recruiters actually see your resume."
+    },
+    {
+        "role_id": "truck-driver",
+        "title": "Truck Driver",
+        "seo_title": "Free Truck Driver ATS Resume Checker & Keyword Scanner",
+        "seo_desc": "Check your Truck Driver resume against ATS parsers. Discover exactly which keywords and skills you are missing for Truck Driver jobs.",
+        "hero_h1": "Truck Driver ATS Resume Checker",
+        "hero_sub": "Score your truck driver resume. Discover exactly which skills, like CDL-A, logbooks, route planning, and DOT regulations, you are missing.",
+        "seo_paragraph": "As a Truck Driver, your resume will likely be parsed by transportation ATS parsers. These systems specifically scan for hard skills and industry terms. Our scanner ensures your safe driving practices, freight handling, and vehicle inspection are perfectly aligned with the job description so human recruiters actually see your resume."
+    }
+]
