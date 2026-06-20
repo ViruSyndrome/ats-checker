@@ -45,9 +45,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- SEO Schema: Jobscan Level -->
+    <!-- SEO Schema: WebApplication -->
     <script type="application/ld+json">
-    [
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -57,60 +56,9 @@
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "All",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How does the ATS resume scoring work?",
-          "acceptedAnswer": { "@type": "Answer", "text": "GetATSReady uses a multiplicative scoring model that mimics real ATS behaviour. Template Compliance acts as a multiplier on your keyword score — a broken template (multi-column, tables) can cut your effective score by up to 70%. The four factors are: Template Compliance (multiplier), Keyword Match (50%), Structure (25%), and Impact/Metrics (25%)." }
-        },
-        {
-          "@type": "Question",
-          "name": "Is GetATSReady free and private?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Everything is processed locally in your browser using JavaScript — your resume never leaves your device. There is no sign-up, no account, and no data storage. The tool is completely free with no subscription." }
-        },
-        {
-          "@type": "Question",
-          "name": "What resume file formats are supported?",
-          "acceptedAnswer": { "@type": "Answer", "text": "PDF and DOCX (Microsoft Word) files are supported. PDF is recommended as it preserves formatting and is widely accepted by ATS systems." }
-        },
-        {
-          "@type": "Question",
-          "name": "How accurate is the ATS score?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The algorithm replicates real ATS behaviour based on Jobscan research covering 97.8% of Fortune 500 ATS systems including Workday, Taleo, Greenhouse, and iCIMS. The multiplicative model means a structurally broken template reduces your score even if keyword content is strong, exactly as real ATS software behaves." }
-        },
-        {
-          "@type": "Question",
-          "name": "What ATS score should I aim for?",
-          "acceptedAnswer": { "@type": "Answer", "text": "First ensure Template Compliance is 85% or above — a broken template tanks your score regardless of keyword quality. With a clean template, aim for 75 or above (good) or 85 or above (excellent). The single biggest improvement most candidates can make is switching from a multi-column or Canva-style template to a clean single-column layout." }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I improve my ATS score?",
-          "acceptedAnswer": { "@type": "Answer", "text": "In order of impact: (1) Fix your template — switch to single-column if Template Compliance is below 85%. (2) Add missing keywords from the job description naturally into your experience section. (3) Use standard section headers like Professional Experience, Education, Skills, Certifications. (4) Add quantifiable achievements with numbers and percentages." }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the Raw Text Preview?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The Raw Text Preview shows exactly what an ATS parser sees when it extracts text from your resume file. If you see scrambled words, merged sentences, or word salad, your template is structurally broken. Many multi-column or graphic-heavy templates look great to humans but are unreadable to ATS software, causing automatic rejection." }
-        },
-        {
-          "@type": "Question",
-          "name": "Does GetATSReady work for all industries and job roles?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. The keyword matching uses semantic analysis that works across industries — tech, finance, healthcare, marketing, engineering, and more. Role-specific ATS tips are also available for over 50 job titles including software engineer, product manager, data scientist, registered nurse, and financial analyst." }
-        },
-        {
-          "@type": "Question",
-          "name": "How is GetATSReady different from Jobscan?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Jobscan charges $49–99 per month and limits free scans to 5 per month. GetATSReady is fully free with unlimited scans, no account required, and all processing happens in your browser so your resume stays completely private." }
-        }
-      ]
     }
-    ]
     </script>
+    <!-- FAQPage schema is injected dynamically from the live FAQ section via script.js -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959862133855422" crossorigin="anonymous"></script>
     <!-- PDF and DOCX libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -165,6 +113,25 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 100% Private: Processed entirely in your browser. No Signup Required.
             </div>
+
+            <p class="hero-tagline">
+                Score your resume against any job description in <strong>seconds</strong> —
+                see exactly which keywords you're missing and why ATS systems reject good candidates.
+            </p>
+            <div class="hero-stats">
+                <span class="hero-stat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Free &amp; unlimited scans
+                </span>
+                <span class="hero-stat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    PDF &amp; DOCX supported
+                </span>
+                <span class="hero-stat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Covers Workday, Taleo, Greenhouse
+                </span>
+            </div>
         </header>
 
         <main>
@@ -206,21 +173,6 @@
                     Recent Scans <span class="inline-style-147513">100% Private (Local Storage)</span>
                 </div>
                 <div id="historyList"></div>
-            </div>
-
-            <!-- SEO Text Section: How the Multiplicative Scoring Model Works -->
-            <div class="card inline-style-text-seo" id="scoringModelExplanation" style="margin-top: 24px; line-height: 1.6; color: var(--text-muted, #64748b);">
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #f8fafc); margin-bottom: 12px; margin-top: 0;">How Our Multiplicative Scoring Model Works</h2>
-                <p style="margin-bottom: 12px;">GetATSReady isn't just a simple keyword counter. Our algorithm was built by analyzing how enterprise Applicant Tracking Systems (like Workday, Taleo, and Greenhouse) actually parse and rank resumes in the real world.</p>
-                <p style="margin-bottom: 12px;">Most legacy resume checkers use an additive scoring model: they give you 50 points for keywords, 25 points for structure, and 25 points for metrics, resulting in a perfect 100. However, this is fundamentally flawed. If your resume uses a multi-column design, complex tables, or a heavy Canva template, the ATS parser physically cannot read the text. It scrambles the words into an unreadable "word salad."</p>
-                <p style="margin-bottom: 12px;">To solve this, GetATSReady uses a <strong>Multiplicative Scoring Model</strong>. First, we calculate a baseline score using three core metrics:</p>
-                <ul style="margin-bottom: 12px; margin-left: 20px; list-style-type: disc;">
-                    <li><strong>Keyword Match (50%):</strong> We use bidirectional semantic analysis to measure the overlap between your resume and the provided job description.</li>
-                    <li><strong>Impact & Metrics (25%):</strong> We scan for quantifiable achievements (numbers, percentages) and strong action verbs that demonstrate leadership.</li>
-                    <li><strong>Structure (25%):</strong> We verify that you are using standard, industry-recognized section headers (e.g., "Professional Experience" instead of "My Journey").</li>
-                </ul>
-                <p style="margin-bottom: 12px;">Next, we apply the <strong>Template Compliance Multiplier</strong>. We simulate the PDF/DOCX extraction process. If we detect multi-column layouts, hidden tables, or unreadable graphical elements, your Template Compliance score drops. This acts as a direct discount factor on your baseline score. For example, if your keyword match is perfect (100) but your template compliance is only 40%, your final ATS score will accurately reflect that the ATS system can only read 40% of your resume.</p>
-                <p style="margin-bottom: 0;">By simulating the exact technical limitations of modern HR software, GetATSReady ensures that when you hit submit on a job application, your resume is guaranteed to reach human eyes.</p>
             </div>
 
             <div id="results" class="results-section">
@@ -345,6 +297,21 @@
                         <textarea id="rawTextPreview" aria-label="Raw Text Preview" readonly class="inline-style-9af1f2"></textarea>
                     </div>
                 </div>
+            </div>
+
+            <!-- SEO Text Section: How the Multiplicative Scoring Model Works -->
+            <div class="card inline-style-text-seo" id="scoringModelExplanation" style="margin-top: 24px; line-height: 1.6; color: var(--text-muted, #64748b);">
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #f8fafc); margin-bottom: 12px; margin-top: 0;">How Our Multiplicative Scoring Model Works</h2>
+                <p style="margin-bottom: 12px;">GetATSReady isn't just a simple keyword counter. Our algorithm was built by analyzing how enterprise Applicant Tracking Systems (like Workday, Taleo, and Greenhouse) actually parse and rank resumes in the real world.</p>
+                <p style="margin-bottom: 12px;">Most legacy resume checkers use an additive scoring model: they give you 50 points for keywords, 25 points for structure, and 25 points for metrics, resulting in a perfect 100. However, this is fundamentally flawed. If your resume uses a multi-column design, complex tables, or a heavy Canva template, the ATS parser physically cannot read the text. It scrambles the words into an unreadable "word salad."</p>
+                <p style="margin-bottom: 12px;">To solve this, GetATSReady uses a <strong>Multiplicative Scoring Model</strong>. First, we calculate a baseline score using three core metrics:</p>
+                <ul style="margin-bottom: 12px; margin-left: 20px; list-style-type: disc;">
+                    <li><strong>Keyword Match (50%):</strong> We use bidirectional semantic analysis to measure the overlap between your resume and the provided job description.</li>
+                    <li><strong>Impact & Metrics (25%):</strong> We scan for quantifiable achievements (numbers, percentages) and strong action verbs that demonstrate leadership.</li>
+                    <li><strong>Structure (25%):</strong> We verify that you are using standard, industry-recognized section headers (e.g., "Professional Experience" instead of "My Journey").</li>
+                </ul>
+                <p style="margin-bottom: 12px;">Next, we apply the <strong>Template Compliance Multiplier</strong>. We simulate the PDF/DOCX extraction process. If we detect multi-column layouts, hidden tables, or unreadable graphical elements, your Template Compliance score drops. This acts as a direct discount factor on your baseline score. For example, if your keyword match is perfect (100) but your template compliance is only 40%, your final ATS score will accurately reflect that the ATS system can only read 40% of your resume.</p>
+                <p style="margin-bottom: 0;">By simulating the exact technical limitations of modern HR software, GetATSReady ensures that when you hit submit on a job application, your resume is guaranteed to reach human eyes.</p>
             </div>
 
             <!-- Ad Zone: In-Content -->

@@ -73,8 +73,25 @@ function acceptCookies() {
 }
 
 window.addEventListener('load', () => {
+    const cookieBanner = document.getElementById('cookieConsent');
     if (_ls.getRaw('cookieConsent') === 'true') {
-        document.getElementById('cookieConsent').classList.add('hidden');
+        cookieBanner.classList.add('hidden');
+    } else {
+        // Auto-hide cookie banner after 8 seconds if user interacts with the tool
+        const autoHideOnInteraction = () => {
+            setTimeout(() => {
+                if (!cookieBanner.classList.contains('hidden')) {
+                    cookieBanner.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    cookieBanner.style.opacity = '0';
+                    cookieBanner.style.transform = 'translateY(100%)';
+                    setTimeout(() => cookieBanner.classList.add('hidden'), 500);
+                }
+            }, 8000);
+            document.removeEventListener('click', autoHideOnInteraction);
+            document.removeEventListener('keydown', autoHideOnInteraction);
+        };
+        document.addEventListener('click', autoHideOnInteraction);
+        document.addEventListener('keydown', autoHideOnInteraction);
     }
     renderHistory();
     injectFaqSchema();
@@ -1106,22 +1123,29 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             .filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw))
             .sort((a, b) => jdFreq[b] - jdFreq[a])
         ));
-        const displayMissing = filteredMissing.slice(0, 3);
+        const INITIAL_MISSING_COUNT = 8;
+        const displayMissing = filteredMissing.slice(0, INITIAL_MISSING_COUNT);
         const extraMissingCount = Math.max(0, filteredMissing.length - displayMissing.length);
-        document.getElementById('missingKeywords').innerHTML = displayMissing
-            .map(kw => `<span class="keyword-badge keyword-missing">${kw}</span> `)
-            .join(' ') +
+        document.getElementById('missingKeywords').innerHTML =
+            displayMissing.map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ') +
             (extraMissingCount > 0
-                ? `<div style="margin-top:0.75rem;color:var(--text-muted);font-size:0.82rem;">Showing the top ${displayMissing.length} of ${filteredMissing.length} missing keywords.</div>
-                   <button id="showMissingKeywordsBtn" style="margin-top:0.75rem; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 0.55rem 0.9rem; border-radius: 999px; font-size: 0.82rem; cursor:pointer;">Show all ${filteredMissing.length} missing keywords</button>
-                   <div id="allMissingKeywords" style="display:none; margin-top:0.75rem; line-height:1.6;">${filteredMissing.map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ')}</div>`
+                ? `<div id="allMissingKeywords" style="display:none; margin-top:0.5rem; line-height:1.8;">
+                       ${filteredMissing.slice(INITIAL_MISSING_COUNT).map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ')}
+                   </div>
+                   <button id="showMissingKeywordsBtn" style="margin-top:0.9rem; background: transparent; border: 1px solid rgba(239,68,68,0.35); color: var(--danger); padding: 0.45rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight:600; cursor:pointer; display:block;">
+                       + Show ${extraMissingCount} more missing keywords
+                   </button>`
                 : '');
         const showMissingBtn = document.getElementById('showMissingKeywordsBtn');
         if (showMissingBtn) {
             showMissingBtn.addEventListener('click', () => {
                 document.getElementById('allMissingKeywords').style.display = 'block';
-                showMissingBtn.style.display = 'none';
-            });
+                showMissingBtn.textContent = '− Show fewer';
+                showMissingBtn.addEventListener('click', () => {
+                    document.getElementById('allMissingKeywords').style.display = 'none';
+                    showMissingBtn.textContent = `+ Show ${extraMissingCount} more missing keywords`;
+                }, { once: true });
+            }, { once: true });
         }
         window.lastResults = window.lastResults || {};
         window.lastResults.filteredMissing = filteredMissing;
