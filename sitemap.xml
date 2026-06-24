@@ -1,429 +1,343 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.getatsready.com/</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
     <loc>https://www.getatsready.com/about.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/contact.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/privacy.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/terms.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/guides/index.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/guides/ai-resume-optimization.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/guides/how-ats-works.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/guides/pdf-vs-docx-resume.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.getatsready.com/guides/resume-keywords-mastery.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-06-24</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/account-executive-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/accountant-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/attorney-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/bamboohr-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/business-analyst-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/business-development-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/chef-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/civil-engineer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/cloud-architect-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/construction-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.getatsready.com/contact.html</loc>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/content-creator-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.getatsready.com/contribute.html</loc>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/copywriter-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/customer-success-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/cybersecurity-analyst-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/data-analyst-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/data-scientist-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/dental-assistant-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/devops-engineer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/electrical-engineer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/event-planner-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/executive-assistant-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/financial-analyst-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.getatsready.com/google82df5a367a249df4.html</loc>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/graphic-designer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/greenhouse-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/human-resources-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/human-resources-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/icims-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.getatsready.com/</loc>
+    <lastmod>2026-06-24</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://www.getatsready.com/it-support-specialist-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/jobvite-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/lever-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/logistics-coordinator-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/marketing-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/mechanical-engineer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/medical-assistant-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/network-engineer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/occupational-therapist-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/operations-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/paralegal-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/pharmacist-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/physical-therapist-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.getatsready.com/privacy.html</loc>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/product-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/project-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/quality-assurance-tester-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/real-estate-agent-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/registered-nurse-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/restaurant-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/sales-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/sales-representative-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/smartrecruiters-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/social-media-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/social-worker-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/software-engineer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/store-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/supply-chain-manager-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/systems-administrator-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/taleo-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/teacher-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.getatsready.com/terms.html</loc>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/truck-driver-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/ux-ui-designer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/web-developer-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.getatsready.com/workday-resume-checker.html</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-24</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
