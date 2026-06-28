@@ -109,8 +109,8 @@
                 <a href="about.html">About Us</a>
                 <a href="guides/index.html">Guides</a>
                 <a href="contact.html">Contact Us</a>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
+                
+                
             </nav>
             <div class="privacy-badge">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -284,7 +284,7 @@
                             <button id="copyRawTextBtn" class="secondary-btn small-btn" type="button">Copy current view</button>
                         </div>
                         <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="rawTextDesc">This is exactly what an ATS parser extracts from your file. If you see scrambled words or "word salad," your template is failing the ATS screen automatically. Use the copy button to save or share the current view.</p>
-                        <textarea id="rawTextPreview" readonly style="width: 100%; height: 250px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
+                        <textarea id="rawTextPreview" aria-label="Raw text preview of resume" readonly style="width: 100%; height: 250px; background: rgba(15,23,42,0.5); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.85rem; resize: vertical; outline: none; line-height: 1.4;"></textarea>
                     </div>
                 </div>
             </div>
@@ -452,11 +452,13 @@
                     <a href="contact.html">Contact Us</a>
                     <a href="about.html">About Us</a>
                     <a href="guides/index.html">Guides</a>
-                    <a href="#" id="debugBtn" style="opacity:0.6;font-size:0.8rem">🐞 Issues? Download Debug Log</a>
-                </div>
+                    </div>
             </div>
         </footer>
     </div>
-    <script src="script.js?v=12"></script>
+    <script src="script.js?v=12" defer></script>
 </body>
 </html>
+
+
+
