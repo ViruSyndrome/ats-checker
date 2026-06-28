@@ -1564,3 +1564,6 @@ h1, h2, h3, .logo-text, .logo-accent, .score-value, .card-title, .stat-header sp
 .network-icon { font-size: 1.1rem; }
 
 .btn-support:hover { background: #4f46e5; color: #fff !important; }
+.hidden {
+    display: none !important;
+}

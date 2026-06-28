@@ -917,7 +917,7 @@ analyzeBtn.addEventListener('click', () => {
             displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
         } catch (analysisError) {
             console.error('Resume analysis failed:', analysisError);
-            if (!window.lastResults || !resultsSection || resultsSection.style.display === 'none') {
+            if (!window.lastResults || !resultsSection || resultsSection.classList.contains('hidden')) {
                 alert('Resume analysis failed. Please refresh the page and try again.');
             } else {
                 console.warn('Partial analysis completed despite error:', analysisError);
@@ -936,7 +936,7 @@ analyzeBtn.addEventListener('click', () => {
 });
 
 function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD = true) {
-    resultsSection.style.display = 'block';
+    resultsSection.classList.remove('hidden');
     resultsSection.scrollIntoView({ behavior: 'smooth' });
 
     // Populate Raw Text Preview
@@ -2060,11 +2060,11 @@ function renderHistory() {
     if (!historyList || !historyCard) return;
     
     if (history.length === 0) {
-        historyCard.style.display = 'none';
+        historyCard.classList.add('hidden');
         return;
     }
     
-    historyCard.style.display = 'block';
+    historyCard.classList.remove('hidden');
     
     historyList.innerHTML = history.map(item => {
         let badgeColor = 'var(--danger)';
