@@ -484,6 +484,12 @@ textarea:focus {
     background: rgba(99, 102, 241, 0.05);
 }
 
+.upload-area:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-color: var(--primary);
+}
+
 .upload-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
