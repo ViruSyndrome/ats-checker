@@ -46,8 +46,12 @@ function lsDel(key)                  { return _ls.del(key); }
 // ──────────────────────────────────────────────────────────────────────────// ──────────────────────────────────────────────────────────────────────────
 
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+// Configure PDF.js worker (guard in case CDN fails to load)
+if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+} else {
+    console.warn('PDF.js not loaded — PDF uploads will not work.');
+}
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -221,8 +225,8 @@ async function handleFile(file) {
             resumeText = await readDocx(file);
             resumeStreamText = resumeText; // Word doesn't have the same stream issues as PDF
         } else {
-            alert("Please upload a PDF or DOCX file.");
-            fileNameDisplay.textContent = "";
+            fileNameDisplay.textContent = "Please upload a PDF or DOCX file.";
+            fileNameDisplay.style.color = 'var(--danger)';
             return;
         }
         
@@ -835,7 +839,9 @@ analyzeBtn.addEventListener('click', () => {
     const jdText = document.getElementById('jobDescription').value.trim();
 
     if (!resumeText) {
-        alert("Please upload your resume first.");
+        fileNameDisplay.textContent = '⚠ Please upload your resume first (PDF or DOCX).';
+        fileNameDisplay.style.color = 'var(--danger)';
+        dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
@@ -918,10 +924,9 @@ analyzeBtn.addEventListener('click', () => {
         } catch (analysisError) {
             console.error('Resume analysis failed:', analysisError);
             if (!window.lastResults || !resultsSection || resultsSection.classList.contains('hidden')) {
-                alert('Resume analysis failed. Please refresh the page and try again.');
-            } else {
-                console.warn('Partial analysis completed despite error:', analysisError);
-            }
+                fileNameDisplay.textContent = '⚠ Analysis failed — please refresh and try again.';
+            fileNameDisplay.style.color = 'var(--danger)';
+            analyzeBtn.disabled = false;
         } finally {
             // Reset button state even if an error occurs
             try {
