@@ -937,6 +937,7 @@ analyzeBtn.addEventListener('click', () => {
 
 function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD = true) {
     resultsSection.classList.remove('hidden');
+    resultsSection.style.display = 'block'; // force visible regardless of CSS
     resultsSection.scrollIntoView({ behavior: 'smooth' });
 
     // Populate Raw Text Preview
