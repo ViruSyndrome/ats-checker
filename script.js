@@ -510,7 +510,25 @@ const NOISE_KEYWORDS = new Set([
     'familiar', 'looking', 'seeking', 'seek', 'seeks', 'world', 'class', 'paced',
     'cutting', 'edge', 'hands', 'bonus', 'preferred', 'preferable', 'desired',
     'ideal', 'strong', 'solid', 'excellent', 'exciting', 'dynamic', 'leading',
-    'fast', 'growing', 'scalable', 'robust', 'modern', 'across', 'within', 'every'
+    'fast', 'growing', 'scalable', 'robust', 'modern', 'across', 'within', 'every',
+
+    // URL components — extracted when JDs contain links
+    'https', 'http', 'www', 'com', 'org', 'net', 'edu', 'gov', 'html', 'htm', 'php',
+    'email', 'mailto', 'link', 'links', 'url', 'urls', 'pdf', 'docx', 'doc', 'click',
+    'page', 'pages', 'site', 'sites', 'visit', 'apply', 'applying',
+
+    // Generic media/content nouns (not skills)
+    'video', 'videos', 'audio', 'image', 'images', 'photo', 'photos', 'media',
+    'webinar', 'webinars', 'podcast', 'podcasts', 'blog', 'blogs', 'post', 'posts',
+    'article', 'articles', 'report', 'reports', 'whitepaper', 'whitepapers',
+
+    // Hyphenated JD filler adjectives
+    'solution-oriented', 'detail-oriented', 'results-driven', 'customer-focused',
+    'customer-centric', 'data-driven', 'self-starter', 'self-motivated', 'fast-paced',
+    'forward-thinking', 'results-oriented', 'metrics-driven', 'outcome-focused',
+
+    // Diversity / inclusion boilerplate
+    'diverse', 'diversify', 'diversified', 'inclusion', 'inclusive', 'belong', 'belonging'
 ]);
 
 
@@ -521,9 +539,12 @@ function getKeywords(text, isJD = false) {
 
     let processingText = text;
 
+    // Strip URLs first — they produce noise tokens like 'https', 'www', 'com'
+    processingText = processingText.replace(/https?:\/\/\S+/gi, ' ').replace(/\bwww\.\S+/gi, ' ');
+
     if (isJD) {
         // Surgical Noise Removal: Strip known corporate "fluff" blocks
-        processingText = text
+        processingText = processingText
             .replace(/who we are[\s\S]*?job description/gi, '') // Strip HPE-style intro
             .replace(/diversity[\s\S]*?equal opportunity/gi, '') // Strip diversity statements
             .replace(/we have the flexibility to manage[\s\S]*?embrace you/gi, '') // Strip culture fluff
@@ -807,16 +828,15 @@ function getBulletMetricsPct(text) {
         // 1. Explicit bullet characters are always treated as bullets
         if (/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/.test(line)) return true;
         
-        // 2. Fallback heuristic: Starts with uppercase, reasonable length (>= 50 to avoid short wrapped fragments)
-        // Also ensure it is NOT an all-caps header and DOES NOT contain title indicators like " — " or " | "
-        const hasBulletEnd = /[.!?]$/.test(line);
-        const isLikelyBullet = /^[A-Z]/.test(line) && line.length >= 50 && line.length < 350 && line !== line.toUpperCase();
+        // 2. Fallback heuristic: Starts with uppercase, reasonable length
+        // Also ensure it is NOT an all-caps header and DOES NOT contain title indicators
+        const isLikelyBullet = /^[A-Z]/.test(line) && line.length >= 40 && line.length < 350 && line !== line.toUpperCase();
         
         // 3. Reject if it looks like a section header, job metadata, or title
         const isMetadata = /[|—]/.test(line) || /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/i.test(line);
         const isSkillList = (line.match(/,/g) || []).length > 2 && line.length < 120;
         
-        return isLikelyBullet && !isMetadata && hasBulletEnd && !isSkillList;
+        return isLikelyBullet && !isMetadata && !isSkillList;
     });
     const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+%|\d+x\b|\d+\s*(users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|cycles?|platforms?|members?|roles?|sites?)/i;
     const withMetrics = bullets.filter(line => metricPattern.test(line));
