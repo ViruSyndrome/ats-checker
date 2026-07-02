@@ -923,10 +923,8 @@ analyzeBtn.addEventListener('click', () => {
             displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
         } catch (analysisError) {
             console.error('Resume analysis failed:', analysisError);
-            if (!window.lastResults || !resultsSection || resultsSection.classList.contains('hidden')) {
-                fileNameDisplay.textContent = '⚠ Analysis failed — please refresh and try again.';
+            fileNameDisplay.textContent = '⚠ Analysis failed — please refresh and try again.';
             fileNameDisplay.style.color = 'var(--danger)';
-            analyzeBtn.disabled = false;
         } finally {
             // Reset button state even if an error occurs
             try {
