@@ -1572,3 +1572,7 @@ h1, h2, h3, .logo-text, .logo-accent, .score-value, .card-title, .stat-header sp
 .hidden {
     display: none !important;
 }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+@media (max-width: 768px) { .hero-examples { display: none; } header h1 { font-size: 1.6rem; margin-bottom: 0.5rem; } .hero-tagline { font-size: 0.9rem; } }
