@@ -1113,19 +1113,22 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     }
     
     // Update Keywords UI
+    let filteredMissing = [];
+    let extraMissingCount = 0;
     if (hasJD) {
         document.getElementById('foundKeywords').innerHTML = found
             .sort((a, b) => jdFreq[b] - jdFreq[a])
             .map(kw => `<span class="keyword-badge keyword-found">${kw}</span> `)
             .join(' ');
-        const filteredMissing = Array.from(new Set(
+        const filteredMissingRaw = Array.from(new Set(
             missing
             .filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw))
             .sort((a, b) => jdFreq[b] - jdFreq[a])
         ));
+        filteredMissing = filteredMissingRaw;
         const INITIAL_MISSING_COUNT = 8;
         const displayMissing = filteredMissing.slice(0, INITIAL_MISSING_COUNT);
-        const extraMissingCount = Math.max(0, filteredMissing.length - displayMissing.length);
+        extraMissingCount = Math.max(0, filteredMissing.length - displayMissing.length);
         document.getElementById('missingKeywords').innerHTML =
             displayMissing.map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ') +
             (extraMissingCount > 0
