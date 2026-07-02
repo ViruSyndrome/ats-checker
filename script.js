@@ -1,3 +1,17 @@
+// --- UI Helpers ---
+function showInlineAlert(message) {
+    let alertBox = document.getElementById('global-inline-alert');
+    if (!alertBox) {
+        alertBox = document.createElement('div');
+        alertBox.id = 'global-inline-alert';
+        alertBox.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#fef2f2; color:#b91c1c; border:1px solid #f87171; padding:10px 20px; border-radius:6px; z-index:10000; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); font-weight:500; font-family:sans-serif; text-align:center; transition:opacity 0.3s;';
+        document.body.appendChild(alertBox);
+    }
+    alertBox.textContent = message;
+    alertBox.style.opacity = '1';
+    alertBox.style.display = 'block';
+    setTimeout(() => { alertBox.style.opacity = '0'; setTimeout(() => alertBox.style.display = 'none', 300); }, 3500);
+}
 // ── Safe localStorage Wrapper ──────────────────────────────────────────────
 // Catches QuotaExceededError and private-browsing SecurityError silently.
 // Usage: lsSet('key', value)  lsGet('key', fallback)  lsDel('key')
@@ -221,7 +235,7 @@ async function handleFile(file) {
             resumeText = await readDocx(file);
             resumeStreamText = resumeText; // Word doesn't have the same stream issues as PDF
         } else {
-            alert("Please upload a PDF or DOCX file.");
+            showInlineAlert("Please upload a PDF or DOCX file.");
             fileNameDisplay.textContent = "";
             return;
         }
@@ -855,7 +869,7 @@ analyzeBtn.addEventListener('click', () => {
     const jdText = document.getElementById('jobDescription').value.trim();
 
     if (!resumeText) {
-        alert("Please upload your resume first.");
+        showInlineAlert("Please upload your resume first.");
         return;
     }
 
@@ -938,7 +952,7 @@ analyzeBtn.addEventListener('click', () => {
         } catch (analysisError) {
             console.error('Resume analysis failed:', analysisError);
             if (!window.lastResults || !resultsSection || resultsSection.classList.contains('hidden')) {
-                alert('Resume analysis failed. Please refresh the page and try again.');
+                showInlineAlert('Resume analysis failed. Please refresh the page and try again.');
             } else {
                 console.warn('Partial analysis completed despite error:', analysisError);
             }
@@ -1479,12 +1493,12 @@ function calculateVocabularyDiversity(text) {
 document.getElementById('downloadReport').addEventListener('click', () => {
     const res = window.lastResults;
     if (!res) {
-        alert('Please analyze your resume first before downloading the report.');
+        showInlineAlert('Please analyze your resume first before downloading the report.');
         return;
     }
 
     if (!window.jspdf || !window.jspdf.jsPDF) {
-        alert('PDF generation is unavailable. Please check your internet connection and reload the page.');
+        showInlineAlert('PDF generation is unavailable. Please check your internet connection and reload the page.');
         return;
     }
 
@@ -1902,7 +1916,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     doc.save(`ATS-Audit-Enhanced-${date.replace(/\//g, '-')}.pdf`);
     } catch (reportError) {
         console.error('PDF report generation failed:', reportError);
-        alert('Unable to create the PDF report. Please try again later.');
+        showInlineAlert('Unable to create the PDF report. Please try again later.');
     }
 });
 
@@ -1989,7 +2003,7 @@ if (debugBtn) {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        alert("Debug log downloaded! Please email this file to hello@getatsready.com for support.");
+        showInlineAlert("Debug log downloaded! Please email this file to hello@getatsready.com for support.");
     });
 }
 // View Toggle Logic for Raw Text Preview
