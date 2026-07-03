@@ -956,7 +956,7 @@ analyzeBtn.addEventListener('click', () => {
             } else {
                 console.warn('Partial analysis completed despite error:', analysisError);
             }
-        } finally {
+        } /* finally */ {
             // Reset button state even if an error occurs
             try {
                 btnText.style.display = 'inline-block';
