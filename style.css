@@ -799,6 +799,11 @@ textarea:focus {
     color: var(--primary);
 }
 
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
 /* Legal Pages */
 .legal-page {
     max-width: 800px;
