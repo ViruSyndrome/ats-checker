@@ -181,6 +181,7 @@ Nice to Have:
 tryExampleBtn.addEventListener('click', () => {
     trackEvent('try_example_resume');
     resumeText = EXAMPLE_RESUME;
+    resumeStreamText = EXAMPLE_RESUME;
     layoutWarnings = []; // plain text example — no layout issues
     document.getElementById('jobDescription').value = EXAMPLE_JD;
     fileNameDisplay.textContent = 'Loaded: Example Resume (Software Engineer)';
@@ -247,6 +248,7 @@ async function handleFile(file) {
             fileNameDisplay.textContent = "Error: Could not extract text. Try a different file.";
             fileNameDisplay.style.color = 'var(--danger)';
             resumeText = "";
+            resumeStreamText = "";
         }
     } catch (error) {
         console.error('Error processing file:', error);
@@ -254,6 +256,7 @@ async function handleFile(file) {
         fileNameDisplay.textContent = `Error: File processing failed${errorMsg}. Please try again.`;
         fileNameDisplay.style.color = 'var(--danger)';
         resumeText = "";
+        resumeStreamText = "";
     }
 }
 
@@ -1592,6 +1595,14 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     doc.setFont("helvetica", "bold");
     doc.text(interpretation, 20, 102);
 
+    if (res.projectedWithFix && res.projectedWithFix > res.finalScore + 5) {
+        doc.setFillColor(99, 102, 241, 0.1); // Indigo tint
+        doc.rect(15, 108, 130, 10, 'F');
+        doc.setTextColor(79, 70, 229); // Indigo text
+        doc.setFontSize(8);
+        doc.text(`POTENTIAL SCORE: ~${res.projectedWithFix}% (Fix your template to unlock)`, 20, 115);
+    }
+
     // 3. Detailed Metrics Breakdown
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(14);
@@ -1683,7 +1694,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     let contactY = y + 16;
     if (res.contactCheck.issues.length === 0 && res.contactCheck.warnings.length === 0) {
         doc.setTextColor(16, 185, 129);
-        doc.text("✓ Professional Contact Details: All core items (Email, Phone, LinkedIn) detected.", 20, contactY);
+        doc.text("[PASS] Professional Contact Details: All core items (Email, Phone, LinkedIn) detected.", 20, contactY);
     } else {
         res.contactCheck.issues.forEach(issue => {
             doc.setTextColor(239, 68, 68);
@@ -1882,7 +1893,7 @@ document.getElementById('downloadReport').addEventListener('click', () => {
 
             doc.setTextColor(16, 185, 129);
             doc.setFont("helvetica", "bold");
-            doc.text(`AFTER (suggested improvement):`, 20, y);
+            doc.text(`SUGGESTED FORMAT:`, 20, y);
             y += 4;
             doc.setTextColor(71, 85, 105);
             doc.setFont("helvetica", "normal");
@@ -1907,8 +1918,39 @@ document.getElementById('downloadReport').addEventListener('click', () => {
     }
 
     // Footer on last page
-    y = 280;
+    y = 275;
+    
+    // Add strong CTA
+    doc.setTextColor(79, 70, 229);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Rescan your updated resume for free at www.getatsready.com", 105, y, { align: "center" });
+    
+    // Add QR Code
+    if (typeof QRCode !== 'undefined') {
+        try {
+            const qrContainer = document.createElement('div');
+            new QRCode(qrContainer, {
+                text: "https://www.getatsready.com/",
+                width: 64,
+                height: 64,
+                colorDark : "#1e293b",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M
+            });
+            const qrCanvas = qrContainer.querySelector('canvas');
+            if (qrCanvas) {
+                const qrDataUrl = qrCanvas.toDataURL("image/png");
+                doc.addImage(qrDataUrl, 'PNG', 15, y - 10, 16, 16);
+            }
+        } catch (e) {
+            console.warn("QR generation failed", e);
+        }
+    }
+    
+    y = 285;
     doc.setFontSize(7);
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(148, 163, 184);
     doc.text("END OF REPORT | PRIVACY: ALL DATA PROCESSED LOCALLY | NO STORAGE", 105, y, { align: "center" });
     doc.text(`Generated: ${date} | ATS Optimizer v3.0`, 105, y + 4, { align: "center" });
@@ -2066,12 +2108,21 @@ function saveScanToHistory(filename, score) {
         }
         
         const timestamp = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        // Calculate delta if previous scan of same file exists
+        let delta = 0;
+        const prevScan = history.find(h => h.filename === (filename || 'Resume.pdf'));
+        if (prevScan) {
+            delta = score - prevScan.score;
+        }
+
         const historyItem = {
             id: Date.now(),
             filename: filename || 'Resume.pdf',
             score: score,
             timestamp: timestamp,
-            jobTitle: jobTitle
+            jobTitle: jobTitle,
+            delta: delta
         };
         
         // Avoid double entries
@@ -2110,6 +2161,14 @@ function renderHistory() {
         else if (item.score >= 65) badgeColor = 'var(--primary)';
         else if (item.score >= 45) badgeColor = 'var(--warning)';
         
+        let deltaHtml = '';
+        if (item.delta && item.delta !== 0) {
+            const isPos = item.delta > 0;
+            const sign = isPos ? '↑ +' : '↓ ';
+            const color = isPos ? 'var(--success)' : 'var(--danger)';
+            deltaHtml = `<span style="font-size: 0.75rem; color: ${color}; font-weight: 700; margin-right: 8px;">${sign}${item.delta}</span>`;
+        }
+        
         return `
             <div class="history-item">
                 <div class="history-item-left">
@@ -2118,6 +2177,7 @@ function renderHistory() {
                 </div>
                 <div class="history-item-right">
                     <span class="history-item-date">${item.timestamp}</span>
+                    ${deltaHtml}
                     <span class="keyword-badge" style="border: 1px solid ${badgeColor}; color: ${badgeColor}; font-weight: 700; background: transparent; padding: 4px 10px; margin: 0;">${item.score}%</span>
                 </div>
             </div>
