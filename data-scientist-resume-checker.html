@@ -473,6 +473,43 @@
                     <a href="guides/index.html" class="inline-style-c127c3">View All Guides →</a>
                 </div>
             </section>
+
+            <div id="seo-content" style="margin-top: 4rem; margin-bottom: 2rem; padding: 2rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);">
+                <h2 style="margin-bottom: 1.5rem;">Common Questions About Data Scientist Resumes</h2>
+                <div class="faq-item" style="margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary);">Which technical skills must appear on a data scientist resume for ATS?</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Match the job description exactly, but the 2026 baseline is: <strong>Python (pandas, NumPy, scikit-learn, PyTorch or TensorFlow), SQL, machine learning, statistics</strong>, and one cloud platform (<strong>AWS SageMaker, GCP Vertex AI, or Azure ML</strong>). Job descriptions that mention &ldquo;LLMs&rdquo; or &ldquo;GenAI&rdquo; will filter for <strong>LangChain, LlamaIndex, RAG, vector databases (Pinecone, Weaviate, pgvector), and prompt engineering</strong>. Include exact library names, not just &ldquo;Python data stack.&rdquo;</p>
+                </div>
+                <div class="faq-item" style="margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary);">How should I present ML projects to pass ATS scoring?</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Each project needs three tokenizable elements: the <strong>problem type</strong> (&ldquo;churn prediction,&rdquo; &ldquo;recommendation system,&rdquo; &ldquo;sentiment classification&rdquo;), the <strong>technique</strong> (&ldquo;XGBoost,&rdquo; &ldquo;transformer fine-tuning,&rdquo; &ldquo;collaborative filtering&rdquo;), and the <strong>outcome with a metric</strong> (&ldquo;reduced churn by 18%,&rdquo; &ldquo;AUC of 0.92,&rdquo; &ldquo;reduced inference latency 3x&rdquo;). Avoid vague phrases like &ldquo;built ML models&rdquo; — ATS keyword-weighted scoring rewards specificity, and recruiters filter by technique names.</p>
+                </div>
+                <div class="faq-item" style="margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary);">Do I need a portfolio or GitHub link on my resume?</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Yes, but format it for ATS: include the full URL as plain text, not as a styled hyperlink whose visible text is replaced. Bad: <code>[link]</code>. Good: <code>github.com/yourname/nlp-classifier</code>. Workday and Greenhouse parsers strip URLs from styled hyperlinks, leaving recruiters with a broken reference. Also list Kaggle rank if you&rsquo;re in the top 10%, and publication DOIs if you have any — ATS boolean filters sometimes flag &ldquo;publication&rdquo; or &ldquo;Kaggle&rdquo; for senior roles.</p>
+                </div>
+                <div class="faq-item" style="margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary);">Should PhDs write academic-style resumes for industry data science roles?</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">No. Industry ATS platforms weight impact-oriented language over academic prestige. Convert publications into 1-line bullets (&ldquo;Co-authored NeurIPS 2024 paper on transformer sparsity, cited 40+ times&rdquo;), collapse your dissertation into a single line, and emphasize applied outcomes (&ldquo;A/B tested pricing model, drove $2.1M incremental revenue&rdquo;). Keep the resume to 1&ndash;2 pages — Taleo caps text extraction on many long PDFs, silently truncating your final pages.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary);">Which certifications actually help a data scientist&rsquo;s ATS score?</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">In descending order of ATS keyword weight: <strong>AWS Certified Machine Learning &ndash; Specialty, Google Cloud Professional ML Engineer, Databricks Certified Machine Learning Professional, and TensorFlow Developer Certificate</strong>. For newer roles: <strong>NVIDIA-Certified Generative AI Professional</strong>. Skip generic Coursera specializations for the main resume unless the job description names them — ATS parsers treat generic MOOC certs as noise. Put certifications in a dedicated section with the issuing body&rsquo;s exact name.</p>
+                </div>
+            </div>
+            <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {"@type": "Question", "name": "Which technical skills must appear on a data scientist resume for ATS?", "acceptedAnswer": {"@type": "Answer", "text": "The 2026 baseline is Python (pandas, NumPy, scikit-learn, PyTorch or TensorFlow), SQL, machine learning, statistics, and one cloud platform (AWS SageMaker, GCP Vertex AI, or Azure ML). Job descriptions that mention LLMs or GenAI filter for LangChain, LlamaIndex, RAG, vector databases (Pinecone, Weaviate, pgvector), and prompt engineering."}},
+                {"@type": "Question", "name": "How should I present ML projects to pass ATS scoring?", "acceptedAnswer": {"@type": "Answer", "text": "Each project needs three tokenizable elements: the problem type (churn prediction, recommendation system, sentiment classification), the technique (XGBoost, transformer fine-tuning, collaborative filtering), and the outcome with a metric (reduced churn by 18%, AUC of 0.92, reduced inference latency 3x)."}},
+                {"@type": "Question", "name": "Do I need a portfolio or GitHub link on my resume?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, but include the full URL as plain text, not as a styled hyperlink whose visible text is replaced. Workday and Greenhouse parsers strip URLs from styled hyperlinks, leaving recruiters with a broken reference. Also list Kaggle rank if you're in the top 10%, and publication DOIs if you have any."}},
+                {"@type": "Question", "name": "Should PhDs write academic-style resumes for industry data science roles?", "acceptedAnswer": {"@type": "Answer", "text": "No. Convert publications into 1-line bullets, collapse your dissertation into a single line, and emphasize applied outcomes (e.g., 'A/B tested pricing model, drove $2.1M incremental revenue'). Keep the resume to 1-2 pages — Taleo caps text extraction on many long PDFs."}},
+                {"@type": "Question", "name": "Which certifications actually help a data scientist's ATS score?", "acceptedAnswer": {"@type": "Answer", "text": "In descending order of ATS keyword weight: AWS Certified Machine Learning – Specialty, Google Cloud Professional ML Engineer, Databricks Certified Machine Learning Professional, and TensorFlow Developer Certificate. For newer roles: NVIDIA-Certified Generative AI Professional."}}
+              ]
+            }
+            </script>
         </main>
 
         
