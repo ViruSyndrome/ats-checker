@@ -1493,7 +1493,8 @@ function calculateVocabularyDiversity(text) {
 }
 
 // Download Enhanced PDF Report (Designer Edition with More Details)
-document.getElementById('downloadReport').addEventListener('click', () => {
+const downloadReportBtn = document.getElementById('downloadReport');
+if (downloadReportBtn) downloadReportBtn.addEventListener('click', () => {
     const res = window.lastResults;
     if (!res) {
         showInlineAlert('Please analyze your resume first before downloading the report.');
