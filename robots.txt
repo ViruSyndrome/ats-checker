@@ -3,6 +3,9 @@ Allow: /
 
 Sitemap: https://www.getatsready.com/sitemap.xml
 
+# IndexNow key
+# https://www.getatsready.com/a4e7c6d9f3b14201b9c87e65d2f4a1c0.txt
+
 # AI crawlers
 User-agent: GPTBot
 Allow: /
