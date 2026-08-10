@@ -2133,7 +2133,7 @@ function saveScanToHistory(filename, score) {
                             
         if (!isDuplicate) {
             history.unshift(historyItem);
-            if (history.length > 5) history.pop();
+            if (history.length > 25) history.pop();
             _ls.setRaw(historyKey, JSON.stringify(history));
         }
         
@@ -2156,7 +2156,25 @@ function renderHistory() {
     
     historyCard.classList.remove('hidden');
     
-    historyList.innerHTML = history.map(item => {
+    const title = historyCard.querySelector('.card-title');
+    if (title && !document.getElementById('exportCsvBtn')) {
+        const btn = document.createElement('button');
+        btn.id = 'exportCsvBtn';
+        btn.innerHTML = 'Export CSV';
+        btn.style.cssText = 'float:right;font-size:0.75rem;padding:2px 8px;border-radius:4px;background:var(--primary);color:#fff;border:none;cursor:pointer;margin-left:auto;';
+        btn.onclick = exportHistoryCSV;
+        title.appendChild(btn);
+        title.style.display = 'flex';
+        title.style.alignItems = 'center';
+    }
+
+    let sparklineHtml = '';
+    if (history.length > 1) {
+        const scores = history.map(h => h.score).reverse();
+        sparklineHtml = renderSparkline(scores);
+    }
+    
+    historyList.innerHTML = sparklineHtml + history.map(item => {
         let badgeColor = 'var(--danger)';
         if (item.score >= 80) badgeColor = 'var(--success)';
         else if (item.score >= 65) badgeColor = 'var(--primary)';
