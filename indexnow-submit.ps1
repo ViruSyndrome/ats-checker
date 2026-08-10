@@ -4,7 +4,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $hostName = 'www.getatsready.com'
-$key = 'a4e7c6d9f3b14201b9c87e65d2f4a1c0'
+$key = '8d31fd8c45a24cb1b2570f6087e4b9a2'
 $keyLocation = "https://$hostName/$key.txt"
 $sitemapPath = Join-Path $PSScriptRoot 'sitemap.xml'
 
