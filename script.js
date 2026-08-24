@@ -1310,7 +1310,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             Detected: <strong>${criticalFormatIssues.map(i => i.label).join(', ')}</strong><br><br>
             <strong>Fix your template in 2 easy steps:</strong><br><br>
             <strong>1. Download our official template:</strong> <a href="GetATSReady_Template.docx" download style="color:var(--primary); font-weight:bold; text-decoration:underline;">📥 Download ATS-Safe Word Template (.docx)</a><br><br>
-            <strong>2. Copy your text:</strong> Scroll down to the <em>Visual View</em> box at the bottom of this page, click <strong>"Copy current view"</strong>, and paste it directly into the new template.<br><br>
+            <strong>2. Move your text:</strong> Scroll down to the <em>Visual View</em> box, copy your clean text, and paste it into the matching sections of the new template (don't just overwrite the whole file!).<br><br>
             Re-upload here to confirm your improved score!`
         });
     }
