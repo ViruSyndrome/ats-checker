@@ -1308,11 +1308,10 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             html: `<strong>🚨 Fix Your Template First — This Is Priority #1</strong><br>
             Your current template is reducing your score from a potential <strong>${projectedWithFix}%</strong> to <strong>${finalScore}%</strong>. No other single fix will have as much impact.<br><br>
             Detected: <strong>${criticalFormatIssues.map(i => i.label).join(', ')}</strong><br><br>
-            <strong>Free ATS-safe templates:</strong><br>
-            • <strong>Google Docs:</strong> File → Template gallery → search "resume" → pick <em>Swiss</em> or <em>Serif</em><br>
-            • <strong>Microsoft Word:</strong> File → New → search "ATS resume" in the template search bar<br>
-            • <strong>Online:</strong> resume.io or novoresume.com → filter to "ATS-friendly" templates<br><br>
-            After switching: paste your content as plain text (Ctrl+Shift+V), not drag-and-drop. Re-upload here to confirm your improved score.`
+            <strong>Fix your template in 2 easy steps:</strong><br><br>
+            <strong>1. Download our official template:</strong> <a href="GetATSReady_Template.docx" download style="color:var(--primary); font-weight:bold; text-decoration:underline;">📥 Download ATS-Safe Word Template (.docx)</a><br><br>
+            <strong>2. Copy your text:</strong> Scroll down to the <em>Visual View</em> box at the bottom of this page, click <strong>"Copy current view"</strong>, and paste it directly into the new template.<br><br>
+            Re-upload here to confirm your improved score!`
         });
     }
 
