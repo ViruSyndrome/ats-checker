@@ -2285,3 +2285,23 @@ window.addEventListener('load', () => {
   });
 });
 
+
+function exportHistoryCSV() {
+    const history = JSON.parse(_ls.getRaw('ats_score_history') || '[]');
+    if (history.length === 0) return;
+    
+    let csv = 'Date,Resume File,Job Description / Title,Score,Delta\n';
+    history.forEach(h => {
+        csv += `${h.timestamp || ''},${(h.filename || '').replace(/,/g, '')},${(h.jobTitle || '').replace(/,/g, '')},${h.score || 0},${h.delta || 0}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'ATS_Scan_History.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
