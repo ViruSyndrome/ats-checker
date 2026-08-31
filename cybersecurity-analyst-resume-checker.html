@@ -7,8 +7,8 @@
     <script>
       Sentry.onLoad(function() {
         Sentry.init({
-          tracesSampleRate: 1.0,
-          replaysSessionSampleRate: 0.1,
+          tracesSampleRate: 0.1,
+          replaysSessionSampleRate: 0.05,
           replaysOnErrorSampleRate: 1.0,
         });
       });
@@ -25,6 +25,10 @@
       gtag('js', new Date());
       gtag('config', 'G-8HMGTGQ4B8');
     </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959862133855422" crossorigin="anonymous"></script>
+    
+    <!-- QR Code Generator for PDF reports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <link rel="canonical" href="https://www.getatsready.com/cybersecurity-analyst-resume-checker.html">
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -41,13 +45,12 @@
     <meta name="twitter:description" content="Check your Cybersecurity Analyst resume against ATS parsers. Discover exactly which keywords and skills you are missing for Cybersecurity Analyst jobs.">
     <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp">
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2" />
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- SEO Schema: Jobscan Level -->
+    <!-- SEO Schema: WebApplication -->
     <script type="application/ld+json">
-    [
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -57,65 +60,14 @@
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "All",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How does the ATS resume scoring work?",
-          "acceptedAnswer": { "@type": "Answer", "text": "GetATSReady uses a multiplicative scoring model that mimics real ATS behaviour. Template Compliance acts as a multiplier on your keyword score — a broken template (multi-column, tables) can cut your effective score by up to 70%. The four factors are: Template Compliance (multiplier), Keyword Match (50%), Structure (25%), and Impact/Metrics (25%)." }
-        },
-        {
-          "@type": "Question",
-          "name": "Is GetATSReady free and private?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Everything is processed locally in your browser using JavaScript — your resume never leaves your device. There is no sign-up, no account, and no data storage. The tool is completely free with no subscription." }
-        },
-        {
-          "@type": "Question",
-          "name": "What resume file formats are supported?",
-          "acceptedAnswer": { "@type": "Answer", "text": "PDF and DOCX (Microsoft Word) files are supported. PDF is recommended as it preserves formatting and is widely accepted by ATS systems." }
-        },
-        {
-          "@type": "Question",
-          "name": "How accurate is the ATS score?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The algorithm replicates real ATS behaviour based on Jobscan research covering 97.8% of Fortune 500 ATS systems including Workday, Taleo, Greenhouse, and iCIMS. The multiplicative model means a structurally broken template reduces your score even if keyword content is strong, exactly as real ATS software behaves." }
-        },
-        {
-          "@type": "Question",
-          "name": "What ATS score should I aim for?",
-          "acceptedAnswer": { "@type": "Answer", "text": "First ensure Template Compliance is 85% or above — a broken template tanks your score regardless of keyword quality. With a clean template, aim for 75 or above (good) or 85 or above (excellent). The single biggest improvement most candidates can make is switching from a multi-column or Canva-style template to a clean single-column layout." }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I improve my ATS score?",
-          "acceptedAnswer": { "@type": "Answer", "text": "In order of impact: (1) Fix your template — switch to single-column if Template Compliance is below 85%. (2) Add missing keywords from the job description naturally into your experience section. (3) Use standard section headers like Professional Experience, Education, Skills, Certifications. (4) Add quantifiable achievements with numbers and percentages." }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the Raw Text Preview?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The Raw Text Preview shows exactly what an ATS parser sees when it extracts text from your resume file. If you see scrambled words, merged sentences, or word salad, your template is structurally broken. Many multi-column or graphic-heavy templates look great to humans but are unreadable to ATS software, causing automatic rejection." }
-        },
-        {
-          "@type": "Question",
-          "name": "Does GetATSReady work for all industries and job roles?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. The keyword matching uses semantic analysis that works across industries — tech, finance, healthcare, marketing, engineering, and more. Role-specific ATS tips are also available for over 50 job titles including software engineer, product manager, data scientist, registered nurse, and financial analyst." }
-        },
-        {
-          "@type": "Question",
-          "name": "How is GetATSReady different from Jobscan?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Jobscan charges $49–99 per month and limits free scans to 5 per month. GetATSReady is fully free with unlimited scans, no account required, and all processing happens in your browser so your resume stays completely private." }
-        }
-      ]
     }
-    ]
     </script>
+    <!-- FAQPage schema is injected dynamically from the live FAQ section via script.js -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959862133855422" crossorigin="anonymous"></script>
-    <!-- PDF and DOCX libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
-    
+    <!-- PDF and DOCX libraries — deferred to avoid blocking page render -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
   /* Cross-Linking Footer Network CSS */
@@ -165,18 +117,64 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 100% Private: Processed entirely in your browser. No Signup Required.
             </div>
+
+            <p class="hero-tagline">
+                Score your resume against any job description in <strong>seconds</strong> —
+                see exactly which keywords you're missing and why ATS systems reject good candidates.
+            </p>
+            <div class="hero-stats">
+                <span class="hero-stat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Free &amp; unlimited scans
+                </span>
+                <span class="hero-stat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    PDF &amp; DOCX supported
+                </span>
+                <span class="hero-stat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    No data stored
+                </span>
+            </div>
+
+            <!-- BEFORE/AFTER VISUAL -->
+            <div class="hero-examples">
+                <div class="example-card bad">
+                    <div class="example-header">
+                        <span class="example-score">42%</span>
+                        <span class="example-label">Before</span>
+                    </div>
+                    <div class="example-body">
+                        <p>"Managed a team to build web software."</p>
+                        <div class="keyword-tags bad">Missing: React, Node.js, Agile</div>
+                    </div>
+                </div>
+                <div class="example-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                </div>
+                <div class="example-card good">
+                    <div class="example-header">
+                        <span class="example-score">96%</span>
+                        <span class="example-label">ATS Optimized</span>
+                    </div>
+                    <div class="example-body">
+                        <p>"Led an <strong>Agile</strong> team to build <strong>React</strong> and <strong>Node.js</strong> software."</p>
+                        <div class="keyword-tags good">Matched: React, Node.js, Agile</div>
+                    </div>
+                </div>
+            </div>
         </header>
 
         <main>
-            <div class="pseo-hero" style="text-align: center; margin-bottom: 2rem; padding: 0 1rem;">
-                <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main, #f8fafc);">Cybersecurity Analyst ATS Resume Checker</h1>
-                <p style="font-size: 1.1rem; color: var(--text-muted, #94a3b8); max-width: 600px; margin: 0 auto;">Score your cybersecurity analyst resume. Discover exactly which skills, like SIEM, vulnerability scanning, firewalls, and incident response, you are missing.</p>
-            </div>
             
         <div style="max-width: 800px; margin: 0 auto 2rem; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); border-left: 4px solid var(--accent); padding: 1rem 1.25rem; border-radius: 8px;">
             <strong style="color: var(--accent);">New Guide:</strong> Want to know exactly how Workday, Taleo, and Greenhouse parse your resume? <a href="/guides/how-ats-works.html" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Read our complete 2026 breakdown of how ATS works.</a>
         </div>
-        <div class="tool-grid">
+        <div class="pseo-hero" style="text-align: center; margin-bottom: 2rem; padding: 0 1rem;">
+                <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main, #f8fafc);">Cybersecurity Analyst ATS Resume Checker</h1>
+                <p style="font-size: 1.1rem; color: var(--text-muted, #94a3b8); max-width: 600px; margin: 0 auto;">Score your cybersecurity analyst resume. Discover exactly which skills, like SIEM, vulnerability scanning, firewalls, and incident response, you are missing.</p>
+            </div>
+            <div class="tool-grid">
                 <!-- Left: Job Description -->
                 <div class="card">
                     <div class="card-title">
@@ -192,7 +190,7 @@
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
                         Your Resume
                     </div>
-                    <div class="upload-area" id="dropZone">
+                    <div class="upload-area" id="dropZone" tabindex="0" role="button" aria-label="Upload resume — click or drag and drop a PDF or DOCX file">
                         <div class="upload-icon">📄</div>
                         <p>Drag & drop your resume (PDF or DOCX)</p>
                         <p class="inline-style-a71c0e">or click to browse</p>
@@ -213,7 +211,7 @@
                 <p style="margin-bottom: 0;">As a Cybersecurity Analyst, your resume will likely be parsed by security and IT ATS filters. These systems specifically scan for hard skills and industry terms. Our scanner ensures your threat analysis, network security, and risk assessment are perfectly aligned with the job description so human recruiters actually see your resume.</p>
             </div>
             <!-- Client-Side Scan History -->
-            <div class="card inline-style-f3ef69" id="historyCard">
+            <div class="card hidden inline-style-f3ef69" id="historyCard">
                 <div class="card-title inline-style-4986ec">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     Recent Scans <span class="inline-style-147513">100% Private (Local Storage)</span>
@@ -221,22 +219,7 @@
                 <div id="historyList"></div>
             </div>
 
-            <!-- SEO Text Section: How the Multiplicative Scoring Model Works -->
-            <div class="card inline-style-text-seo" id="scoringModelExplanation" style="margin-top: 24px; line-height: 1.6; color: var(--text-muted, #64748b);">
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #f8fafc); margin-bottom: 12px; margin-top: 0;">How Our Multiplicative Scoring Model Works</h2>
-                <p style="margin-bottom: 12px;">GetATSReady isn't just a simple keyword counter. Our algorithm was built by analyzing how enterprise Applicant Tracking Systems (like Workday, Taleo, and Greenhouse) actually parse and rank resumes in the real world.</p>
-                <p style="margin-bottom: 12px;">Most legacy resume checkers use an additive scoring model: they give you 50 points for keywords, 25 points for structure, and 25 points for metrics, resulting in a perfect 100. However, this is fundamentally flawed. If your resume uses a multi-column design, complex tables, or a heavy Canva template, the ATS parser physically cannot read the text. It scrambles the words into an unreadable "word salad."</p>
-                <p style="margin-bottom: 12px;">To solve this, GetATSReady uses a <strong>Multiplicative Scoring Model</strong>. First, we calculate a baseline score using three core metrics:</p>
-                <ul style="margin-bottom: 12px; margin-left: 20px; list-style-type: disc;">
-                    <li><strong>Keyword Match (50%):</strong> We use bidirectional semantic analysis to measure the overlap between your resume and the provided job description.</li>
-                    <li><strong>Impact & Metrics (25%):</strong> We scan for quantifiable achievements (numbers, percentages) and strong action verbs that demonstrate leadership.</li>
-                    <li><strong>Structure (25%):</strong> We verify that you are using standard, industry-recognized section headers (e.g., "Professional Experience" instead of "My Journey").</li>
-                </ul>
-                <p style="margin-bottom: 12px;">Next, we apply the <strong>Template Compliance Multiplier</strong>. We simulate the PDF/DOCX extraction process. If we detect multi-column layouts, hidden tables, or unreadable graphical elements, your Template Compliance score drops. This acts as a direct discount factor on your baseline score. For example, if your keyword match is perfect (100) but your template compliance is only 40%, your final ATS score will accurately reflect that the ATS system can only read 40% of your resume.</p>
-                <p style="margin-bottom: 0;">By simulating the exact technical limitations of modern HR software, GetATSReady ensures that when you hit submit on a job application, your resume is guaranteed to reach human eyes.</p>
-            </div>
-
-            <div id="results" class="results-section">
+            <div id="results" class="results-section hidden" aria-live="polite">
                 <!-- 1. CRITICAL ALERT ZONE (High-Intensity warnings like Template issues) -->
                 <div id="criticalAlert" class="inline-style-60021d"></div>
 
@@ -254,6 +237,12 @@
                         <div id="scoreVerdictBadge" class="inline-style-df703b">Analyzing...</div>
                         <p id="scoreText" class="inline-style-1f8f6c">Keyword match x template compliance x structure x impact — mirroring how enterprise ATS systems rank candidates.</p>
                         <button id="downloadReport" class="secondary-btn inline-style-8a5dc8">&#8595; Download Full PDF Report</button>
+                        
+                        <div class="ats-pro-cta" style="margin-top: 24px; padding: 20px; border-radius: 8px; background: linear-gradient(135deg, var(--bg-soft), #fff); border: 2px solid var(--primary); text-align: left;">
+                            <h3 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 8px;">🚀 Guarantee an 85+ Score</h3>
+                            <p style="color: var(--text); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">Don't want to rewrite it yourself? A technical writer will manually rewrite and keyword-optimize your resume to beat the bots.</p>
+                            <a href="#" target="_blank" class="primary-btn" style="background: var(--primary); width: 100%; justify-content: center; font-size: 1rem; box-shadow: 0 4px 12px rgba(15, 98, 254, 0.3);">Done for You: $49</a>
+                        </div>
                     </div>
 
                     <div class="stats-card">
@@ -358,6 +347,44 @@
                         <textarea id="rawTextPreview" aria-label="Raw Text Preview" readonly class="inline-style-9af1f2"></textarea>
                     </div>
                 </div>
+                
+
+
+                <!-- CTA & NEXT STEPS -->
+                <div class="results-cta">
+                    <div class="cta-box">
+                        <h3>Happy with your score?</h3>
+                        <p>Share your resume success and help others beat the ATS.</p>
+                        <div class="share-buttons">
+                            <button class="btn-secondary" onclick="window.open('https://twitter.com/intent/tweet?text=I%20just%20scored%20an%20ATS%20match%20on%20my%20resume!%20Check%20yours%20for%20free%20at%20https%3A%2F%2Fwww.getatsready.com', '_blank')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg> Share on Twitter
+                            </button>
+                            <button class="btn-secondary" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.getatsready.com', '_blank')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> Share on LinkedIn
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cta-box alt">
+                        <h3>Need help fixing your score?</h3>
+                        <p>Read our free guides on bypassing the ATS filters and formatting your resume perfectly.</p>
+                        <a href="guides/index.html" class="btn-primary" style="display:inline-block; margin-top:12px; text-decoration:none;">Read ATS Guides</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO Text Section: How the Multiplicative Scoring Model Works -->
+            <div class="card inline-style-text-seo" id="scoringModelExplanation" style="margin-top: 24px; line-height: 1.6; color: var(--text-muted, #64748b);">
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #f8fafc); margin-bottom: 12px; margin-top: 0;">How Our Multiplicative Scoring Model Works</h2>
+                <p style="margin-bottom: 12px;">GetATSReady isn't just a simple keyword counter. Our algorithm was built by analyzing how enterprise Applicant Tracking Systems (like Workday, Taleo, and Greenhouse) actually parse and rank resumes in the real world.</p>
+                <p style="margin-bottom: 12px;">Most legacy resume checkers use an additive scoring model: they give you 50 points for keywords, 25 points for structure, and 25 points for metrics, resulting in a perfect 100. However, this is fundamentally flawed. If your resume uses a multi-column design, complex tables, or a heavy Canva template, the ATS parser physically cannot read the text. It scrambles the words into an unreadable "word salad."</p>
+                <p style="margin-bottom: 12px;">To solve this, GetATSReady uses a <strong>Multiplicative Scoring Model</strong>. First, we calculate a baseline score using three core metrics:</p>
+                <ul style="margin-bottom: 12px; margin-left: 20px; list-style-type: disc;">
+                    <li><strong>Keyword Match (50%):</strong> We use bidirectional semantic analysis to measure the overlap between your resume and the provided job description.</li>
+                    <li><strong>Impact & Metrics (25%):</strong> We scan for quantifiable achievements (numbers, percentages) and strong action verbs that demonstrate leadership.</li>
+                    <li><strong>Structure (25%):</strong> We verify that you are using standard, industry-recognized section headers (e.g., "Professional Experience" instead of "My Journey").</li>
+                </ul>
+                <p style="margin-bottom: 12px;">Next, we apply the <strong>Template Compliance Multiplier</strong>. We simulate the PDF/DOCX extraction process. If we detect multi-column layouts, hidden tables, or unreadable graphical elements, your Template Compliance score drops. This acts as a direct discount factor on your baseline score. For example, if your keyword match is perfect (100) but your template compliance is only 40%, your final ATS score will accurately reflect that the ATS system can only read 40% of your resume.</p>
+                <p style="margin-bottom: 0;">By simulating the exact technical limitations of modern HR software, GetATSReady ensures that when you hit submit on a job application, your resume is guaranteed to reach human eyes.</p>
             </div>
 
             <!-- Ad Zone: In-Content -->
@@ -498,6 +525,64 @@
       </a>
     </div>
   </div>
+
+        
+        <!-- PSEO Roles Grid -->
+        <div class="roles-grid-section" style="max-width: 1100px; margin: 4rem auto 2rem; padding: 0 1rem;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--text-primary, #1e293b); text-align: center;">Popular ATS Resume Checkers</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+                <a href="software-engineer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Software Engineer</a>
+                <a href="data-analyst-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Data Analyst</a>
+                <a href="product-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Product Manager</a>
+                <a href="registered-nurse-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Registered Nurse</a>
+                <a href="financial-analyst-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Financial Analyst</a>
+                <a href="project-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Project Manager</a>
+                <a href="marketing-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Marketing Manager</a>
+                <a href="data-scientist-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Data Scientist</a>
+                <a href="human-resources-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Human Resources Manager</a>
+                <a href="graphic-designer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Graphic Designer</a>
+                <a href="sales-representative-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Sales Representative</a>
+                <a href="account-executive-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Account Executive</a>
+                <a href="customer-success-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Customer Success Manager</a>
+                <a href="business-analyst-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Business Analyst</a>
+                <a href="operations-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Operations Manager</a>
+                <a href="executive-assistant-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Executive Assistant</a>
+                <a href="teacher-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Teacher</a>
+                <a href="mechanical-engineer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Mechanical Engineer</a>
+                <a href="civil-engineer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Civil Engineer</a>
+                <a href="electrical-engineer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Electrical Engineer</a>
+                <a href="web-developer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Web Developer</a>
+                <a href="ux-ui-designer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">UX/UI Designer</a>
+                <a href="devops-engineer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">DevOps Engineer</a>
+                <a href="cloud-architect-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Cloud Architect</a>
+                <a href="cybersecurity-analyst-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Cybersecurity Analyst</a>
+                <a href="network-engineer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Network Engineer</a>
+                <a href="systems-administrator-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Systems Administrator</a>
+                <a href="it-support-specialist-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">IT Support Specialist</a>
+                <a href="pharmacist-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Pharmacist</a>
+                <a href="medical-assistant-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Medical Assistant</a>
+                <a href="dental-assistant-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Dental Assistant</a>
+                <a href="physical-therapist-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Physical Therapist</a>
+                <a href="occupational-therapist-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Occupational Therapist</a>
+                <a href="social-worker-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Social Worker</a>
+                <a href="paralegal-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Paralegal</a>
+                <a href="attorney-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Attorney</a>
+                <a href="copywriter-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Copywriter</a>
+                <a href="social-media-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Social Media Manager</a>
+                <a href="content-creator-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Content Creator</a>
+                <a href="event-planner-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Event Planner</a>
+                <a href="real-estate-agent-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Real Estate Agent</a>
+                <a href="store-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Store Manager</a>
+                <a href="restaurant-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Restaurant Manager</a>
+                <a href="chef-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Chef</a>
+                <a href="supply-chain-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Supply Chain Manager</a>
+                <a href="logistics-coordinator-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Logistics Coordinator</a>
+                <a href="quality-assurance-tester-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Quality Assurance Tester</a>
+                <a href="business-development-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Business Development Manager</a>
+                <a href="construction-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Construction Manager</a>
+                <a href="truck-driver-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Truck Driver</a>
+            </div>
+        </div>
 
         <footer class="site-footer">
             <div class="footer-inner">
