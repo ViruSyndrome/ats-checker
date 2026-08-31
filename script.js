@@ -2305,3 +2305,23 @@ function exportHistoryCSV() {
     a.click();
     document.body.removeChild(a);
 }
+
+
+// PPP Pricing Integration
+function setupPPPPricing() {
+    fetch('https://get.geojs.io/v1/ip/country.json')
+        .then(response => response.json())
+        .then(data => {
+            const btn = document.getElementById('atsProCheckoutBtn');
+            if (!btn) return;
+            if (data.country === 'IN') {
+                btn.innerHTML = 'Done for You: ₹499';
+                btn.href = 'https://buy.stripe.com/test_placeholder_inr';
+            } else {
+                btn.innerHTML = 'Done for You: ';
+                btn.href = 'https://buy.stripe.com/test_placeholder_usd';
+            }
+        })
+        .catch(err => console.log('PPP check failed', err));
+}
+document.addEventListener('DOMContentLoaded', setupPPPPricing);
