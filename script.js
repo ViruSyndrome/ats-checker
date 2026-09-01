@@ -2319,7 +2319,7 @@ function setupPPPPricing() {
                 btn.href = 'https://razorpay.me/@virusyndrome?amount=n%2FUUsdogj%2F7sarE2WD13qg%3D%3D';
             } else {
                 btn.innerHTML = 'Done for You: ';
-                btn.href = 'https://pages.razorpay.com/YOUR_RAZORPAY_LINK_USD';
+                btn.href = 'https://vinodisaac.gumroad.com/l/ats-pro';
             }
         })
         .catch(err => console.log('PPP check failed', err));
