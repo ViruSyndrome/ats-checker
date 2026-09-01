@@ -2325,3 +2325,21 @@ function setupPPPPricing() {
         .catch(err => console.log('PPP check failed', err));
 }
 document.addEventListener('DOMContentLoaded', setupPPPPricing);
+
+
+// Consent Checkbox Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const checkbox = document.getElementById('refundConsent');
+    const btn = document.getElementById('atsProCheckoutBtn');
+    if (checkbox && btn) {
+        checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                btn.style.pointerEvents = 'auto';
+                btn.style.opacity = '1';
+            } else {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.5';
+            }
+        });
+    }
+});
