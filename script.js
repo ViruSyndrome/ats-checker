@@ -2316,7 +2316,7 @@ function setupPPPPricing() {
             if (!btn) return;
             if (data.country === 'IN') {
                 btn.innerHTML = 'Done for You: ₹499';
-                btn.href = 'https://pages.razorpay.com/YOUR_RAZORPAY_LINK_INR';
+                btn.href = 'https://razorpay.me/@virusyndrome?amount=n%2FUUsdogj%2F7sarE2WD13qg%3D%3D';
             } else {
                 btn.innerHTML = 'Done for You: ';
                 btn.href = 'https://pages.razorpay.com/YOUR_RAZORPAY_LINK_USD';
