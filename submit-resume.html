@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="msvalidate.01" content="FA7405A0B7623E8A404F74AE4952777C" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Submit Your Resume — GetATSReady Pro</title>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HMGTGQ4B8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-8HMGTGQ4B8');
+  </script>
+  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { background: var(--bg, #f8fafc); font-family: 'Inter', sans-serif; }
+    .submit-page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+    .submit-hero { text-align: center; margin-bottom: 40px; }
+    .submit-hero h1 { font-size: 2rem; font-weight: 800; color: var(--primary, #0f62fe); margin-bottom: 12px; font-family: 'Outfit', sans-serif; }
+    .submit-hero p { font-size: 1rem; color: var(--text, #374151); line-height: 1.6; }
+    .timeline-steps { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 40px; }
+    .step { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; flex: 1; min-width: 160px; max-width: 200px; text-align: center; }
+    .step-num { font-size: 1.5rem; font-weight: 800; color: var(--primary, #0f62fe); }
+    .step-label { font-size: 0.82rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
+    .form-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 36px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .form-card h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; color: var(--text, #111827); }
+    .field-group { margin-bottom: 20px; }
+    .field-group label { display: block; font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .field-group label .req { color: #ef4444; }
+    .field-group input[type="text"],
+    .field-group input[type="email"],
+    .field-group textarea,
+    .field-group select { width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; font-family: 'Inter', sans-serif; color: #111827; background: #f9fafb; box-sizing: border-box; transition: border-color 0.2s; }
+    .field-group input:focus, .field-group textarea:focus, .field-group select:focus { outline: none; border-color: var(--primary, #0f62fe); background: #fff; }
+    .field-group textarea { resize: vertical; min-height: 120px; }
+    .field-group .hint { font-size: 0.78rem; color: #6b7280; margin-top: 4px; line-height: 1.4; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 540px) { .field-row { grid-template-columns: 1fr; } }
+    .jd-section { background: #f0f7ff; border: 1.5px solid #bfdbfe; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .jd-section h3 { font-size: 1rem; font-weight: 700; color: #1e40af; margin-bottom: 8px; }
+    .jd-section p { font-size: 0.85rem; color: #374151; margin-bottom: 12px; line-height: 1.5; }
+    .upload-box { border: 2px dashed #d1d5db; border-radius: 10px; padding: 24px; text-align: center; background: #f9fafb; margin-bottom: 6px; cursor: pointer; transition: border-color 0.2s; }
+    .upload-box:hover { border-color: var(--primary, #0f62fe); }
+    .upload-box input[type="file"] { display: none; }
+    .upload-box-label { font-size: 0.9rem; color: #6b7280; }
+    .upload-box-label strong { color: var(--primary, #0f62fe); }
+    .upload-box-label .or-link { font-size: 0.82rem; color: #9ca3af; margin-top: 6px; display: block; }
+    .file-preview { display: none; background: #e0f2fe; border-radius: 6px; padding: 8px 12px; font-size: 0.85rem; color: #0369a1; margin-top: 8px; align-items: center; gap: 8px; }
+    .consent-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 24px; background: #fef9c3; border: 1px solid #fde047; border-radius: 8px; padding: 14px; }
+    .consent-row input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; width: 16px; height: 16px; }
+    .consent-row label { font-size: 0.85rem; color: #374151; line-height: 1.5; }
+    .consent-row a { color: var(--primary, #0f62fe); text-decoration: underline; }
+    .submit-btn { width: 100%; padding: 14px; background: var(--primary, #0f62fe); color: #fff; font-size: 1.05rem; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 12px rgba(15,98,254,0.3); transition: background 0.2s, opacity 0.2s; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .submit-btn:hover:not(:disabled) { background: #0043ce; }
+    .success-msg { display: none; text-align: center; padding: 40px 20px; }
+    .success-msg h2 { color: #16a34a; font-size: 1.5rem; margin-bottom: 12px; }
+    .success-msg p { color: #374151; font-size: 0.95rem; line-height: 1.6; }
+    .alert-box { background: #fff7ed; border: 1.5px solid #fb923c; border-radius: 10px; padding: 16px 20px; margin-bottom: 28px; font-size: 0.88rem; color: #9a3412; line-height: 1.5; }
+    .alert-box strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+    /* Navbar tweaks */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top-row">
+        <a href="/" class="logo-link">
+          <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M18 4v5h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+            <line x1="6" y1="18" x2="26" y2="18" stroke="var(--accent, #818cf8)" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+            <line x1="12" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+            <line x1="12" y1="15" x2="18" y2="15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+          <span class="logo-text">GetATS<span class="logo-accent">Ready</span></span>
+        </a>
+      </div>
+      <nav class="main-nav" id="atsNavLinks">
+        <a href="/">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="guides/index.html">Guides</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+    </header>
+  </div>
+
+  <div class="submit-page">
+    <div class="submit-hero">
+      <h1>🚀 Submit Your Resume for Rewrite</h1>
+      <p>You've taken the first step. Fill in the details below and our writer will have your ATS-optimized resume ready within <strong>48 hours</strong>.</p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-steps">
+      <div class="step"><div class="step-num">1</div><div class="step-label">Submit this form with your resume &amp; job description</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-label">Writer reviews &amp; rewrites within 48 hours</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-label">You receive the finished resume by email</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-label">Request up to 2 free revisions within 7 days</div></div>
+    </div>
+
+    <!-- Important notice -->
+    <div class="alert-box">
+      <strong>📌 Important: Your order is confirmed. This form records your submission.</strong>
+      Please fill this out completely. Incomplete submissions may delay your delivery. The job description you paste below is what your resume will be tailored to match — be as specific as possible.
+    </div>
+
+    <!-- Main Form -->
+    <div class="form-card" id="formCard">
+      <h2>Your Details</h2>
+
+      <form id="submitForm" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST" enctype="multipart/form-data">
+
+        <!-- Hidden timestamp for audit trail -->
+        <input type="hidden" name="_subject" value="New ATS Pro Resume Submission">
+        <input type="hidden" name="submission_time" id="submissionTime">
+        <input type="hidden" name="_next" value="https://www.getatsready.com/submit-resume.html?submitted=true">
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" name="full_name" placeholder="e.g. Priya Sharma" required>
+          </div>
+          <div class="field-group">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" name="email" placeholder="you@example.com" required>
+            <span class="hint">We will send your finished resume to this email.</span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Target Job Title <span class="req">*</span></label>
+            <input type="text" name="target_job_title" placeholder="e.g. Senior Product Manager" required>
+          </div>
+          <div class="field-group">
+            <label>Payment Reference / Order ID <span class="req">*</span></label>
+            <input type="text" name="payment_ref" placeholder="e.g. pay_PXxxxxxx from Razorpay" required>
+            <span class="hint">Found in your payment confirmation email.</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Years of Experience</label>
+          <select name="years_experience">
+            <option value="">Select...</option>
+            <option value="0-2">0–2 years (Entry level)</option>
+            <option value="3-5">3–5 years (Mid-level)</option>
+            <option value="6-10">6–10 years (Senior)</option>
+            <option value="10+">10+ years (Leadership / Executive)</option>
+          </select>
+        </div>
+
+        <!-- Job Description Section -->
+        <div class="jd-section">
+          <h3>📋 Paste the Job Description</h3>
+          <p>This is the most important part. Paste the full job description from the company's job posting below. Your resume will be rewritten to match these exact keywords, responsibilities, and qualifications.</p>
+          <div class="field-group" style="margin-bottom:0;">
+            <textarea name="job_description" placeholder="Paste the full job description here. Include the required skills, responsibilities, qualifications, and any keywords you can see in the posting..." rows="8" required></textarea>
+            <span class="hint">Tip: copy everything — even the "About the company" section. More context = better match.</span>
+          </div>
+        </div>
+
+        <!-- Resume Upload -->
+        <div class="field-group">
+          <label>Upload Your Current Resume <span class="req">*</span></label>
+          <div class="upload-box" onclick="document.getElementById('resumeFile').click()">
+            <input type="file" id="resumeFile" name="resume_file" accept=".pdf,.doc,.docx" onchange="handleFileSelect(this)">
+            <div class="upload-box-label">
+              <strong>Click to upload</strong> your resume (PDF or Word)<br>
+              <span class="or-link">Max 5MB · PDF, DOC, DOCX</span>
+            </div>
+          </div>
+          <div class="file-preview" id="filePreview">
+            <span>📄</span><span id="fileName"></span>
+          </div>
+          <span class="hint">Can't upload? Instead, paste a Google Drive / Dropbox share link in "Special Instructions" below.</span>
+        </div>
+
+        <!-- Extra Notes -->
+        <div class="field-group">
+          <label>Special Instructions <em style="font-weight:400; color:#6b7280;">(optional)</em></label>
+          <textarea name="special_instructions" placeholder="e.g. I'm switching industries from finance to tech. Please highlight transferable skills. Or: my Google Drive resume link is https://..." rows="3"></textarea>
+        </div>
+
+        <!-- Consent checkbox -->
+        <div class="consent-row">
+          <input type="checkbox" id="consentBox" required>
+          <label for="consentBox">
+            I confirm that I have paid for this service and I agree to the <a href="refund-policy.html" target="_blank">Refund Policy</a>.
+            I understand there are <strong>no refunds after delivery</strong>, and I am entitled to <strong>2 free revisions within 7 days</strong>.
+            This form submission serves as the official record of my order.
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">✅ Submit My Resume for Rewrite</button>
+      </form>
+
+      <!-- Success Message (shown after redirect) -->
+      <div class="success-msg" id="successMsg">
+        <div style="font-size: 3rem; margin-bottom: 16px;">🎉</div>
+        <h2>Submission Received!</h2>
+        <p>Thank you! Your resume and job description have been received. We will have your ATS-optimized resume ready and emailed to you within <strong>48 hours</strong>.</p>
+        <p style="margin-top: 16px;">If you don't hear from us within 48 hours, email us at <strong>hello@getatsready.com</strong> with your payment reference.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Set submission timestamp
+    document.getElementById('submissionTime').value = new Date().toISOString();
+
+    // Show success message if redirected back after submission
+    if (window.location.search.includes('submitted=true')) {
+      document.getElementById('submitForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+      // Scroll to success
+      document.getElementById('formCard').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // File select handler
+    function handleFileSelect(input) {
+      const preview = document.getElementById('filePreview');
+      const fileName = document.getElementById('fileName');
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File is too large. Please keep it under 5MB, or share a Google Drive link in Special Instructions.');
+          input.value = '';
+          preview.style.display = 'none';
+          return;
+        }
+        fileName.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+        preview.style.display = 'flex';
+      }
+    }
+
+    // Form submit handler
+    document.getElementById('submitForm').addEventListener('submit', function(e) {
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+    });
+  </script>
+</body>
+</html>

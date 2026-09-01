@@ -2316,10 +2316,10 @@ function setupPPPPricing() {
             if (!btn) return;
             if (data.country === 'IN') {
                 btn.innerHTML = 'Done for You: ₹499';
-                btn.href = 'https://buy.stripe.com/test_placeholder_inr';
+                btn.href = 'https://pages.razorpay.com/YOUR_RAZORPAY_LINK_INR';
             } else {
                 btn.innerHTML = 'Done for You: ';
-                btn.href = 'https://buy.stripe.com/test_placeholder_usd';
+                btn.href = 'https://pages.razorpay.com/YOUR_RAZORPAY_LINK_USD';
             }
         })
         .catch(err => console.log('PPP check failed', err));
