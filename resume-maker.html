@@ -131,6 +131,18 @@
             justify-content: center;
         }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Free ATS Resume Builder",
+      "url": "https://www.getatsready.com/resume-maker.html",
+      "description": "Build an ATS-optimized resume for free. Fill out your details, live preview, and download as PDF instantly. 100% private, no signup required.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
 </head>
 <body>
 
@@ -555,7 +567,14 @@
             
             if(!btn || !tierSelect || !consent) return;
             
+            // Dynamically update dropdown currency based on location
+            const optStd = tierSelect.querySelector('option[value="standard"]');
+            const optExp = tierSelect.querySelector('option[value="express"]');
+            if (optStd) optStd.textContent = detectedMarket === 'india' ? 'Standard: 48 hours / ₹2,499' : 'Standard: 48 hours / $49';
+            if (optExp) optExp.textContent = detectedMarket === 'india' ? 'Express: 24 hours / ₹3,999' : 'Express: 24 hours / $79';
+            
             const tier = tierSelect.value;
+
             const hasConsent = consent.checked;
             
             if (hasConsent && tier && ctaPlans[tier]) {
