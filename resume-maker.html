@@ -224,8 +224,9 @@
 - Led a team of 5 engineers" oninput="updatePreview()"></textarea>
                         </div>
 
+                        <div id="job_form_2" style="display: none;">
                         <!-- Job 2 -->
-                        <h4 style="margin: 32px 0 8px; color: var(--text-main);">Role 2 (Optional)</h4>
+                        <h4 style="margin: 24px 0 8px; color: var(--text-main);">Role 2</h4>
                         <div class="form-group">
                             <label>Job Title</label>
                             <input type="text" id="b_jobtitle2" placeholder="Software Engineer" oninput="updatePreview()">
@@ -246,8 +247,11 @@
 - Reduced load times by 40%" oninput="updatePreview()"></textarea>
                         </div>
 
+                        </div>
+
+                        <div id="job_form_3" style="display: none;">
                         <!-- Job 3 -->
-                        <h4 style="margin: 32px 0 8px; color: var(--text-main);">Role 3 (Optional)</h4>
+                        <h4 style="margin: 24px 0 8px; color: var(--text-main);">Role 3</h4>
                         <div class="form-group">
                             <label>Job Title</label>
                             <input type="text" id="b_jobtitle3" placeholder="Junior Developer" oninput="updatePreview()">
@@ -267,6 +271,8 @@
                             <textarea id="b_desc3" rows="4" placeholder="- Developed client websites
 - Maintained legacy databases" oninput="updatePreview()"></textarea>
                         </div>
+                        </div>
+                        <button type="button" id="addJobBtn" onclick="showNextJob()" style="background: transparent; color: var(--primary); border: 2px dashed var(--primary); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; width: 100%; margin-top: 16px; transition: background 0.2s;">+ Add Work Experience</button>
                     </div>
 
                     <div class="form-section">
@@ -281,7 +287,8 @@
                             <input type="text" id="b_uni" placeholder="State University, 2019" oninput="updatePreview()">
                         </div>
                         
-                        <h4 style="margin: 24px 0 8px; color: var(--text-main);">Degree 2 (Optional)</h4>
+                        <div id="edu_form_2" style="display: none;">
+                        <h4 style="margin: 24px 0 8px; color: var(--text-main);">Degree 2</h4>
                         <div class="form-group">
                             <label>Degree & Major</label>
                             <input type="text" id="b_degree2" placeholder="M.S. Data Science" oninput="updatePreview()">
@@ -290,6 +297,9 @@
                             <label>University & Year</label>
                             <input type="text" id="b_uni2" placeholder="Tech Institute, 2021" oninput="updatePreview()">
                         </div>
+                        </div>
+                        </div>
+                        <button type="button" id="addEduBtn" onclick="showNextEdu()" style="background: transparent; color: var(--primary); border: 2px dashed var(--primary); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; width: 100%; margin-top: 16px; transition: background 0.2s;">+ Add Education</button>
                     </div>
 
                     <div class="form-section" style="border-bottom: none;">
@@ -399,7 +409,38 @@
                 if (saved && el) el.value = saved;
             });
             updatePreview();
+            checkHiddenForms();
         };
+
+        function showNextJob() {
+            if (document.getElementById('job_form_2').style.display === 'none') {
+                document.getElementById('job_form_2').style.display = 'block';
+            } else if (document.getElementById('job_form_3').style.display === 'none') {
+                document.getElementById('job_form_3').style.display = 'block';
+                document.getElementById('addJobBtn').style.display = 'none';
+            }
+        }
+
+        function showNextEdu() {
+            document.getElementById('edu_form_2').style.display = 'block';
+            document.getElementById('addEduBtn').style.display = 'none';
+        }
+        
+        function checkHiddenForms() {
+            if (document.getElementById('b_jobtitle2').value.trim() !== '' || document.getElementById('b_company2').value.trim() !== '') {
+                document.getElementById('job_form_2').style.display = 'block';
+            }
+            if (document.getElementById('b_jobtitle3').value.trim() !== '' || document.getElementById('b_company3').value.trim() !== '') {
+                document.getElementById('job_form_2').style.display = 'block';
+                document.getElementById('job_form_3').style.display = 'block';
+                document.getElementById('addJobBtn').style.display = 'none';
+            }
+            if (document.getElementById('b_degree2').value.trim() !== '') {
+                document.getElementById('edu_form_2').style.display = 'block';
+                document.getElementById('addEduBtn').style.display = 'none';
+            }
+        }
+
 
         function updatePreview() {
             const textFields = [
