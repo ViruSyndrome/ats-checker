@@ -2316,14 +2316,14 @@ function setupReviewPricing() {
 
     const plans = {
         standard: {
-            label: { india: 'Pay for Standard review (₹2,499)', international: 'Pay for Standard review ()' },
+            label: { india: 'Pay for Standard review (₹2,499)', international: 'Pay for Standard review ($49)' },
             url: {
                 india: 'https://rzp.io/rzp/03GFDB2',
                 international: 'https://virusyndrome.gumroad.com/l/buhtlh'
             }
         },
         express: {
-            label: { india: 'Pay for Express review (₹3,999)', international: 'Pay for Express review ()' },
+            label: { india: 'Pay for Express review (₹3,999)', international: 'Pay for Express review ($79)' },
             url: {
                 india: 'https://rzp.io/rzp/l7UFzUvu',
                 international: 'https://virusyndrome.gumroad.com/l/emfsta'
@@ -2344,7 +2344,7 @@ function setupReviewPricing() {
         btn.style.opacity = checkoutUrl ? '1' : '0.5';
         btn.dataset.plan = tier.value;
         btn.dataset.market = detectedMarket;
-        if (intakeLink) intakeLink.href = submit-resume.html?tier=&market=;
+        if (intakeLink) intakeLink.href = `submit-resume.html?tier=${encodeURIComponent(tier.value)}&market=${encodeURIComponent(detectedMarket)}`;
     };
 
     tier.addEventListener('change', updateButton);
@@ -2376,7 +2376,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('atsProCheckoutBtn');
     if (checkbox && btn) {
         checkbox.addEventListener('change', (e) => {
-            if (e.target.checked) {
+            const checkoutReady = btn.href && btn.getAttribute('href') !== '#';
+            if (e.target.checked && checkoutReady) {
                 btn.style.pointerEvents = 'auto';
                 btn.style.opacity = '1';
             } else {

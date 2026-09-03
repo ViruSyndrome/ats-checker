@@ -96,13 +96,13 @@
   <div class="submit-page">
     <div class="submit-hero">
       <h1>🚀 Submit Your Resume for Rewrite</h1>
-      <p>You've taken the first step. Fill in the details below and our writer will have your ATS-optimized resume ready within <strong>48 hours</strong>.</p>
+      <p>You've taken the first step. Fill in the details below and our writer will return your personalized ATS-focused review within the turnaround selected at checkout.</p>
     </div>
 
     <!-- Timeline -->
     <div class="timeline-steps">
       <div class="step"><div class="step-num">1</div><div class="step-label">Submit this form with your resume &amp; job description</div></div>
-      <div class="step"><div class="step-num">2</div><div class="step-label">Writer reviews &amp; rewrites within 48 hours</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-label">Writer reviews &amp; rewrites within 24 or 48 hours</div></div>
       <div class="step"><div class="step-num">3</div><div class="step-label">You receive the finished resume by email</div></div>
       <div class="step"><div class="step-num">4</div><div class="step-label">Request up to 2 free revisions within 7 days</div></div>
     </div>
@@ -123,6 +123,8 @@
         <input type="hidden" name="_subject" value="New ATS Pro Resume Submission">
         <input type="hidden" name="submission_time" id="submissionTime">
         <input type="hidden" name="_next" value="https://www.getatsready.com/submit-resume.html?submitted=true">
+        <input type="hidden" name="service_tier" id="serviceTier" value="Not provided">
+        <input type="hidden" name="billing_market" id="billingMarket" value="Not provided">
 
         <div class="field-row">
           <div class="field-group">
@@ -149,8 +151,8 @@
         </div>
 
         <div class="field-group">
-          <label>Years of Experience</label>
-          <select name="years_experience">
+            <label for="yearsExperience">Years of Experience</label>
+            <select id="yearsExperience" name="years_experience">
             <option value="">Select...</option>
             <option value="0-2">0–2 years (Entry level)</option>
             <option value="3-5">3–5 years (Mid-level)</option>
@@ -173,7 +175,7 @@
         <div class="field-group">
           <label>Upload Your Current Resume <span class="req">*</span></label>
           <div class="upload-box" onclick="document.getElementById('resumeFile').click()">
-            <input type="file" id="resumeFile" name="resume_file" accept=".pdf,.doc,.docx" onchange="handleFileSelect(this)">
+            <input type="file" id="resumeFile" name="resume_file" accept=".pdf,.doc,.docx" onchange="handleFileSelect(this)" required>
             <div class="upload-box-label">
               <strong>Click to upload</strong> your resume (PDF or Word)<br>
               <span class="or-link">Max 5MB · PDF, DOC, DOCX</span>
@@ -208,7 +210,7 @@
       <div class="success-msg" id="successMsg">
         <div style="font-size: 3rem; margin-bottom: 16px;">🎉</div>
         <h2>Submission Received!</h2>
-        <p>Thank you! Your resume and job description have been received. We will have your ATS-optimized resume ready and emailed to you within <strong>48 hours</strong>.</p>
+        <p>Thank you! Your resume and job description have been received. We will email your personalized ATS-focused review within the turnaround selected at checkout.</p>
         <p style="margin-top: 16px;">If you don't hear from us within 48 hours, email us at <strong>hello@getatsready.com</strong> with your payment reference.</p>
       </div>
     </div>
@@ -217,6 +219,9 @@
   <script>
     // Set submission timestamp
     document.getElementById('submissionTime').value = new Date().toISOString();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tier')) document.getElementById('serviceTier').value = params.get('tier');
+    if (params.get('market')) document.getElementById('billingMarket').value = params.get('market');
 
     // Show success message if redirected back after submission
     if (window.location.search.includes('submitted=true')) {
