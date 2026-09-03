@@ -298,7 +298,6 @@
                             <input type="text" id="b_uni2" placeholder="Tech Institute, 2021" oninput="updatePreview()">
                         </div>
                         </div>
-                        </div>
                         <button type="button" id="addEduBtn" onclick="showNextEdu()" style="background: transparent; color: var(--primary); border: 2px dashed var(--primary); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; width: 100%; margin-top: 16px; transition: background 0.2s;">+ Add Education</button>
                     </div>
 
@@ -471,8 +470,7 @@
                 const outEl = document.getElementById(`out_desc${num}`);
                 if(outEl) {
                     const textToFormat = val || descEl.placeholder;
-                    const bullets = textToFormat.split('
-').filter(l => l.trim().length > 0);
+                    const bullets = textToFormat.split('\n').filter(l => l.trim().length > 0);
                     outEl.innerHTML = bullets.map(b => `&bull; ${b.replace(/^- /, '').replace(/^• /, '')}`).join('<br>');
                 }
                 
