@@ -2307,24 +2307,69 @@ function exportHistoryCSV() {
 }
 
 
-// PPP Pricing Integration
-function setupPPPPricing() {
-    fetch('https://get.geojs.io/v1/ip/country.json')
-        .then(response => response.json())
-        .then(data => {
-            const btn = document.getElementById('atsProCheckoutBtn');
-            if (!btn) return;
-            if (data.country === 'IN') {
-                btn.innerHTML = 'Done for You: ₹499';
-                btn.href = 'https://razorpay.me/@virusyndrome?amount=n%2FUUsdogj%2F7sarE2WD13qg%3D%3D';
-            } else {
-                btn.innerHTML = 'Done for You: ';
-                btn.href = 'https://vinodisaac.gumroad.com/l/ats-pro';
-            }
-        })
-        .catch(err => console.log('PPP check failed', err));
+// Paid review pricing. The buyer chooses their market and tier explicitly;
+// this avoids silently sending location data to a third-party geolocation API.
+function setupReviewPricing() {
+    const btn = document.getElementById('atsProCheckoutBtn');
+    const tier = document.getElementById('reviewTier');
+    if (!btn || !tier) return;
+    const intakeLink = document.getElementById('paidIntakeLink');
+
+    const cta = btn.closest('.ats-pro-cta');
+    if (cta) {
+        const heading = cta.querySelector('h3');
+        const description = cta.querySelector('p');
+        if (heading) heading.textContent = 'Get a human ATS-focused review';
+        if (description && !description.textContent.includes('Results and interviews')) {
+            description.textContent = 'A technical writer reviews your resume against your target role, improves its content and structure, and emails the finished document within the selected turnaround. Results and interviews cannot be guaranteed.';
+        }
+    }
+
+    let market = document.getElementById('reviewMarket');
+    if (!market) {
+        market = document.createElement('select');
+        market.id = 'reviewMarket';
+        market.setAttribute('aria-label', 'Billing market');
+        market.style.cssText = 'width:100%;padding:10px;margin-bottom:12px;border:1px solid #cbd5e1;border-radius:6px;';
+        market.innerHTML = '<option value="international">International checkout ($)</option><option value="india">India checkout (₹)</option>';
+        tier.parentNode.insertBefore(market, tier);
+        const marketLabel = document.createElement('label');
+        marketLabel.htmlFor = 'reviewMarket';
+        marketLabel.textContent = 'Choose your billing market';
+        marketLabel.style.cssText = 'display:block;font-size:0.85rem;color:var(--text);margin-bottom:6px;';
+        market.parentNode.insertBefore(marketLabel, market);
+    }
+
+    const plans = {
+        standard: {
+            label: 'Pay for Standard review',
+            india: 'https://razorpay.me/@virusyndrome?amount=n%2FUUsdogj%2F7sarE2WD13qg%3D%3D',
+            international: 'https://vinodisaac.gumroad.com/l/ats-pro'
+        },
+        express: {
+            label: 'Pay for Express review',
+            india: '',
+            international: ''
+        }
+    };
+
+    const updateButton = () => {
+        const plan = plans[tier.value];
+        const checkoutUrl = plan[market.value];
+        btn.textContent = checkoutUrl ? plan.label : 'Payment link coming soon';
+        btn.href = checkoutUrl || '#';
+        btn.style.pointerEvents = checkoutUrl ? 'auto' : 'none';
+        btn.style.opacity = checkoutUrl ? '1' : '0.5';
+        btn.dataset.plan = tier.value;
+        btn.dataset.market = market.value;
+        if (intakeLink) intakeLink.href = `submit-resume.html?tier=${encodeURIComponent(tier.value)}&market=${encodeURIComponent(market.value)}`;
+    };
+
+    tier.addEventListener('change', updateButton);
+    market.addEventListener('change', updateButton);
+    updateButton();
 }
-document.addEventListener('DOMContentLoaded', setupPPPPricing);
+document.addEventListener('DOMContentLoaded', setupReviewPricing);
 
 
 // Consent Checkbox Logic
