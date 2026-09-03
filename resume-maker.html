@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free ATS Resume Builder | Create ATS-Friendly Resumes Instantly</title>
+    <meta name="description" content="Build an ATS-optimized resume for free. Fill out your details, live preview, and download as PDF instantly. 100% private, no signup required.">
+    <link rel="canonical" href="https://www.getatsready.com/resume-maker.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2" />
+    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        .builder-container {
+            display: flex;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+            align-items: flex-start;
+        }
+        @media (max-width: 900px) {
+            .builder-container {
+                flex-direction: column;
+            }
+        }
+        .builder-form-pane {
+            flex: 1;
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .builder-preview-pane {
+            flex: 1;
+            position: sticky;
+            top: 24px;
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Form Styles */
+        .form-section {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+        
+        /* A4 Preview Container */
+        .preview-wrapper {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            aspect-ratio: 1 / 1.414; /* A4 Ratio */
+            overflow: hidden;
+            position: relative;
+            transform-origin: top center;
+        }
+        
+        #resumeOutput {
+            width: 794px; /* A4 pixel width at 96dpi */
+            min-height: 1123px; /* A4 pixel height */
+            background: white;
+            padding: 40px;
+            box-sizing: border-box;
+            transform: scale(0.75);
+            transform-origin: top left;
+        }
+        
+        /* Template 1: Professional (Default) */
+        .template-prof h1 { font-size: 24pt; color: #1e293b; margin: 0 0 8px 0; border-bottom: 2px solid #1e293b; padding-bottom: 8px; }
+        .template-prof .contact-info { display: flex; gap: 16px; font-size: 10pt; color: #475569; margin-bottom: 16px; flex-wrap: wrap; }
+        .template-prof .section-title { font-size: 14pt; color: #1e293b; margin: 16px 0 8px 0; border-bottom: 1px solid #cbd5e1; text-transform: uppercase; font-weight: bold; }
+        .template-prof p { font-size: 10.5pt; color: #334155; line-height: 1.5; margin: 4px 0; }
+        
+        /* Controls */
+        .builder-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" style="max-width: 1400px; margin: 0 auto;">
+        <header>
+            <div class="header-top-row">
+                <a href="/" class="logo-link">
+                    <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+                        <path d="M18 4v5h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+                        <line x1="6" y1="18" x2="26" y2="18" stroke="var(--accent, #818cf8)" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+                    </svg>
+                    <span class="logo-text">GetATS<span class="logo-accent">Ready</span></span>
+                </a>
+                <button class="hamburger" id="atsHamburger" aria-label="Toggle navigation" onclick="document.getElementById('atsNavLinks').classList.toggle('open');this.classList.toggle('open')">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+            <nav class="main-nav" id="atsNavLinks">
+                <a href="/">Scanner</a>
+                <a href="resume-maker.html" class="active">Resume Builder</a>
+                <a href="about.html">About Us</a>
+                <a href="guides/how-ats-works.html">Guides</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </header>
+
+        <div style="text-align: center; margin: 32px 0;">
+            <h1 style="margin-bottom: 8px;">Free ATS Resume Builder</h1>
+            <p style="color: var(--text-color); max-width: 600px; margin: 0 auto;">Enter your details to generate a 100% ATS-friendly PDF. Your data stays completely private in your browser.</p>
+        </div>
+
+        <div class="builder-container">
+            <!-- Left Pane: Form -->
+            <div class="builder-form-pane">
+                <form id="resumeForm">
+                    
+                    <div class="form-section">
+                        <h3>1. Contact Information</h3>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="b_name" placeholder="John Doe" oninput="updatePreview()">
+                        </div>
+                        <div style="display: flex; gap: 16px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Email</label>
+                                <input type="email" id="b_email" placeholder="john@example.com" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Phone</label>
+                                <input type="text" id="b_phone" placeholder="(555) 123-4567" oninput="updatePreview()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>LinkedIn / Portfolio (Optional)</label>
+                            <input type="text" id="b_link" placeholder="linkedin.com/in/johndoe" oninput="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>2. Professional Summary</h3>
+                        <div class="form-group">
+                            <label>Summary</label>
+                            <textarea id="b_summary" rows="4" placeholder="Dedicated professional with 5+ years of experience..." oninput="updatePreview()"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>3. Work Experience</h3>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">Paste your latest role. Keep bullets concise.</p>
+                        <div class="form-group">
+                            <label>Job Title</label>
+                            <input type="text" id="b_jobtitle1" placeholder="Senior Developer" oninput="updatePreview()">
+                        </div>
+                        <div style="display: flex; gap: 16px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>Company</label>
+                                <input type="text" id="b_company1" placeholder="Tech Corp" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Dates</label>
+                                <input type="text" id="b_dates1" placeholder="Jan 2020 - Present" oninput="updatePreview()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Achievements (One per line)</label>
+                            <textarea id="b_desc1" rows="5" placeholder="- Increased revenue by 20%&#10;- Led a team of 5 engineers" oninput="updatePreview()"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>4. Education</h3>
+                        <div class="form-group">
+                            <label>Degree & Major</label>
+                            <input type="text" id="b_degree" placeholder="B.S. Computer Science" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>University</label>
+                            <input type="text" id="b_uni" placeholder="State University, 2019" oninput="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-section" style="border-bottom: none;">
+                        <h3>5. Skills</h3>
+                        <div class="form-group">
+                            <label>Core Skills (Comma separated)</label>
+                            <textarea id="b_skills" rows="3" placeholder="JavaScript, Python, Project Management, Agile" oninput="updatePreview()"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Right Pane: Live Preview & Controls -->
+            <div class="builder-preview-pane">
+                <div class="builder-controls">
+                    <button class="primary-btn" onclick="downloadPDF()" style="width: auto;">Download PDF</button>
+                    <button class="secondary-btn" onclick="clearDraft()" style="width: auto;">Clear Draft</button>
+                </div>
+                
+                <div class="preview-wrapper">
+                    <!-- The exact HTML that will be rendered to PDF -->
+                    <div id="resumeOutput" class="template-prof">
+                        <h1 id="out_name">John Doe</h1>
+                        <div class="contact-info">
+                            <span id="out_email">john@example.com</span> | 
+                            <span id="out_phone">(555) 123-4567</span> | 
+                            <span id="out_link">linkedin.com/in/johndoe</span>
+                        </div>
+                        
+                        <div class="section-title">Summary</div>
+                        <p id="out_summary">Dedicated professional with 5+ years of experience...</p>
+                        
+                        <div class="section-title">Experience</div>
+                        <p style="font-weight:bold;" id="out_jobtitle1">Senior Developer</p>
+                        <p style="color:#64748b;"><span id="out_company1">Tech Corp</span> • <span id="out_dates1">Jan 2020 - Present</span></p>
+                        <div id="out_desc1" style="margin-left: 20px; font-size: 10.5pt; color: #334155; line-height: 1.5; margin-top: 4px;">
+                            • Increased revenue by 20%<br>
+                            • Led a team of 5 engineers
+                        </div>
+
+                        <div class="section-title">Education</div>
+                        <p style="font-weight:bold;" id="out_degree">B.S. Computer Science</p>
+                        <p id="out_uni">State University, 2019</p>
+
+                        <div class="section-title">Skills</div>
+                        <p id="out_skills">JavaScript, Python, Project Management, Agile</p>
+                    </div>
+                </div>
+                
+                <!-- Monetization CTA below preview -->
+                <div style="margin-top: 24px; text-align: center; padding: 16px; background: #fff; border: 2px solid var(--primary); border-radius: 8px;">
+                    <h4 style="margin-top: 0; color: var(--primary);">Still getting rejected?</h4>
+                    <p style="font-size: 0.9rem; margin-bottom: 12px;">Get a human ATS expert to rewrite it for you.</p>
+                    <a href="/#review" class="btn-primary" style="display:inline-block; text-decoration:none; padding:8px 16px; border-radius:6px; background:var(--primary); color:#fff; font-size:0.9rem;">Get a Paid Review</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Builder Logic -->
+    <script>
+        // Load from LocalStorage
+        window.onload = () => {
+            const fields = ['b_name', 'b_email', 'b_phone', 'b_link', 'b_summary', 'b_jobtitle1', 'b_company1', 'b_dates1', 'b_desc1', 'b_degree', 'b_uni', 'b_skills'];
+            fields.forEach(id => {
+                const saved = localStorage.getItem(id);
+                if (saved) document.getElementById(id).value = saved;
+            });
+            updatePreview();
+        };
+
+        function updatePreview() {
+            const fields = [
+                {in: 'b_name', out: 'out_name'},
+                {in: 'b_email', out: 'out_email'},
+                {in: 'b_phone', out: 'out_phone'},
+                {in: 'b_link', out: 'out_link'},
+                {in: 'b_summary', out: 'out_summary'},
+                {in: 'b_jobtitle1', out: 'out_jobtitle1'},
+                {in: 'b_company1', out: 'out_company1'},
+                {in: 'b_dates1', out: 'out_dates1'},
+                {in: 'b_degree', out: 'out_degree'},
+                {in: 'b_uni', out: 'out_uni'},
+                {in: 'b_skills', out: 'out_skills'}
+            ];
+
+            fields.forEach(f => {
+                const val = document.getElementById(f.in).value;
+                document.getElementById(f.out).innerText = val || document.getElementById(f.in).placeholder;
+                localStorage.setItem(f.in, val);
+            });
+
+            // Handle bullet points for description
+            const descVal = document.getElementById('b_desc1').value;
+            const descOut = document.getElementById('out_desc1');
+            localStorage.setItem('b_desc1', descVal);
+            
+            if (descVal) {
+                const bullets = descVal.split('\n').filter(l => l.trim().length > 0);
+                descOut.innerHTML = bullets.map(b => `• ${b.replace(/^- /, '')}`).join('<br>');
+            } else {
+                descOut.innerHTML = `• Increased revenue by 20%<br>• Led a team of 5 engineers`;
+            }
+        }
+
+        function clearDraft() {
+            if(confirm('Are you sure you want to clear your entire draft?')) {
+                localStorage.clear();
+                document.getElementById('resumeForm').reset();
+                updatePreview();
+            }
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('resumeOutput');
+            const opt = {
+                margin:       0,
+                filename:     `${document.getElementById('b_name').value || 'Resume'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Temporarily remove transform scaling to render full resolution
+            element.style.transform = 'none';
+            element.style.width = '100%';
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restore preview scaling
+                element.style.transform = 'scale(0.75)';
+                element.style.width = '794px';
+            });
+        }
+    </script>
+</body>
+</html>
