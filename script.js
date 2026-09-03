@@ -2307,8 +2307,7 @@ function exportHistoryCSV() {
 }
 
 
-// Paid review pricing. The buyer chooses their market and tier explicitly;
-// this avoids silently sending location data to a third-party geolocation API.
+// Automatic PPP Pricing + Review Tier Integration
 function setupReviewPricing() {
     const btn = document.getElementById('atsProCheckoutBtn');
     const tier = document.getElementById('reviewTier');
@@ -2325,49 +2324,58 @@ function setupReviewPricing() {
         }
     }
 
-    let market = document.getElementById('reviewMarket');
-    if (!market) {
-        market = document.createElement('select');
-        market.id = 'reviewMarket';
-        market.setAttribute('aria-label', 'Billing market');
-        market.style.cssText = 'width:100%;padding:10px;margin-bottom:12px;border:1px solid #cbd5e1;border-radius:6px;';
-        market.innerHTML = '<option value="international">International checkout ($)</option><option value="india">India checkout (₹)</option>';
-        tier.parentNode.insertBefore(market, tier);
-        const marketLabel = document.createElement('label');
-        marketLabel.htmlFor = 'reviewMarket';
-        marketLabel.textContent = 'Choose your billing market';
-        marketLabel.style.cssText = 'display:block;font-size:0.85rem;color:var(--text);margin-bottom:6px;';
-        market.parentNode.insertBefore(marketLabel, market);
-    }
-
     const plans = {
         standard: {
-            label: 'Pay for Standard review',
-            india: 'https://razorpay.me/@virusyndrome?amount=n%2FUUsdogj%2F7sarE2WD13qg%3D%3D',
-            international: 'https://vinodisaac.gumroad.com/l/ats-pro'
+            label: { india: 'Pay for Standard review (₹499)', international: 'Pay for Standard review ()' },
+            url: {
+                india: 'https://razorpay.me/@virusyndrome?amount=n%2FUUsdogj%2F7sarE2WD13qg%3D%3D',
+                international: 'https://vinodisaac.gumroad.com/l/ats-pro'
+            }
         },
         express: {
-            label: 'Pay for Express review',
-            india: '',
-            international: ''
+            label: { india: 'Pay for Express review', international: 'Pay for Express review' },
+            url: {
+                india: '',
+                international: ''
+            }
         }
     };
 
+    let detectedMarket = 'international'; // Default fallback
+
     const updateButton = () => {
         const plan = plans[tier.value];
-        const checkoutUrl = plan[market.value];
-        btn.textContent = checkoutUrl ? plan.label : 'Payment link coming soon';
+        const checkoutUrl = plan.url[detectedMarket];
+        const checkoutLabel = plan.label[detectedMarket];
+        
+        btn.textContent = checkoutUrl ? checkoutLabel : 'Express links coming soon';
         btn.href = checkoutUrl || '#';
         btn.style.pointerEvents = checkoutUrl ? 'auto' : 'none';
         btn.style.opacity = checkoutUrl ? '1' : '0.5';
         btn.dataset.plan = tier.value;
-        btn.dataset.market = market.value;
-        if (intakeLink) intakeLink.href = `submit-resume.html?tier=${encodeURIComponent(tier.value)}&market=${encodeURIComponent(market.value)}`;
+        btn.dataset.market = detectedMarket;
+        if (intakeLink) intakeLink.href = submit-resume.html?tier=&market=;
     };
 
     tier.addEventListener('change', updateButton);
-    market.addEventListener('change', updateButton);
-    updateButton();
+    
+    // Show loading state while fetching location
+    btn.textContent = 'Loading pricing...';
+    btn.style.pointerEvents = 'none';
+
+    // Fetch user location
+    fetch('https://get.geojs.io/v1/ip/country.json')
+        .then(response => response.json())
+        .then(data => {
+            if (data.country === 'IN') {
+                detectedMarket = 'india';
+            }
+            updateButton();
+        })
+        .catch(err => {
+            console.log('Location check failed, defaulting to international', err);
+            updateButton(); // Default to international
+        });
 }
 document.addEventListener('DOMContentLoaded', setupReviewPricing);
 
