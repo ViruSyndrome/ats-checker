@@ -2318,14 +2318,14 @@ function setupReviewPricing() {
         standard: {
             label: { india: 'Pay for Standard review (₹2,499)', international: 'Pay for Standard review ()' },
             url: {
-                india: '',
+                india: 'https://rzp.io/rzp/03GFDB2',
                 international: ''
             }
         },
         express: {
             label: { india: 'Pay for Express review (₹3,999)', international: 'Pay for Express review ()' },
             url: {
-                india: '',
+                india: 'https://rzp.io/rzp/l7UFzUvu',
                 international: ''
             }
         }
