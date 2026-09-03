@@ -2319,14 +2319,14 @@ function setupReviewPricing() {
             label: { india: 'Pay for Standard review (₹2,499)', international: 'Pay for Standard review ()' },
             url: {
                 india: 'https://rzp.io/rzp/03GFDB2',
-                international: 'https://vinodisaac.gumroad.com/l/buhtlh'
+                international: 'https://virusyndrome.gumroad.com/l/buhtlh'
             }
         },
         express: {
             label: { india: 'Pay for Express review (₹3,999)', international: 'Pay for Express review ()' },
             url: {
                 india: 'https://rzp.io/rzp/l7UFzUvu',
-                international: 'https://vinodisaac.gumroad.com/l/emfsta'
+                international: 'https://virusyndrome.gumroad.com/l/emfsta'
             }
         }
     };
