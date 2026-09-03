@@ -2342,7 +2342,7 @@ function setupReviewPricing() {
         btn.href = checkoutUrl || '#';
         btn.style.pointerEvents = checkoutUrl ? 'auto' : 'none';
         btn.style.opacity = checkoutUrl ? '1' : '0.8';
-        btn.style.background = checkoutUrl ? 'var(--primary)' : '#94a3b8';
+        btn.style.background = checkoutUrl ? 'var(--primary)' : '#475569';
         btn.style.boxShadow = checkoutUrl ? '0 4px 12px rgba(15, 98, 254, 0.3)' : 'none';
         btn.dataset.plan = tier.value;
         btn.dataset.market = detectedMarket;
