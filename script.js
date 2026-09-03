@@ -2338,10 +2338,12 @@ function setupReviewPricing() {
         const checkoutUrl = plan.url[detectedMarket];
         const checkoutLabel = plan.label[detectedMarket];
         
-        btn.textContent = checkoutUrl ? checkoutLabel : 'Payment link coming soon';
+        btn.textContent = checkoutUrl ? checkoutLabel : 'Select a tier to continue';
         btn.href = checkoutUrl || '#';
         btn.style.pointerEvents = checkoutUrl ? 'auto' : 'none';
-        btn.style.opacity = checkoutUrl ? '1' : '0.5';
+        btn.style.opacity = checkoutUrl ? '1' : '0.8';
+        btn.style.background = checkoutUrl ? 'var(--primary)' : '#94a3b8';
+        btn.style.boxShadow = checkoutUrl ? '0 4px 12px rgba(15, 98, 254, 0.3)' : 'none';
         btn.dataset.plan = tier.value;
         btn.dataset.market = detectedMarket;
         if (intakeLink) intakeLink.href = `submit-resume.html?tier=${encodeURIComponent(tier.value)}&market=${encodeURIComponent(detectedMarket)}`;
