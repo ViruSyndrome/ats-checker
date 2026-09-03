@@ -2314,26 +2314,16 @@ function setupReviewPricing() {
     if (!btn || !tier) return;
     const intakeLink = document.getElementById('paidIntakeLink');
 
-    const cta = btn.closest('.ats-pro-cta');
-    if (cta) {
-        const heading = cta.querySelector('h3');
-        const description = cta.querySelector('p');
-        if (heading) heading.textContent = 'Get a human ATS-focused review';
-        if (description && !description.textContent.includes('Results and interviews')) {
-            description.textContent = 'A technical writer reviews your resume against your target role, improves its content and structure, and emails the finished document within the selected turnaround. Results and interviews cannot be guaranteed.';
-        }
-    }
-
     const plans = {
         standard: {
-            label: { india: 'Pay for Standard review (₹499)', international: 'Pay for Standard review ()' },
+            label: { india: 'Pay for Standard review (₹2,499)', international: 'Pay for Standard review ()' },
             url: {
-                india: 'https://razorpay.me/@virusyndrome?amount=n%2FUUsdogj%2F7sarE2WD13qg%3D%3D',
-                international: 'https://vinodisaac.gumroad.com/l/ats-pro'
+                india: '',
+                international: ''
             }
         },
         express: {
-            label: { india: 'Pay for Express review', international: 'Pay for Express review' },
+            label: { india: 'Pay for Express review (₹3,999)', international: 'Pay for Express review ()' },
             url: {
                 india: '',
                 international: ''
@@ -2348,7 +2338,7 @@ function setupReviewPricing() {
         const checkoutUrl = plan.url[detectedMarket];
         const checkoutLabel = plan.label[detectedMarket];
         
-        btn.textContent = checkoutUrl ? checkoutLabel : 'Express links coming soon';
+        btn.textContent = checkoutUrl ? checkoutLabel : 'Payment link coming soon';
         btn.href = checkoutUrl || '#';
         btn.style.pointerEvents = checkoutUrl ? 'auto' : 'none';
         btn.style.opacity = checkoutUrl ? '1' : '0.5';
