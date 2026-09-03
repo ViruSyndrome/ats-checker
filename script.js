@@ -2357,14 +2357,21 @@ function setupReviewPricing() {
     fetch('https://get.geojs.io/v1/ip/country.json')
         .then(response => response.json())
         .then(data => {
-            if (data.country === 'IN') {
-                detectedMarket = 'india';
-            }
+            if (data.country === 'IN') detectedMarket = 'india';
             updateButton();
         })
         .catch(err => {
-            console.log('Location check failed, defaulting to international', err);
-            updateButton(); // Default to international
+            // Secondary fallback if geojs is blocked by Adblocker
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.country_code === 'IN') detectedMarket = 'india';
+                    updateButton();
+                })
+                .catch(err2 => {
+                    console.log('All location checks blocked, defaulting to international', err2);
+                    updateButton();
+                });
         });
 }
 document.addEventListener('DOMContentLoaded', setupReviewPricing);
