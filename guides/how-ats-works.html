@@ -86,13 +86,13 @@
   const db = getDatabase(app);
 
   window.incrementScannerCount = function() {
-    runTransaction(ref(db, 'counters/scanner'), (currentData) => {
+    runTransaction(ref(db, 'counters/v2_scanner'), (currentData) => {
       return (currentData === null) ? 1 : currentData + 1;
     }).catch(console.error);
   };
 
   window.incrementMakerCount = function() {
-    runTransaction(ref(db, 'counters/maker'), (currentData) => {
+    runTransaction(ref(db, 'counters/v2_maker'), (currentData) => {
       return (currentData === null) ? 1 : currentData + 1;
     }).catch(console.error);
   };
@@ -101,7 +101,7 @@
     const scannerContainer = document.getElementById('scanner-badge-container');
     const scannerNum = document.getElementById('scanner-counter-display');
     if (scannerContainer && scannerNum) {
-      onValue(ref(db, 'counters/scanner'), (snapshot) => {
+      onValue(ref(db, 'counters/v2_scanner'), (snapshot) => {
         const data = snapshot.val() || 0;
         if (data > 500) {
           scannerContainer.style.display = 'inline-block';
@@ -115,7 +115,7 @@
     const makerContainer = document.getElementById('maker-badge-container');
     const makerNum = document.getElementById('maker-counter-display');
     if (makerContainer && makerNum) {
-      onValue(ref(db, 'counters/maker'), (snapshot) => {
+      onValue(ref(db, 'counters/v2_maker'), (snapshot) => {
         const data = snapshot.val() || 0;
         if (data > 500) {
           makerContainer.style.display = 'inline-block';
