@@ -36,6 +36,54 @@
 
     <meta property="og:image" content="https://www.getatsready.com/og-image.webp">
     <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAaNW63xpS09AZ6ZH6DvpwGx4n_0lhTKco",
+    authDomain: "ats-counters.firebaseapp.com",
+    databaseURL: "https://ats-counters-default-rtdb.firebaseio.com",
+    projectId: "ats-counters",
+    storageBucket: "ats-counters.firebasestorage.app",
+    messagingSenderId: "804950922331",
+    appId: "1:804950922331:web:db0784099c50c5fdd79b7e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.incrementScannerCount = function() {
+    runTransaction(ref(db, 'counters/scanner'), (currentData) => {
+      return (currentData === null) ? 14231 : currentData + 1;
+    }).catch(console.error);
+  };
+
+  window.incrementMakerCount = function() {
+    runTransaction(ref(db, 'counters/maker'), (currentData) => {
+      return (currentData === null) ? 8921 : currentData + 1;
+    }).catch(console.error);
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const scannerEl = document.getElementById('scanner-counter-display');
+    if (scannerEl) {
+      onValue(ref(db, 'counters/scanner'), (snapshot) => {
+        const data = snapshot.val() || 14230;
+        scannerEl.innerText = data.toLocaleString();
+      });
+    }
+
+    const makerEl = document.getElementById('maker-counter-display');
+    if (makerEl) {
+      onValue(ref(db, 'counters/maker'), (snapshot) => {
+        const data = snapshot.val() || 8920;
+        makerEl.innerText = data.toLocaleString();
+      });
+    }
+  });
+</script>
 </head>
 <body>
     <div class="container">
