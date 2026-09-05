@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found</title>
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #f8fafc; color: #1e293b; text-align: center; }
-        h1 { font-size: 3rem; margin-bottom: 0.5rem; }
-        p { font-size: 1.1rem; color: #64748b; margin-bottom: 2rem; max-width: 400px; }
-        a { background-color: #3b82f6; color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 500; transition: background-color 0.2s; }
-        a:hover { background-color: #2563eb; }
-    </style>
+import os
+import glob
 
+os.chdir(r'C:\Users\Vinod\Desktop\Website ideas\ATS-Checker')
+
+html_files = glob.glob('*.html') + glob.glob('guides/*.html')
+
+new_firebase_script = """
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -71,10 +65,32 @@
     }
   });
 </script>
-</head>
-<body>
-    <h1>404</h1>
-    <p>Oops! The page you're looking for doesn't exist or has been moved.</p>
-    <a href="/">Go to Homepage</a>
-</body>
-</html>
+"""
+
+for file in html_files:
+    with open(file, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # 1. Replace the old firebase script
+    # It starts with <script type="module"> and ends with </script>\n</head>
+    import re
+    script_pattern = r'<script type="module">\s*import \{ initializeApp.*?\}\);\s*</script>'
+    content = re.sub(script_pattern, new_firebase_script.strip(), content, flags=re.DOTALL)
+    
+    # 2. Add an ID to the scanner badge container and set display: none
+    if 'id="scanner-counter-display"' in content:
+        # The container currently has style="margin-top: 15px... display: inline-block..."
+        old_div = '<div style="margin-top: 15px; margin-bottom: 5px; display: inline-block;'
+        new_div = '<div id="scanner-badge-container" style="margin-top: 15px; margin-bottom: 5px; display: none;'
+        content = content.replace(old_div, new_div)
+
+    # 3. Add an ID to the maker badge container and set display: none
+    if 'id="maker-counter-display"' in content:
+        old_maker_div = '<div style="margin-top: 10px; margin-bottom: 20px; display: inline-block;'
+        new_maker_div = '<div id="maker-badge-container" style="margin-top: 10px; margin-bottom: 20px; display: none;'
+        content = content.replace(old_maker_div, new_maker_div)
+        
+    with open(file, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+print("Counters reset and hidden until 500.")
