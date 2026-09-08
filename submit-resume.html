@@ -147,6 +147,7 @@
       <nav class="main-nav" id="atsNavLinks">
         <a href="/">Home</a>
         <a href="resume-maker.html">Resume Builder</a>
+        <a href="pricing.html">Pricing</a>
                 <a href="about.html">About Us</a>
         <a href="guides/index.html">Guides</a>
         <a href="contact.html">Contact Us</a>
@@ -157,21 +158,22 @@
   <div class="submit-page">
     <div class="submit-hero">
       <h1>🚀 Submit Your Resume for Rewrite</h1>
-      <p>You've taken the first step. Fill in the details below and our writer will return your personalized ATS-focused review within the turnaround selected at checkout.</p>
+      <p>You've taken the first step. Pay for the review, then fill in the details below. Our writer returns the finished resume within the turnaround you selected.</p>
     </div>
 
     <!-- Timeline -->
     <div class="timeline-steps">
-      <div class="step"><div class="step-num">1</div><div class="step-label">Submit this form with your resume &amp; job description</div></div>
+      <div class="step"><div class="step-num">1</div><div class="step-label">Pay for Standard or Express, then submit this form</div></div>
       <div class="step"><div class="step-num">2</div><div class="step-label">Writer reviews &amp; rewrites within 24 or 48 hours</div></div>
       <div class="step"><div class="step-num">3</div><div class="step-label">You receive the finished resume by email</div></div>
       <div class="step"><div class="step-num">4</div><div class="step-label">Request up to 2 free revisions within 7 days</div></div>
     </div>
 
     <!-- Important notice -->
-    <div class="alert-box">
-      <strong>📌 Important: Your order is confirmed. This form records your submission.</strong>
-      Please fill this out completely. Incomplete submissions may delay your delivery. The job description you paste below is what your resume will be tailored to match — be as specific as possible.
+    <div class="alert-box" id="payBox">
+      <strong>Pay first, then submit this form on the same page.</strong>
+      Checkout opens in a new tab. Come back here, paste your payment reference, and send the resume. If you already paid, skip to the form below.
+      <div id="payButtons" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:14px;"></div>
     </div>
 
     <!-- Main Form -->
@@ -278,21 +280,60 @@
   </div>
 
   <script>
-    // Set submission timestamp
     document.getElementById('submissionTime').value = new Date().toISOString();
     const params = new URLSearchParams(window.location.search);
+    const tier = params.get('tier') || 'standard';
+    const marketParam = params.get('market');
     if (params.get('tier')) document.getElementById('serviceTier').value = params.get('tier');
-    if (params.get('market')) document.getElementById('billingMarket').value = params.get('market');
+    if (marketParam) document.getElementById('billingMarket').value = marketParam;
 
-    // Show success message if redirected back after submission
+    const plans = {
+      standard: {
+        india: { label: 'Pay Standard ₹2,499', url: 'https://rzp.io/rzp/03GFDB2' },
+        international: { label: 'Pay Standard $49', url: 'https://virusyndrome.gumroad.com/l/buhtlh' }
+      },
+      express: {
+        india: { label: 'Pay Express ₹3,999', url: 'https://rzp.io/rzp/l7UFzUvu' },
+        international: { label: 'Pay Express $79', url: 'https://virusyndrome.gumroad.com/l/emfsta' }
+      }
+    };
+
+    function renderPayButtons(market) {
+      const wrap = document.getElementById('payButtons');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      const chosen = (plans[tier] || plans.standard)[market];
+      const a = document.createElement('a');
+      a.href = chosen.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'submit-btn';
+      a.style.display = 'inline-block';
+      a.style.width = 'auto';
+      a.style.textDecoration = 'none';
+      a.textContent = chosen.label;
+      wrap.appendChild(a);
+      document.getElementById('billingMarket').value = market;
+    }
+
+    renderPayButtons(marketParam === 'india' ? 'india' : 'international');
+    if (!marketParam) {
+      fetch('https://get.geojs.io/v1/ip/country.json')
+        .then(r => r.json())
+        .then(data => {
+          if (data.country === 'IN') renderPayButtons('india');
+        })
+        .catch(function () {});
+    }
+
     if (window.location.search.includes('submitted=true')) {
       document.getElementById('submitForm').style.display = 'none';
+      const payBox = document.getElementById('payBox');
+      if (payBox) payBox.style.display = 'none';
       document.getElementById('successMsg').style.display = 'block';
-      // Scroll to success
       document.getElementById('formCard').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // File select handler
     function handleFileSelect(input) {
       const preview = document.getElementById('filePreview');
       const fileName = document.getElementById('fileName');
@@ -309,8 +350,7 @@
       }
     }
 
-    // Form submit handler
-    document.getElementById('submitForm').addEventListener('submit', function(e) {
+    document.getElementById('submitForm').addEventListener('submit', function () {
       const btn = document.getElementById('submitBtn');
       btn.textContent = 'Submitting...';
       btn.disabled = true;

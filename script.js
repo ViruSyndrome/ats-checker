@@ -2313,6 +2313,7 @@ function setupReviewPricing() {
     const tier = document.getElementById('reviewTier');
     if (!btn || !tier) return;
     const intakeLink = document.getElementById('paidIntakeLink');
+    const consent = document.getElementById('refundConsent');
 
     const plans = {
         standard: {
@@ -2331,68 +2332,54 @@ function setupReviewPricing() {
         }
     };
 
-    let detectedMarket = 'international'; // Default fallback
+    let detectedMarket = 'international';
+
+    const intakeUrl = () =>
+        `/submit-resume.html?tier=${encodeURIComponent(tier.value)}&market=${encodeURIComponent(detectedMarket)}&pay=1`;
+
+    const setEnabled = (on) => {
+        btn.style.pointerEvents = on ? 'auto' : 'none';
+        btn.style.opacity = on ? '1' : '0.5';
+        btn.style.background = on ? 'var(--primary)' : '#475569';
+        btn.style.boxShadow = on ? '0 4px 12px rgba(15, 98, 254, 0.3)' : 'none';
+    };
 
     const updateButton = () => {
         const plan = plans[tier.value];
         const checkoutUrl = plan.url[detectedMarket];
         const checkoutLabel = plan.label[detectedMarket];
-        
+        const consented = !consent || consent.checked;
+
         btn.textContent = checkoutUrl ? checkoutLabel : 'Select a tier to continue';
         btn.href = checkoutUrl || '#';
-        btn.style.pointerEvents = checkoutUrl ? 'auto' : 'none';
-        btn.style.opacity = checkoutUrl ? '1' : '0.8';
-        btn.style.background = checkoutUrl ? 'var(--primary)' : '#475569';
-        btn.style.boxShadow = checkoutUrl ? '0 4px 12px rgba(15, 98, 254, 0.3)' : 'none';
         btn.dataset.plan = tier.value;
         btn.dataset.market = detectedMarket;
-        if (intakeLink) intakeLink.href = `submit-resume.html?tier=${encodeURIComponent(tier.value)}&market=${encodeURIComponent(detectedMarket)}`;
+        if (intakeLink) intakeLink.href = intakeUrl();
+        setEnabled(Boolean(checkoutUrl) && consented);
     };
 
     tier.addEventListener('change', updateButton);
-    
-    // Show loading state while fetching location
-    btn.textContent = 'Loading pricing...';
-    btn.style.pointerEvents = 'none';
+    if (consent) consent.addEventListener('change', updateButton);
 
-    // Fetch user location
+    btn.textContent = 'Loading pricing...';
+    setEnabled(false);
+
     fetch('https://get.geojs.io/v1/ip/country.json')
         .then(response => response.json())
         .then(data => {
             if (data.country === 'IN') detectedMarket = 'india';
             updateButton();
         })
-        .catch(err => {
-            // Secondary fallback if geojs is blocked by Adblocker
+        .catch(() => {
             fetch('https://ipapi.co/json/')
                 .then(res => res.json())
                 .then(data => {
                     if (data.country_code === 'IN') detectedMarket = 'india';
                     updateButton();
                 })
-                .catch(err2 => {
-                    console.log('All location checks blocked, defaulting to international', err2);
+                .catch(() => {
                     updateButton();
                 });
         });
 }
 document.addEventListener('DOMContentLoaded', setupReviewPricing);
-
-
-// Consent Checkbox Logic
-document.addEventListener('DOMContentLoaded', () => {
-    const checkbox = document.getElementById('refundConsent');
-    const btn = document.getElementById('atsProCheckoutBtn');
-    if (checkbox && btn) {
-        checkbox.addEventListener('change', (e) => {
-            const checkoutReady = btn.href && btn.getAttribute('href') !== '#';
-            if (e.target.checked && checkoutReady) {
-                btn.style.pointerEvents = 'auto';
-                btn.style.opacity = '1';
-            } else {
-                btn.style.pointerEvents = 'none';
-                btn.style.opacity = '0.5';
-            }
-        });
-    }
-});
