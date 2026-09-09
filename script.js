@@ -107,7 +107,11 @@ window.addEventListener('load', () => {
         document.addEventListener('click', autoHideOnInteraction);
         document.addEventListener('keydown', autoHideOnInteraction);
     }
-    renderHistory();
+    try {
+        renderHistory();
+    } catch (historyError) {
+        console.warn('Unable to render scan history:', historyError);
+    }
     injectFaqSchema();
 });
 
@@ -2169,8 +2173,39 @@ function saveScanToHistory(filename, score) {
     }
 }
 
+function renderSparkline(scores) {
+    const values = (scores || []).map(Number).filter(n => Number.isFinite(n));
+    if (values.length < 2) return '';
+
+    const width = 220;
+    const height = 40;
+    const pad = 3;
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = Math.max(max - min, 1);
+    const stepX = (width - pad * 2) / (values.length - 1);
+    const points = values.map((value, index) => {
+        const x = pad + index * stepX;
+        const y = height - pad - ((value - min) / range) * (height - pad * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+
+    return `<div class="score-sparkline" style="margin-bottom:12px;" aria-hidden="true">
+        <svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Score trend">
+            <polyline fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points}"></polyline>
+        </svg>
+    </div>`;
+}
+
 function renderHistory() {
-    const history = JSON.parse(_ls.getRaw('ats_score_history') || '[]');
+    let history = [];
+    try {
+        history = JSON.parse(_ls.getRaw('ats_score_history') || '[]');
+        if (!Array.isArray(history)) history = [];
+    } catch (parseError) {
+        console.warn('Unable to read scan history:', parseError);
+        return;
+    }
     const historyCard = document.getElementById('historyCard');
     const historyList = document.getElementById('historyList');
     if (!historyList || !historyCard) return;
