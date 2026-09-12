@@ -13,8 +13,8 @@
         });
       });
     </script>
-    <title>Free Physical Therapist ATS Resume Checker | Get ATS Ready</title>
-    <meta name="description" content="Free Physical Therapist ATS Resume Checker. Instantly score your Physical Therapist resume against job descriptions to optimize keywords and beat the ATS.">
+    <title>Free Technical Writer ATS Resume Checker — DITA, Docs-as-Code, API Docs</title>
+    <meta name="description" content="Check your technical writer resume against ATS parsers. See whether DITA, docs-as-code, API docs, and MadCap or Oxygen terms from the posting appear in your file.">
     <meta name="google-site-verification" content="c4WdlWUstVdmgNA2ymHt14Vy8k2QQiKPh4MHsW_J_7Y" />
     <meta name="msvalidate.01" content="FA7405A0B7623E8A404F74AE4952777C" />
     <!-- Google tag (gtag.js) -->
@@ -29,23 +29,23 @@
     
     <!-- QR Code Generator for PDF reports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-    <link rel="canonical" href="https://www.getatsready.com/role/physical-therapist.html">
+    <link rel="canonical" href="https://www.getatsready.com/technical-writer-resume-checker.html">
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.getatsready.com/">
-    <meta property="og:title" content="Free Physical Therapist ATS Resume Checker | Get ATS Ready">
-    <meta property="og:description" content="Instantly score your resume against any job description. Free, no signup, 100% private. See exactly which keywords you're missing.">
+    <meta property="og:url" content="https://www.getatsready.com/technical-writer-resume-checker.html">
+    <meta property="og:title" content="Free Technical Writer ATS Resume Checker — DITA, Docs-as-Code, API Docs">
+    <meta property="og:description" content="Check your technical writer resume against ATS parsers. See whether DITA, docs-as-code, API docs, and MadCap or Oxygen terms from the posting appear in your file.">
     <meta property="og:site_name" content="GetATSReady">
     <meta property="og:image" content="https://www.getatsready.com/og-image.webp">
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Free Physical Therapist ATS Resume Checker | Get ATS Ready">
-    <meta name="twitter:description" content="Instantly score your resume against any job description. Free, no signup, 100% private.">
+    <meta name="twitter:title" content="Free Technical Writer ATS Resume Checker — DITA, Docs-as-Code, API Docs">
+    <meta name="twitter:description" content="Check your technical writer resume against ATS parsers. See whether DITA, docs-as-code, API docs, and MadCap or Oxygen terms from the posting appear in your file.">
     <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=2" />
-    <link rel="stylesheet" href="../style.css?v=11">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2" />
+    <link rel="stylesheet" href="style.css?v=11">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "GetATSReady",
-      "url": "https://www.getatsready.com",
+      "url": "https://www.getatsready.com/technical-writer-resume-checker.html",
       "description": "Free, 100% private ATS resume checker. Optimize your resume for job descriptions without signing up.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "All",
@@ -74,23 +74,83 @@
   .network-footer { max-width: 800px; margin: 40px auto 20px; padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
   .network-title { font-size: 0.95rem; font-weight: 600; color: #64748b; margin-bottom: 16px; margin-top: 0; text-transform: uppercase; letter-spacing: 0.5px; font-family: sans-serif; }
   .network-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-  .network-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: #f8fafc; color: #1e293b !important; text-decoration: none !important; border-radius: 8px; font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; font-family: sans-serif; }
-  .network-link:hover { background: #f1f5f9; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+  .network-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: transparent; color: #1e293b !important; text-decoration: none !important; border-radius: 8px; font-size: 0.95rem; font-weight: 600; transition: all 0.2s ease; border: 1.5px solid #94a3b8; font-family: sans-serif; }
+  .network-link:hover { background: #f8fafc; border-color: #64748b; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
   .network-icon-img { width: 18px; height: 18px; object-fit: contain; }
   </style>
 
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAaNW63xpS09AZ6ZH6DvpwGx4n_0lhTKco",
+    authDomain: "ats-counters.firebaseapp.com",
+    databaseURL: "https://ats-counters-default-rtdb.firebaseio.com",
+    projectId: "ats-counters",
+    storageBucket: "ats-counters.firebasestorage.app",
+    messagingSenderId: "804950922331",
+    appId: "1:804950922331:web:db0784099c50c5fdd79b7e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.incrementScannerCount = function() {
+    runTransaction(ref(db, 'counters/v2_scanner'), (currentData) => {
+      return (currentData === null) ? 1 : currentData + 1;
+    }).catch(console.error);
+  };
+
+  window.incrementMakerCount = function() {
+    runTransaction(ref(db, 'counters/v2_maker'), (currentData) => {
+      return (currentData === null) ? 1 : currentData + 1;
+    }).catch(console.error);
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const scannerContainer = document.getElementById('scanner-badge-container');
+    const scannerNum = document.getElementById('scanner-counter-display');
+    if (scannerContainer && scannerNum) {
+      onValue(ref(db, 'counters/v2_scanner'), (snapshot) => {
+        const data = snapshot.val() || 0;
+        if (data > 500) {
+          scannerContainer.style.display = 'inline-block';
+          scannerNum.innerText = data.toLocaleString();
+        } else {
+          scannerContainer.style.display = 'none';
+        }
+      });
+    }
+
+    const makerContainer = document.getElementById('maker-badge-container');
+    const makerNum = document.getElementById('maker-counter-display');
+    if (makerContainer && makerNum) {
+      onValue(ref(db, 'counters/v2_maker'), (snapshot) => {
+        const data = snapshot.val() || 0;
+        if (data > 500) {
+          makerContainer.style.display = 'inline-block';
+          makerNum.innerText = data.toLocaleString();
+        } else {
+          makerContainer.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
 </head>
 <body>
     <!-- Cookie Consent Banner -->
     <div id="cookieConsent" class="cookie-banner">
-        <p>We use cookies for analytics and advertising. By continuing, you accept our <a href="../privacy.html">Privacy Policy</a>.</p>
+        <p>We use cookies for analytics and advertising. By continuing, you accept our <a href="privacy.html">Privacy Policy</a>.</p>
         <button onclick="acceptCookies()">Accept</button>
     </div>
 
     <div class="container">
         <header>
             <div class="header-top-row">
-                <a href="../" class="logo-link">
+                <a href="/" class="logo-link">
                     <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
                         <path d="M18 4v5h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
@@ -106,16 +166,22 @@
                 </button>
             </div>
             <nav class="main-nav" id="atsNavLinks">
-                <a href="../" class="active">Home</a>
-                <a href="../about.html">About Us</a>
-                <a href="../guides/index.html">Guides</a>
-                <a href="../contact.html">Contact Us</a>
+                <a href="/">Home</a>
+                <a href="resume-maker.html">Free Resume Maker</a>
+                <a href="jobs.html">Job Matcher</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="about.html">About Us</a>
+                <a href="guides/index.html">Guides</a>
+                <a href="contact.html">Contact Us</a>
                 
                 
             </nav>
             <div class="privacy-badge">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 100% Private: Processed entirely in your browser. No Signup Required.
+            </div>
+            <div style="text-align: center;">
+                <div id="scanner-badge-container" style="margin-top: 15px; margin-bottom: 5px; display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #059669; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">&#9889; <span id="scanner-counter-display">14,230</span> Resumes Scanned</div>
             </div>
 
             <p class="hero-tagline">
@@ -170,12 +236,17 @@
         <div style="max-width: 800px; margin: 0 auto 2rem; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); border-left: 4px solid var(--accent); padding: 1rem 1.25rem; border-radius: 8px;">
             <strong style="color: var(--accent);">New Guide:</strong> Want to know exactly how Workday, Taleo, and Greenhouse parse your resume? <a href="/guides/how-ats-works.html" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Read our complete 2026 breakdown of how ATS works.</a>
         </div>
-        
-        <div class="card inline-style-text-seo" style="margin-bottom: 24px; text-align: center;">
-            <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; margin-top: 0;">Free Physical Therapist ATS Resume Checker</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 800px; margin: 0 auto;">Optimize your Physical Therapist resume for Applicant Tracking Systems. Paste your job description and upload your resume to instantly reveal missing hard skills, formatting errors, and critical keywords.</p>
+        <div class="pseo-hero" style="text-align: center; margin-bottom: 2rem; padding: 0 1rem;">
+                <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main, #f8fafc);">Technical Writer ATS Resume Checker</h1>
+                <p style="font-size: 1.1rem; color: var(--text-muted, #94a3b8); max-width: 600px; margin: 0 auto;">Score a documentation resume. We look for DITA, docs-as-code, API docs, MadCap Flare, Oxygen XML, and information architecture — not marketing copywriter terms.</p>
+            </div>
+
+        <div class="card" style="margin: 0 auto 2rem; max-width: 800px; padding: 1.25rem 1.5rem;">
+            <h2 style="font-size:1.15rem;margin:0 0 0.75rem;">Keywords this checker is for</h2>
+            <p style="color:var(--text-muted);line-height:1.6;margin:0 0 0.75rem;">Paste a technical writer / documentation engineer posting. Typical hits: DITA, CCMS, docs-as-code, Markdown, Git, OpenAPI, Swagger, MadCap Flare, Oxygen XML, Acrolinx, information architecture, developer portal. Marketing copywriter terms (brand voice, paid social) belong on the <a href="copywriter-resume-checker.html">copywriter checker</a>.</p>
+            <p style="margin:0;"><a href="jobs.html?roles=docs" style="color:var(--primary);font-weight:600;">Find remote documentation jobs</a> · <a href="guides/technical-writer-resume-keywords.html" style="color:var(--primary);font-weight:600;">Keyword guide</a></p>
         </div>
-    
+
             <div class="tool-grid">
                 <!-- Left: Job Description -->
                 <div class="card">
@@ -207,7 +278,12 @@
                 </div>
             </div>
 
-            <!-- Client-Side Scan History (100% Private, stored in user's browser localStorage) -->
+            
+            <div class="card" style="margin-top: 1.5rem; padding: 1.5rem; background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, #334155); border-radius: 12px; line-height: 1.6; color: var(--text-muted, #94a3b8);">
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #f8fafc); margin-bottom: 12px; margin-top: 0;">Why ATS optimization matters for technical writers</h2>
+                <p style="margin-bottom: 0;">Documentation postings are parsed like engineering roles: Greenhouse and Workday search for DITA, docs-as-code, OpenAPI, MadCap, Oxygen XML, and information architecture. A marketing-copywriter resume looks empty against those terms. Paste the posting, keep a single-column PDF, and put the stack you actually used in Skills plus one bullet per job.</p>
+            </div>
+            <!-- Client-Side Scan History -->
             <div class="card hidden inline-style-f3ef69" id="historyCard">
                 <div class="card-title inline-style-4986ec">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -239,17 +315,17 @@
                             <h3 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 8px;">Get a human ATS-focused review</h3>
                             <p style="color: var(--text); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">A technical writer reviews your resume against your target role, improves its content and structure, and emails the finished document within the selected turnaround. Results and interviews cannot be guaranteed.</p>
                             <label for="reviewTier" style="display:block; font-size:0.85rem; color:var(--text); margin-bottom:6px;">Choose your service</label>
-                            <select id="reviewTier" style="width:100%; padding:14px 12px; margin-bottom:20px; border:2px solid var(--primary); border-radius:8px; font-size:1.05rem; font-weight:600; color:#0f172a; background-color:#ffffff; cursor:pointer; outline:none;">
+                            <select id="reviewTier" style="width:100%; padding:14px 12px; margin-bottom:20px; border:2px solid var(--primary); border-radius:8px; font-size:1.05rem; font-weight:600; color:#0f172a; background-color:#ffffff; cursor:pointer; box-shadow: 0 4px 6px -1px rgba(15, 98, 254, 0.1); outline:none; -webkit-appearance: menulist; appearance: menulist; background-image: none;">
                                 <option value="standard">Standard: 48 hours / $49 or ₹2,499</option>
                                 <option value="express">Express: 24 hours / $79 or ₹3,999</option>
                             </select>
                             <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--text); margin-bottom: 16px; cursor: pointer;">
                                 <input type="checkbox" id="refundConsent" style="margin-top: 3px;">
-                                <span>I agree to the <a href="../refund-policy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Refund Policy</a> and <a href="../terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms</a>. I understand the service is personalized, has no job or score guarantee, and revisions are limited to the published policy.</span>
+                                <span>I agree to the <a href="refund-policy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Refund Policy</a> and <a href="terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms</a>. I understand the service is personalized, has no job or score guarantee, and revisions are limited to the published policy.</span>
                             </label>
-                            <a href="#" id="atsProCheckoutBtn" target="_blank" rel="noopener" class="analyze-btn" style="color: #ffffff; background: #475569; width: 100%; justify-content: center; font-size: 1rem; pointer-events: none; opacity: 0.8;">Select a tier to continue</a>
-                            <a href="../submit-resume.html" id="paidIntakeLink" style="display:block; margin-top:10px; text-align:center; color:var(--primary); font-size:0.85rem;">Already paid? Complete the intake form</a>
-                            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:10px;">Pay opens in a new tab. Stay on this page, then complete the intake form.</p>
+                            <a href="#" id="atsProCheckoutBtn" target="_blank" rel="noopener" class="analyze-btn" style="color: #ffffff; background: var(--primary); width: 100%; justify-content: center; font-size: 1rem; box-shadow: 0 4px 12px rgba(15, 98, 254, 0.3); pointer-events: none; opacity: 0.8; background: #475569; box-shadow: none;">Select a tier to continue</a>
+                            <a href="submit-resume.html" id="paidIntakeLink" style="display:block; margin-top:10px; text-align:center; color:var(--primary); font-size:0.85rem;">Already paid? Complete the intake form</a>
+                            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:10px;">Pay opens in a new tab. Stay on this page, then complete the intake form. Keep your payment reference.</p>
                         </div>
                         
                         <!-- 📧 EMAIL CAPTURE WIDGET 📧 -->
@@ -399,26 +475,11 @@
                     <div class="cta-box alt">
                         <h3>Need help fixing your score?</h3>
                         <p>Read our free guides on bypassing the ATS filters and formatting your resume perfectly.</p>
-                        <a href="../guides/index.html" class="btn-primary" style="display:inline-block; margin-top:12px; text-decoration:none;">Read ATS Guides</a>
+                        <a href="guides/index.html" class="btn-primary" style="display:inline-block; margin-top:12px; text-decoration:none;">Read ATS Guides</a>
                     </div>
                 </div>
             </div>
 
-            
-            <!-- PSEO Specific Content -->
-            <div class="card inline-style-text-seo" style="margin-top: 24px; line-height: 1.6; color: var(--text-muted);">
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; margin-top: 0;">Top 10 Keywords for a Physical Therapist Resume</h2>
-                <p style="margin-bottom: 16px;">Applicant Tracking Systems scan your resume for specific hard skills and terminologies related to the Physical Therapist role. Based on current industry standards, make sure you include these keywords if you have the experience:</p>
-                <ul style="list-style: none; padding: 0; margin-bottom: 24px;">
-                    <li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Rehabilitation</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Patient Assessment</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Treatment Planning</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Orthopedics</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Manual Therapy</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Exercise Prescription</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Documentation</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Communication</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Neurology</li><li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">Outpatient Care</li>
-                </ul>
-                
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">3 Common Mistakes on Physical Therapist Resumes</h2>
-                <ul style="margin-bottom: 0; margin-left: 20px; list-style-type: disc;">
-                    <li style="margin-bottom: 8px;">Not detailing specific patient populations treated.</li><li style="margin-bottom: 8px;">Missing specific therapeutic techniques used.</li><li style="margin-bottom: 8px;">Failing to highlight measurable patient outcomes.</li>
-                </ul>
-            </div>
-    
             <!-- SEO Text Section: How the Multiplicative Scoring Model Works -->
             <div class="card inline-style-text-seo" id="scoringModelExplanation" style="margin-top: 24px; line-height: 1.6; color: var(--text-muted, #64748b);">
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #f8fafc); margin-bottom: 12px; margin-top: 0;">How Our Multiplicative Scoring Model Works</h2>
@@ -459,6 +520,16 @@
             <div class="card inline-style-3c92e1" id="faq">
                 <h2 class="inline-style-257995">Frequently Asked Questions</h2>
                 
+
+                <div class="faq-item">
+                    <h3>Is a technical writer resume the same as a copywriter resume for ATS?</h3>
+                    <p>No. Copywriter postings search for SEO, brand voice, and conversion copy. Technical writer postings search for DITA, docs-as-code, API documentation, and CCMS tools. Using the wrong cluster makes a good documentation resume look empty to Greenhouse or Workday.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Why are remote technical writer jobs hard to find on LinkedIn?</h3>
+                    <p>The market is small, and many “remote” posts are US-only or Easy Apply spam. Use a tight boolean, the Remote filter, and the company’s Greenhouse/Lever page. Our <a href="jobs.html?roles=docs">job matcher</a> builds that LinkedIn search and reads public Greenhouse boards. Then paste the posting back into this checker.</p>
+                </div>
+
                 <div class="faq-item">
                     <h3>How does the scoring work?</h3>
                     <p>We use a <strong>Multiplicative Scoring Model</strong> that mimics real-world ATS behavior (Workday, Taleo). If your resume template is structurally broken (multi-columns, tables), it physically hides keywords from the parser. Our engine calculates a "Template Compliance" score which acts as a multiplier on your keyword match — a poor template can cut your effective score by up to 70%.</p>
@@ -548,7 +619,7 @@
                 </div>
                 
                 <div class="inline-style-6d56db">
-                    <a href="../guides/index.html" class="inline-style-c127c3">View All Guides →</a>
+                    <a href="guides/index.html" class="inline-style-c127c3">View All Guides →</a>
                 </div>
             </section>
         </main>
@@ -598,6 +669,7 @@
                 <a href="paralegal-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Paralegal</a>
                 <a href="attorney-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Attorney</a>
                 <a href="copywriter-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Copywriter</a>
+                <a href="technical-writer-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Technical Writer</a>
                 <a href="social-media-manager-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Social Media Manager</a>
                 <a href="content-creator-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Content Creator</a>
                 <a href="event-planner-resume-checker.html" style="color: var(--accent, #38bdf8); text-decoration: none; font-size: 0.95rem; padding: 0.75rem; background: rgba(0,0,0,0.03); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; text-align: center; transition: background 0.2s;">Event Planner</a>
@@ -618,16 +690,17 @@
             <div class="footer-inner">
                 <p>&copy; 2026 GetATSReady. All rights reserved.</p>
                 <div class="footer-links">
-                    <a href="../privacy.html">Privacy Policy</a>
-                    <a href="../terms.html">Terms of Service</a>
-                    <a href="../contact.html">Contact Us</a>
-                    <a href="../about.html">About Us</a>
-                    <a href="../guides/index.html">Guides</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="resume-maker.html">Free Resume Maker</a>
+                <a href="about.html">About Us</a>
+                    <a href="guides/index.html">Guides</a>
                     </div>
             </div>
         </footer>
     </div>
-    <script src="../script.js?v=22" defer></script>
+    <script src="script.js?v=22" defer></script>
 </body>
 </html>
 

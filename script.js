@@ -1004,10 +1004,48 @@ analyzeBtn.addEventListener('click', () => {
     }, 500);
 });
 
+function inferJobFamilies(text) {
+    const t = (text || '').toLowerCase();
+    const hits = [];
+    if (/technical writer|documentation engineer|information developer|docs-as-code|docs as code|dita|oxygen xml|acrolinx|api docs|madcap/.test(t)) hits.push('docs');
+    if (/software engineer|javascript|python|react|kubernetes|backend|full stack/.test(t)) hits.push('swe');
+    if (/data analyst|data scientist|tableau|pandas|power bi/.test(t)) hits.push('data');
+    if (/product manager|product owner|roadmap/.test(t)) hits.push('pm');
+    if (/ux designer|product designer|figma|wireframe/.test(t)) hits.push('design');
+    return hits;
+}
+
+function ensureJobsMatchCta(fullText) {
+    const roles = inferJobFamilies(fullText);
+    try {
+        sessionStorage.setItem('atsJobMatch', JSON.stringify({ roles: roles, t: Date.now() }));
+    } catch (e) { /* private mode */ }
+    const jobsHref = (location.pathname.indexOf('/role/') !== -1 ? '../jobs.html' : 'jobs.html') +
+        (roles.length ? ('?roles=' + encodeURIComponent(roles.join(','))) : '');
+    let box = document.getElementById('jobsMatchCta');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'jobsMatchCta';
+        box.className = 'cta-box alt';
+        const host = document.querySelector('.results-cta');
+        if (host) host.insertBefore(box, host.firstChild);
+        else if (resultsSection) resultsSection.appendChild(box);
+    }
+    const roleNote = roles.length
+        ? 'We inferred: ' + roles.join(', ') + '.'
+        : 'Pick a role family on the next page.';
+    box.innerHTML = '<h3>Find jobs this resume matches</h3>' +
+        '<p>' + roleNote + ' Opens official LinkedIn search plus public Greenhouse boards. Paste any posting back here to rescore.</p>' +
+        '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">' +
+        '<a href="' + jobsHref + '" style="display:inline-block;text-decoration:none;background-color:var(--primary);color:#ffffff;padding:10px 20px;border-radius:8px;font-weight:600;">Find matching jobs →</a>' +
+        '</div>';
+}
+
 function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD = true) {
     resultsSection.classList.remove('hidden');
     resultsSection.style.display = 'block'; // force visible regardless of CSS
     resultsSection.scrollIntoView({ behavior: 'smooth' });
+    ensureJobsMatchCta(fullText);
 
     // Populate Raw Text Preview
     const rawPreview = document.getElementById('rawTextPreview');

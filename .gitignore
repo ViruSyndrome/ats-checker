@@ -4,3 +4,5 @@ Thumbs.db
 .idea/
 *.log
 node_modules/
+
+data/jobs-feed.json

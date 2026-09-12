@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jobs That Match Your Resume | GetATSReady</title>
+  <meta name="description" content="Find jobs that match your resume. We suggest titles from your scan, open official LinkedIn searches, and check public Greenhouse career pages. No LinkedIn scraping. Paste any posting back into the ATS checker.">
+  <link rel="canonical" href="https://www.getatsready.com/jobs.html">
+  <meta name="msvalidate.01" content="FA7405A0B7623E8A404F74AE4952777C">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HMGTGQ4B8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+    gtag('config', 'G-8HMGTGQ4B8');
+  </script>
+  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta property="og:title" content="Jobs That Match Your Resume | GetATSReady">
+  <meta property="og:description" content="Resume-based job search: LinkedIn official search plus public career-site listings. Paste a posting back into the free ATS checker.">
+  <meta property="og:url" content="https://www.getatsready.com/jobs.html">
+  <meta property="og:image" content="https://www.getatsready.com/og-image.webp">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "GetATSReady Job Matcher",
+    "url": "https://www.getatsready.com/jobs.html",
+    "description": "Find jobs that match your resume using official LinkedIn search and public Greenhouse career boards. No scraping. Resume stays in the browser.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <style>
+    .jobs-layout { display: grid; gap: 1.25rem; margin-top: 1.5rem; }
+    .jobs-panel {
+      background: var(--bg-card); border: 1px solid var(--glass-border);
+      border-radius: 16px; padding: 1.25rem 1.5rem;
+    }
+    .jobs-panel h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .jobs-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 0.85rem; }
+    .jobs-row label { color: var(--text-muted); font-size: 0.9rem; }
+    .jobs-row select, .jobs-row input[type="text"] {
+      background: #0f172a; color: var(--text-main); border: 1px solid var(--glass-border);
+      border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.95rem;
+    }
+    .role-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 0.75rem; border-radius: 999px; border: 1px solid var(--glass-border);
+      background: rgba(129,140,248,0.12); font-size: 0.85rem; cursor: pointer;
+    }
+    .role-chip input { accent-color: var(--accent); }
+    .job-card {
+      border: 1px solid var(--glass-border); border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.75rem;
+    }
+    .job-card h3 { font-size: 1.02rem; margin-bottom: 0.25rem; }
+    .job-meta { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.6rem; }
+    .job-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .job-actions a {
+      display: inline-block; padding: 0.4rem 0.8rem; border-radius: 8px; text-decoration: none;
+      font-weight: 600; font-size: 0.85rem;
+    }
+    .btn-primary-link { background: var(--primary); color: #fff; }
+    .btn-ghost-link { border: 1px solid var(--glass-border); color: var(--text-main); }
+    .note { color: var(--text-muted); font-size: 0.92rem; line-height: 1.5; }
+    #dropZone {
+      border: 1.5px dashed var(--glass-border); border-radius: 12px; padding: 1.5rem; text-align: center;
+      cursor: pointer; color: var(--text-muted);
+    }
+    #statusLine { margin-top: 0.75rem; color: var(--accent); font-size: 0.9rem; }
+    .boolean-box {
+      font-family: ui-monospace, Consolas, monospace; font-size: 0.82rem;
+      background: #0f172a; border: 1px solid var(--glass-border); border-radius: 8px;
+      padding: 0.75rem; color: var(--text-main); white-space: pre-wrap; word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top-row">
+        <a href="/" class="logo-link">
+          <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <path d="M18 4v5h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+          </svg>
+          <span class="logo-text">GetATS<span class="logo-accent">Ready</span></span>
+        </a>
+        <button class="hamburger" id="atsHamburger" aria-label="Toggle navigation" onclick="document.getElementById('atsNavLinks').classList.toggle('open');this.classList.toggle('open')">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <nav class="main-nav" id="atsNavLinks">
+        <a href="/">Scanner</a>
+        <a href="resume-maker.html">Free Resume Maker</a>
+        <a href="jobs.html" class="active">Job Matcher</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About Us</a>
+        <a href="guides/index.html">Guides</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+      <div class="privacy-badge">
+        Resume stays in your browser. We open LinkedIn’s own search and public Greenhouse APIs — we do not scrape LinkedIn.
+      </div>
+      <h1 class="hero-tagline" style="font-size: 1.8rem; margin-top: 1rem;">Find jobs that match your resume</h1>
+      <p class="hero-tagline">This is not a job board. We infer titles, build a LinkedIn boolean, and list live career-site openings. Open a posting, paste the JD into the scanner, then take the paid review if you want a writer to tailor the file.</p>
+    </header>
+
+    <div class="jobs-layout">
+      <section class="jobs-panel">
+        <h2>1. Role families</h2>
+        <p class="note" id="resumeStatus">Tick a family, or upload a resume to auto-suggest. Nothing is stored on our servers.</p>
+        <div id="dropZone">Drop a PDF/DOCX here or click to upload (optional)</div>
+        <input id="resumeFile" type="file" accept=".pdf,.docx,application/pdf" hidden>
+        <div class="jobs-row" id="roleChips"></div>
+      </section>
+
+      <section class="jobs-panel">
+        <h2>2. LinkedIn search (official)</h2>
+        <div class="jobs-row">
+          <label for="locMode">Show me</label>
+          <select id="locMode">
+            <option value="remote-world" selected>Remote, work from anywhere</option>
+            <option value="india">India + worldwide remote</option>
+            <option value="bengaluru">Bengaluru / Bangalore</option>
+            <option value="anywhere">Any location</option>
+          </select>
+        </div>
+        <p class="note">Copy this boolean into LinkedIn if the buttons feel noisy. Remote + past week is already on the links.</p>
+        <pre class="boolean-box" id="booleanBox"></pre>
+        <div class="job-actions" id="linkedinLinks"></div>
+      </section>
+
+      <section class="jobs-panel">
+        <h2>3. Public career-site matches</h2>
+        <p class="note" id="feedMeta">Loading live boards…</p>
+        <div id="statusLine"></div>
+        <div id="jobResults"></div>
+      </section>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>&copy; 2026 GetATSReady. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="/">Scanner</a>
+          <a href="resume-maker.html">Free Resume Maker</a>
+          <a href="pricing.html">Pricing</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+  <script src="jobs.js?v=2"></script>
+  <script>
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("resumeFile");
+    const roleChips = document.getElementById("roleChips");
+    const locMode = document.getElementById("locMode");
+    const jobResults = document.getElementById("jobResults");
+    const feedMeta = document.getElementById("feedMeta");
+    const linkedinLinks = document.getElementById("linkedinLinks");
+    const resumeStatus = document.getElementById("resumeStatus");
+    const booleanBox = document.getElementById("booleanBox");
+    const statusLine = document.getElementById("statusLine");
+
+    const params = new URLSearchParams(location.search);
+    let selected = new Set();
+    const paramRoles = (params.get("roles") || "").split(",").filter(Boolean);
+    if (paramRoles.length) {
+      paramRoles.forEach((id) => selected.add(id));
+    } else {
+      try {
+        const stored = JSON.parse(sessionStorage.getItem("atsJobMatch") || "{}");
+        (stored.roles || []).forEach((id) => selected.add(id));
+      } catch (e) { /* ignore */ }
+    }
+
+    JobwatchApp.ROLE_FAMILIES.forEach((f) => {
+      const chip = document.createElement("label");
+      chip.className = "role-chip";
+      chip.innerHTML = `<input type="checkbox" value="${f.id}" ${selected.has(f.id) ? "checked" : ""}> ${f.label}`;
+      chip.querySelector("input").addEventListener("change", (e) => {
+        if (e.target.checked) selected.add(f.id); else selected.delete(f.id);
+        render();
+      });
+      roleChips.appendChild(chip);
+    });
+
+    dropZone.addEventListener("click", () => fileInput.click());
+    dropZone.addEventListener("dragover", (e) => { e.preventDefault(); });
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener("change", () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+    locMode.addEventListener("change", render);
+
+    async function handleFile(file) {
+      resumeStatus.textContent = "Reading resume in your browser…";
+      try {
+        let resumeText = "";
+        if (file.name.toLowerCase().endsWith(".pdf")) {
+          const buf = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+          const parts = [];
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            parts.push(content.items.map((it) => it.str).join(" "));
+          }
+          resumeText = parts.join("\n");
+        } else {
+          const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+          resumeText = result.value || "";
+        }
+        const suggested = JobwatchApp.suggestRoles(resumeText);
+        if (suggested.length) {
+          selected = new Set(suggested.map((s) => s.id));
+          roleChips.querySelectorAll("input").forEach((box) => { box.checked = selected.has(box.value); });
+          resumeStatus.textContent = "Suggested from your resume: " + suggested.map((s) => s.label).join(", ");
+        } else {
+          resumeStatus.textContent = "Resume loaded. Tick the role families you want.";
+        }
+        render();
+      } catch (err) {
+        resumeStatus.textContent = "Could not read that file. Tick roles manually.";
+      }
+    }
+
+    function activeFamilies() {
+      const all = JobwatchApp.ROLE_FAMILIES.filter((f) => selected.has(f.id));
+      return all.length ? all : JobwatchApp.ROLE_FAMILIES;
+    }
+
+    let allJobs = [];
+
+    function checkerForFamily(family) {
+      if (family && family.id === "docs") return "technical-writer-resume-checker.html";
+      return "/";
+    }
+
+    function render() {
+      const families = activeFamilies();
+      const mode = locMode.value;
+      const locLabel = {
+        bengaluru: "Bengaluru, India",
+        india: "India",
+        "remote-world": "Worldwide",
+        anywhere: "Worldwide"
+      }[mode];
+      const wantRemote = mode !== "bengaluru";
+      booleanBox.textContent = families.map((f) => f.linkedin).join("\n\n");
+      linkedinLinks.innerHTML = families.map((f) => {
+        const href = JobwatchApp.linkedinSearch(f.linkedin, locLabel, wantRemote);
+        return `<a class="btn-ghost-link" target="_blank" rel="noopener" href="${href}">LinkedIn: ${f.label}</a>`;
+      }).join("");
+
+      const matches = JobwatchApp.filterJobs(allJobs, families, mode);
+      feedMeta.textContent = `${allJobs.length} live listings fetched · ${matches.length} after title + location filters`;
+      if (!matches.length) {
+        jobResults.innerHTML = `<p class="note">No career-site hits for this filter yet. Use the LinkedIn buttons — that is the reliable path for remote technical writing. Then paste the posting into the <a href="/">ATS checker</a>.</p>`;
+        return;
+      }
+      jobResults.innerHTML = matches.slice(0, 40).map((job) => {
+        const family = families.find((f) => JobwatchApp.titleMatches(job.title, f)) || families[0];
+        const scanHref = checkerForFamily(family);
+        return `
+        <article class="job-card">
+          <h3>${escapeHtml(job.title)}</h3>
+          <p class="job-meta">${escapeHtml(job.company)} · ${escapeHtml(job.location || "Location not listed")} · ${escapeHtml(job.salary_text || "salary n/a")} · ${escapeHtml(job.source)}</p>
+          <div class="job-actions">
+            <a class="btn-primary-link" href="${escapeHtml(job.url)}" target="_blank" rel="noopener">Open career page</a>
+            <a class="btn-ghost-link" href="${scanHref}">Paste this JD in the checker</a>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    function escapeHtml(s) {
+      return (s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    }
+
+    async function loadFeed() {
+      allJobs = await JobwatchApp.fetchLiveJobs((msg) => { statusLine.textContent = msg; });
+      statusLine.textContent = allJobs.length ? "" : "Live boards were blocked. Use LinkedIn search, then paste the JD into the scanner.";
+      render();
+    }
+
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+    }
+    render();
+    loadFeed();
+  </script>
+</body>
+</html>
