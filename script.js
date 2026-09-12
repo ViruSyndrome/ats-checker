@@ -83,29 +83,30 @@ function trackEvent(eventName, params = {}) {
 // Cookie Consent
 function acceptCookies() {
     _ls.setRaw('cookieConsent', 'true');
-    document.getElementById('cookieConsent').classList.add('hidden');
+    const cookieBanner = document.getElementById('cookieConsent');
+    if (cookieBanner) cookieBanner.classList.add('hidden');
 }
 
 window.addEventListener('load', () => {
     const cookieBanner = document.getElementById('cookieConsent');
-    if (_ls.getRaw('cookieConsent') === 'true') {
-        cookieBanner.classList.add('hidden');
-    } else {
-        // Auto-hide cookie banner after 8 seconds if user interacts with the tool
-        const autoHideOnInteraction = () => {
-            setTimeout(() => {
-                if (!cookieBanner.classList.contains('hidden')) {
-                    cookieBanner.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    cookieBanner.style.opacity = '0';
-                    cookieBanner.style.transform = 'translateY(100%)';
-                    setTimeout(() => cookieBanner.classList.add('hidden'), 500);
-                }
-            }, 8000);
-            document.removeEventListener('click', autoHideOnInteraction);
-            document.removeEventListener('keydown', autoHideOnInteraction);
-        };
-        document.addEventListener('click', autoHideOnInteraction);
-        document.addEventListener('keydown', autoHideOnInteraction);
+    if (cookieBanner) {
+        if (_ls.getRaw('cookieConsent') === 'true') {
+            cookieBanner.classList.add('hidden');
+        } else {
+            const autoHideOnInteraction = () => {
+                setTimeout(() => {
+                    if (!cookieBanner.classList.contains('hidden')) {
+                        cookieBanner.style.transition = 'opacity 0.5s ease';
+                        cookieBanner.style.opacity = '0';
+                        setTimeout(() => cookieBanner.classList.add('hidden'), 500);
+                    }
+                }, 8000);
+                document.removeEventListener('click', autoHideOnInteraction);
+                document.removeEventListener('keydown', autoHideOnInteraction);
+            };
+            document.addEventListener('click', autoHideOnInteraction);
+            document.addEventListener('keydown', autoHideOnInteraction);
+        }
     }
     try {
         renderHistory();
@@ -2379,11 +2380,27 @@ function setupReviewPricing() {
         btn.style.boxShadow = on ? '0 4px 12px rgba(15, 98, 254, 0.3)' : 'none';
     };
 
+    const optionLabels = {
+        india: {
+            standard: 'Standard: 48 hours / ₹2,499',
+            express: 'Express: 24 hours / ₹3,999'
+        },
+        international: {
+            standard: 'Standard: 48 hours / $49',
+            express: 'Express: 24 hours / $79'
+        }
+    };
+
     const updateButton = () => {
         const plan = plans[tier.value];
         const checkoutUrl = plan.url[detectedMarket];
         const checkoutLabel = plan.label[detectedMarket];
         const consented = !consent || consent.checked;
+        const labels = optionLabels[detectedMarket];
+
+        Array.from(tier.options).forEach((opt) => {
+            if (labels[opt.value]) opt.textContent = labels[opt.value];
+        });
 
         btn.textContent = checkoutUrl ? checkoutLabel : 'Select a tier to continue';
         btn.href = checkoutUrl || '#';
@@ -2392,6 +2409,8 @@ function setupReviewPricing() {
         if (intakeLink) intakeLink.href = intakeUrl();
         setEnabled(Boolean(checkoutUrl) && consented);
     };
+
+    updateButton();
 
     tier.addEventListener('change', updateButton);
     if (consent) consent.addEventListener('change', updateButton);
