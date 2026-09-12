@@ -240,6 +240,17 @@
         <div class="tool-grid">
                 <!-- Left: Job Description -->
                 <div class="card">
+                    <div id="jobsPasteHint" hidden style="margin-bottom: 12px; padding: 12px 14px; border-radius: 8px; background: rgba(129,140,248,0.15); border: 1px solid rgba(196,181,253,0.45); color: #e2e8f0; font-size: 0.92rem; line-height: 1.5;">
+                        We cannot copy the posting automatically. Open the career page, copy the job description, paste it here, then upload your resume.
+                    </div>
+                    <script>
+                    (function () {
+                      if (/(?:\?|&)from=jobs(?:&|$)/.test(location.search)) {
+                        var h = document.getElementById('jobsPasteHint');
+                        if (h) h.hidden = false;
+                      }
+                    })();
+                    </script>
                     <div class="card-title">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                         Job Description <span class="inline-style-c4cdb0">(optional — for keyword match)</span>

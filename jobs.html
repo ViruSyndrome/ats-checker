@@ -124,11 +124,12 @@
           <label for="locMode">Show me</label>
           <select id="locMode">
             <option value="remote-world" selected>Remote, work from anywhere</option>
-            <option value="india">India + worldwide remote</option>
+            <option value="india">India (on-site or India-remote)</option>
             <option value="bengaluru">Bengaluru / Bangalore</option>
-            <option value="anywhere">Any location</option>
+            <option value="anywhere">Any location (includes US-only remote)</option>
           </select>
         </div>
+        <p class="note">Work from anywhere drops US-only / UK-only remote (e.g. “California, USA, Remote”). Use Any location to see those. Listings are live from Greenhouse/RemoteOK, newest first — not a stored dump.</p>
         <p class="note">Copy this boolean into LinkedIn if the buttons feel noisy. Remote + past week is already on the links.</p>
         <pre class="boolean-box" id="booleanBox"></pre>
         <div class="job-actions" id="linkedinLinks"></div>
@@ -157,7 +158,7 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
-  <script src="jobs.js?v=2"></script>
+  <script src="jobs.js?v=3"></script>
   <script>
     const dropZone = document.getElementById("dropZone");
     const fileInput = document.getElementById("resumeFile");
@@ -241,9 +242,11 @@
 
     let allJobs = [];
 
-    function checkerForFamily(family) {
-      if (family && family.id === "docs") return "technical-writer-resume-checker.html";
-      return "/";
+    function postedLabel(job) {
+      if (!job.updated_at) return "";
+      const d = new Date(job.updated_at);
+      if (Number.isNaN(d.getTime())) return "";
+      return " · updated " + d.toISOString().slice(0, 10);
     }
 
     function render() {
@@ -265,19 +268,17 @@
       const matches = JobwatchApp.filterJobs(allJobs, families, mode);
       feedMeta.textContent = `${allJobs.length} live listings fetched · ${matches.length} after title + location filters`;
       if (!matches.length) {
-        jobResults.innerHTML = `<p class="note">No career-site hits for this filter yet. Use the LinkedIn buttons — that is the reliable path for remote technical writing. Then paste the posting into the <a href="/">ATS checker</a>.</p>`;
+        jobResults.innerHTML = `<p class="note">No career-site hits for this filter yet. Use the LinkedIn buttons — that is the reliable path for remote technical writing. Then paste the posting into the <a href="/?from=jobs" style="color:#c4b5fd;text-decoration:underline;font-weight:600;">ATS checker</a>.</p>`;
         return;
       }
       jobResults.innerHTML = matches.slice(0, 40).map((job) => {
-        const family = families.find((f) => JobwatchApp.titleMatches(job.title, f)) || families[0];
-        const scanHref = checkerForFamily(family);
         return `
         <article class="job-card">
           <h3>${escapeHtml(job.title)}</h3>
-          <p class="job-meta">${escapeHtml(job.company)} · ${escapeHtml(job.location || "Location not listed")} · ${escapeHtml(job.salary_text || "salary n/a")} · ${escapeHtml(job.source)}</p>
+          <p class="job-meta">${escapeHtml(job.company)} · ${escapeHtml(job.location || "Location not listed")}${job.salary_text ? " · " + escapeHtml(job.salary_text) : ""}${postedLabel(job)} · ${escapeHtml(job.source)}</p>
           <div class="job-actions">
             <a class="btn-primary-link" href="${escapeHtml(job.url)}" target="_blank" rel="noopener">Open career page</a>
-            <a class="btn-ghost-link" href="${scanHref}">Paste this JD in the checker</a>
+            <a class="btn-ghost-link" href="/?from=jobs">Open scanner to paste JD</a>
           </div>
         </article>`;
       }).join("");
