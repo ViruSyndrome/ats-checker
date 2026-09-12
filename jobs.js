@@ -115,7 +115,7 @@ function locFlags(location) {
   const loc = norm(location);
   return {
     loc,
-    us: US_REGION.some((p) => loc.includes(p)),
+    us: US_REGION.some((p) => loc.includes(p)) || /\bus\b/.test(loc),
     uk: /\b(united kingdom|uk only|england)\b/.test(loc) || (loc.includes("london") && !loc.includes("ontario")),
     canada: loc.includes("canada") || loc.includes("ontario") || loc.includes("toronto") || loc.includes("vancouver"),
     eu: /\b(eu only|europe only|european union)\b/.test(loc),
