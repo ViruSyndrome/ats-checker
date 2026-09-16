@@ -7,6 +7,7 @@
     <script>
       Sentry.onLoad(function() {
         Sentry.init({
+          ignoreErrors: [/runtime\.sendMessage/i, /Tab not found/i, /Extension context invalidated/i],
           tracesSampleRate: 0.1,
           replaysSessionSampleRate: 0.05,
           replaysOnErrorSampleRate: 1.0,
@@ -702,7 +703,7 @@
             </div>
         </footer>
     </div>
-    <script src="script.js?v=22" defer></script>
+    <script src="script.js?v=23" defer></script>
 </body>
 </html>
 
