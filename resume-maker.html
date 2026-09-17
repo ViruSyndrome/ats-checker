@@ -127,10 +127,14 @@
         /* Controls */
         .builder-controls {
             display: flex;
+            flex-wrap: wrap;
             gap: 12px;
             margin-bottom: 16px;
             width: 100%;
             justify-content: center;
+        }
+        #humanReview {
+            scroll-margin-top: 96px;
         }
     </style>
     <script type="application/ld+json">
@@ -411,9 +415,16 @@
 
             <!-- Right Pane: Live Preview & Controls -->
             <div class="builder-preview-pane">
-                <div class="builder-controls">
+                <div class="builder-controls" style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
                     <button onclick="downloadPDF()" style="background: var(--primary); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(15, 98, 254, 0.2);">Download PDF</button>
                     <button onclick="clearDraft()" style="background: transparent; color: var(--text-main); border: 1px solid var(--glass-border); padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;">Clear Draft</button>
+                    <div id="afterDownload" hidden style="flex-basis:100%; margin-top:12px; padding:16px 18px; border-radius:12px; border:1px solid var(--glass-border); background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));">
+                        <p style="margin:0 0 12px; font-weight:600; color:var(--text-main);">PDF saved. Next, check how ATS software reads it — or send it to a writer.</p>
+                        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                            <a href="/" class="analyze-btn" style="width:auto; margin:0; padding:10px 16px; text-decoration:none; display:inline-flex;">Check ATS score</a>
+                            <a href="#humanReview" style="display:inline-flex; align-items:center; padding:10px 16px; border-radius:12px; border:1px solid var(--glass-border); color:var(--text-main); text-decoration:none; font-weight:600;">Get a human review</a>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="preview-wrapper">
@@ -465,7 +476,7 @@
                 </div>
                 
                 <!-- Monetization CTA below preview -->
-                <div class="ats-pro-cta" style="margin-top: 32px; padding: 24px; border-radius: 12px; background: rgba(30, 41, 59, 0.9); border: 2px solid var(--primary); text-align: left; width: 100%; max-width: 600px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                <div id="humanReview" class="ats-pro-cta" style="margin-top: 32px; padding: 24px; border-radius: 12px; background: rgba(30, 41, 59, 0.9); border: 2px solid var(--primary); text-align: left; width: 100%; max-width: 600px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
                     <h3 style="color: var(--primary); font-size: 1.25rem; margin-top: 0; margin-bottom: 12px;">Get a human ATS-focused review</h3>
                     <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px;">A technical writer reviews your resume against your target role, improves its content and structure, and emails the finished document within the selected turnaround. Results and interviews cannot be guaranteed.</p>
                     
@@ -614,9 +625,14 @@
             element.style.width = '100%';
             
             html2pdf().set(opt).from(element).save().then(() => {
-                // Restore preview scaling
                 element.style.transform = 'scale(0.75)';
                 element.style.width = '794px';
+                var next = document.getElementById('afterDownload');
+                if (next) {
+                    next.hidden = false;
+                    next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                if (typeof window.incrementMakerCount === 'function') window.incrementMakerCount();
             });
         }
 
