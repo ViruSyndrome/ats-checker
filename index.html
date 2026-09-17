@@ -293,7 +293,11 @@
                         <h2>ATS Compatibility Score</h2>
                         <div id="scoreVerdictBadge" class="inline-style-df703b">Analyzing...</div>
                         <p id="scoreText" class="inline-style-1f8f6c">Keyword match x template compliance x structure x impact — mirroring how enterprise ATS systems rank candidates.</p>
-                        <button id="downloadReport" class="secondary-btn inline-style-8a5dc8">&#8595; Download Full PDF Report</button>
+                        <div class="scan-next-actions" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+                            <button id="downloadReport" type="button" class="secondary-btn inline-style-8a5dc8">Copy rewrite brief</button>
+                            <a href="/resume-maker.html" id="openMakerWithNotes" class="analyze-btn" style="width:auto;margin:0;padding:10px 16px;text-decoration:none;display:inline-flex;align-items:center;">Open in resume maker</a>
+                        </div>
+                        <p class="muted-note" style="margin-top:10px;">Copy a brief for ChatGPT or Claude, or open the maker with your extracted text and missing keywords beside the form. The maker will not overwrite what you type.</p>
                         
                         <div class="ats-pro-cta" style="margin-top: 24px; padding: 20px; border-radius: 8px; background: linear-gradient(135deg, var(--bg-soft), #fff); border: 2px solid var(--primary); text-align: left;">
                             <h3 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 8px;">Get a human ATS-focused review</h3>
@@ -458,9 +462,9 @@
                     </div>
                     <div class="cta-box alt">
                         <h3>Need help fixing your score?</h3>
-                        <p>Use the free resume maker for a single-column, ATS-safer layout, or read the guides for formatting tips.</p>
+                        <p>Copy the rewrite brief into an AI, rebuild a cleaner layout in the maker (scan notes sit beside the form), or pay for a human review.</p>
                         <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
-                            <a href="resume-maker.html" style="display:inline-block; text-decoration:none; background-color: var(--primary); color: #ffffff; padding: 10px 20px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(15, 98, 254, 0.2); transition: transform 0.2s;">Free resume maker &rarr;</a>
+                            <a href="/resume-maker.html" id="openMakerWithNotesCta" style="display:inline-block; text-decoration:none; background-color: var(--primary); color: #ffffff; padding: 10px 20px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(15, 98, 254, 0.2); transition: transform 0.2s;">Open resume maker &rarr;</a>
                             <a href="guides/index.html" class="secondary-btn" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.05);">Read Guides</a>
                         </div>
                     </div>
@@ -680,7 +684,7 @@
             </div>
         </footer>
     </div>
-    <script src="script.js?v=23" defer></script>
+    <script src="script.js?v=24" defer></script>
 </body>
 </html>
 

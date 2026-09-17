@@ -1542,6 +1542,8 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         weakBulletSamples: bulletMetrics.weakBulletSamples
     };
 
+    saveScanNotesForMaker();
+
     // Save to Local Scan History (100% Client-Side, fully private)
     saveScanToHistory(fileMetadata.name, finalScore);
 }
@@ -1561,476 +1563,179 @@ function calculateVocabularyDiversity(text) {
     };
 }
 
-// Download Enhanced PDF Report (Designer Edition with More Details)
-const downloadReportBtn = document.getElementById('downloadReport');
-if (downloadReportBtn) downloadReportBtn.addEventListener('click', () => {
-    const res = window.lastResults;
-    if (!res) {
-        showInlineAlert('Please analyze your resume first before downloading the report.');
-        return;
-    }
-
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-        showInlineAlert('PDF generation is unavailable. Please check your internet connection and reload the page.');
-        return;
-    }
-
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const date = new Date().toLocaleDateString();
-
-    // Normalize result shape so the report never crashes on partial/missing data
-    // (e.g., if analysis was interrupted and only a partial lastResults exists)
-    const num = (v, fallback = 0) => (Number.isFinite(v) ? v : fallback);
-    res.found = Array.isArray(res.found) ? res.found : [];
-    res.missing = Array.isArray(res.missing) ? res.missing : [];
-    res.filteredMissing = Array.isArray(res.filteredMissing) ? res.filteredMissing : [];
-    res.tips = Array.isArray(res.tips) ? res.tips.filter(Boolean) : [];
-    res.finalScore = num(res.finalScore);
-    res.structureScore = num(res.structureScore);
-    res.impactScore = num(res.impactScore);
-    res.keywordMatchPct = num(res.keywordMatchPct);
-    res.formatScore = num(res.formatScore);
-    res.effectiveKeywordScore = num(res.effectiveKeywordScore, res.keywordMatchPct);
-    res.projectedWithFix = num(res.projectedWithFix, res.finalScore);
-    res.hasJD = !!res.hasJD;
-    res.formatCheck = (res.formatCheck && Array.isArray(res.formatCheck.issues))
-        ? res.formatCheck
-        : { score: res.formatScore, issues: [] };
-    res.contactCheck = res.contactCheck || {};
-    res.contactCheck.issues = Array.isArray(res.contactCheck.issues) ? res.contactCheck.issues : [];
-    res.contactCheck.warnings = Array.isArray(res.contactCheck.warnings) ? res.contactCheck.warnings : [];
-    res.bulletMetrics = res.bulletMetrics || {};
-    res.bulletMetrics.withMetrics = num(res.bulletMetrics.withMetrics);
-    res.bulletMetrics.total = num(res.bulletMetrics.total);
-    res.bulletMetrics.pct = num(res.bulletMetrics.pct);
-    res.weakBulletSamples = Array.isArray(res.weakBulletSamples) ? res.weakBulletSamples : [];
-
-    // Helper: Strip HTML tags AND emojis/non-ASCII for PDF
-    const cleanText = (str) => String(str == null ? '' : str)
-        .replace(/<\/?[^>]+(>|$)/g, "")
-        .replace(/&nbsp;/g, ' ')
-        .replace(/[^\x00-\x7E]/g, '')  // strip emojis and non-ASCII
+// Rewrite brief + maker scan notes
+function htmlToPlain(str) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = String(str == null ? '' : str).replace(/<br\s*\/?>/gi, '\n');
+    return (tmp.textContent || tmp.innerText || '')
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/\n{3,}/g, '\n\n')
         .replace(/\s{2,}/g, ' ')
         .trim();
+}
 
-    // PAGE 1: Executive Summary
-    // 1. Header & Branding
-    doc.setFillColor(30, 41, 59);
-    doc.rect(0, 0, 210, 45, 'F');
-    
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(26);
-    doc.text("ATS PERFORMANCE AUDIT", 20, 25);
-    
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.text(`CONFIDENTIAL REPORT | ${date} | V3.0 ENHANCED`, 20, 33);
-
-    // 2. Executive Score Dashboard
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.text("Executive Summary", 20, 60);
-
-    // Main Score Badge
-    doc.setFillColor(16, 185, 129);
-    doc.circle(165, 80, 22, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(32);
-    doc.text(`${res.finalScore}`, 165, 83, { align: "center" });
-    doc.setFontSize(10);
-    doc.text("MATCH", 165, 90, { align: "center" });
-
-    // Score Interpretation Box
-    let interpretation = "";
-    let interpColor = [16, 185, 129];
-    if (res.finalScore >= 80) {
-        interpretation = "EXCELLENT: Your resume is highly optimized for ATS systems.";
-        interpColor = [16, 185, 129]; // Green
-    } else if (res.finalScore >= 60) {
-        interpretation = "GOOD: Your resume will pass most ATS filters. Improvements recommended.";
-        interpColor = [245, 158, 11]; // Orange
-    } else {
-        interpretation = "NEEDS WORK: High risk of automatic rejection. Immediate action required.";
-        interpColor = [239, 68, 68]; // Red
-    }
-    
-    doc.setFillColor(interpColor[0], interpColor[1], interpColor[2], 0.1);
-    doc.rect(15, 95, 130, 12, 'F');
-    doc.setTextColor(interpColor[0], interpColor[1], interpColor[2]);
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    doc.text(interpretation, 20, 102);
-
-    if (res.projectedWithFix && res.projectedWithFix > res.finalScore + 5) {
-        doc.setFillColor(99, 102, 241, 0.1); // Indigo tint
-        doc.rect(15, 108, 130, 10, 'F');
-        doc.setTextColor(79, 70, 229); // Indigo text
-        doc.setFontSize(8);
-        doc.text(`POTENTIAL SCORE: ~${res.projectedWithFix}% (Fix your template to unlock)`, 20, 115);
-    }
-
-    // 3. Detailed Metrics Breakdown
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Performance Breakdown", 20, 120);
-    doc.setDrawColor(226, 232, 240);
-    doc.line(20, 122, 190, 122);
-
-    const drawMetricCard = (label, pct, explanation, y) => {
-        doc.setFontSize(11);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(71, 85, 105);
-        doc.text(label, 20, y);
-        
-        // Progress bar
-        doc.setFillColor(241, 245, 249);
-        doc.rect(20, y + 2, 80, 4, 'F');
-        const color = pct > 80 ? [16, 185, 129] : (pct > 50 ? [245, 158, 11] : [239, 68, 68]);
-        doc.setFillColor(color[0], color[1], color[2]);
-        doc.rect(20, y + 2, (pct / 100) * 80, 4, 'F');
-        doc.setTextColor(30, 41, 59);
-        doc.setFontSize(10);
-        doc.text(`${pct}%`, 105, y + 5);
-        
-        // Explanation
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(100, 116, 139);
-        const splitExp = doc.splitTextToSize(explanation, 170);
-        doc.text(splitExp, 20, y + 10);
-        
-        return y + 10 + (splitExp.length * 4) + 4;
+function gatherScanNotes() {
+    const res = window.lastResults;
+    if (!res) return null;
+    const jd = document.getElementById('jobDescription')?.value.trim() || '';
+    const missing = (res.filteredMissing && res.filteredMissing.length ? res.filteredMissing : res.missing) || [];
+    const notes = {
+        savedAt: Date.now(),
+        fileName: (fileMetadata && fileMetadata.name) || '',
+        score: Number.isFinite(res.finalScore) ? res.finalScore : 0,
+        formatScore: Number.isFinite(res.formatScore) ? res.formatScore : 0,
+        keywordMatchPct: Number.isFinite(res.keywordMatchPct) ? res.keywordMatchPct : 0,
+        structureScore: Number.isFinite(res.structureScore) ? res.structureScore : 0,
+        impactScore: Number.isFinite(res.impactScore) ? res.impactScore : 0,
+        hasJD: !!res.hasJD,
+        formatIssues: (res.formatCheck && Array.isArray(res.formatCheck.issues) ? res.formatCheck.issues : [])
+            .map(i => i && (i.label || i.message || String(i)))
+            .filter(Boolean),
+        missingKeywords: missing.slice(0, 40),
+        weakBullets: (Array.isArray(res.weakBulletSamples) ? res.weakBulletSamples : []).slice(0, 8),
+        tips: (Array.isArray(res.tips) ? res.tips : []).map(t => htmlToPlain(t && t.html ? t.html : t)).filter(Boolean).slice(0, 12),
+        jobDescription: jd.slice(0, 12000),
+        resumeText: String(typeof resumeText === 'string' ? resumeText : '').slice(0, 60000)
     };
+    notes.brief = buildRewriteBrief(notes);
+    return notes;
+}
 
-    let y = 130;
+function buildRewriteBrief(notes) {
+    if (!notes) return '';
+    const missing = notes.missingKeywords && notes.missingKeywords.length
+        ? notes.missingKeywords.join(', ')
+        : 'None listed (paste a job description and rescan for keyword gaps).';
+    const issues = notes.formatIssues && notes.formatIssues.length
+        ? notes.formatIssues.map(i => '- ' + i).join('\n')
+        : '- No template issues flagged.';
+    const weak = notes.weakBullets && notes.weakBullets.length
+        ? notes.weakBullets.map(b => '- ' + b).join('\n')
+        : '- No weak bullets flagged.';
+    const tips = notes.tips && notes.tips.length
+        ? notes.tips.map((t, i) => (i + 1) + '. ' + t).join('\n\n')
+        : 'None.';
+    return `You are helping me rewrite my resume so applicant tracking systems (ATS) can parse it and match a specific job.
 
-    // Template Compliance
-    const formatIssueText = res.formatCheck.issues.length > 0
-        ? `Issues detected: ${res.formatCheck.issues.map(i => i.label).join('; ')}. This is discounting your keyword score from ${res.keywordMatchPct}% to ${res.effectiveKeywordScore}%. Fixing your template could raise your score to ~${res.projectedWithFix}%.`
-        : res.formatScore >= 95 
-            ? `Single-column layout detected. Your template is fully ATS-compatible. No parsing issues found.`
-            : `DOCX format - layout is assumed clean. If submitting as PDF, verify your template uses a single-column layout.`;
+Rules:
+- Do not invent jobs, employers, dates, degrees, certifications, or metrics I did not provide.
+- Keep a single-column layout and standard headers (Summary, Experience, Education, Skills).
+- Weave missing keywords in naturally only where they match my real experience.
+- Prefer quantified bullets when I already have the numbers.
+- Output a clean resume I can paste into a simple template. No tables, text boxes, or multi-column design.
 
-    y = drawMetricCard(
-        "TEMPLATE COMPLIANCE",
-        res.formatScore,
-        formatIssueText,
-        y
-    );
+## GetATSReady scan (in-browser estimate, not a guarantee)
+Overall: ${notes.score}
+Template compliance: ${notes.formatScore}
+Keyword match: ${notes.keywordMatchPct}${notes.hasJD ? '' : ' (no job description was pasted)'}
+Structure: ${notes.structureScore}
+Impact & metrics: ${notes.impactScore}
+File: ${notes.fileName || 'n/a'}
 
-    // Keyword Match (Conditional based on JD)
-    const kwLabel = res.hasJD ? "KEYWORD MATCH" : "KEYWORD MATCH (BASE)";
-    const kwExpl = res.hasJD ? 
-        `Score: ${res.keywordMatchPct}%. Effective (after template penalty): ${res.effectiveKeywordScore}%. ${res.found.length} skills matched out of ${res.keywordMatchPct === 100 ? res.found.length : (res.found.length + Math.min(res.missing.length, 25))} key terms identified in job description.` :
-        "No job description provided for matching. This score is currently set to 0. Paste a JD for a full keyword analysis.";
+## Template / parsing issues
+${issues}
 
-    y = drawMetricCard(
-        kwLabel, 
-        res.keywordMatchPct, 
-        kwExpl,
-        y
-    );
-    
-    y = drawMetricCard(
-        "STRUCTURE & PARSABILITY", 
-        res.structureScore, 
-        "Checks if your resume uses standard sections that ATS systems can recognize. Includes Experience, Education, Skills sections.",
-        y
-    );
-    
-    y = drawMetricCard(
-        "IMPACT & METRICS", 
-        res.impactScore, 
-        `Evaluates quantifiable achievements. Detected ${res.bulletMetrics.withMetrics} metrics out of ${res.bulletMetrics.total} bullets. Strong action verbs used: ${res.foundVerbs && res.foundVerbs.length > 0 ? res.foundVerbs.slice(0, 5).join(', ') : 'None detected'}.`,
-        y
-    );
+## Missing keywords from the job description
+${missing}
 
-    // 4. Contact Details Audit (CRITICAL)
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("CONTACT INFO AUDIT", 20, y + 8);
-    doc.setDrawColor(226, 232, 240);
-    doc.line(20, y + 10, 190, y + 10);
-    
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    
-    let contactY = y + 16;
-    if (res.contactCheck.issues.length === 0 && res.contactCheck.warnings.length === 0) {
-        doc.setTextColor(16, 185, 129);
-        doc.text("[PASS] Professional Contact Details: All core items (Email, Phone, LinkedIn) detected.", 20, contactY);
-    } else {
-        res.contactCheck.issues.forEach(issue => {
-            doc.setTextColor(239, 68, 68);
-            doc.text(`[CRITICAL] ${cleanText(issue)}`, 20, contactY);
-            contactY += 5;
-        });
-        res.contactCheck.warnings.forEach(warning => {
-            doc.setTextColor(245, 158, 11);
-            doc.text(`[WARNING] ${cleanText(warning)}`, 20, contactY);
-            contactY += 5;
-        });
+## Weak bullets (little or no metrics)
+${weak}
+
+## Priority actions from the scan
+${tips}
+
+## Job description
+${notes.jobDescription || '(none pasted)'}
+
+## Resume text as extracted from my file
+${notes.resumeText || '(no text extracted)'}
+`;
+}
+
+function saveScanNotesForMaker() {
+    const notes = gatherScanNotes();
+    if (!notes) return false;
+    return lsSet('ats_scan_notes', notes);
+}
+
+function copyTextToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
     }
-
-    // 5. Industry Benchmark & Expert Tip
-    let benchY = contactY + 8;
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("INDUSTRY BENCHMARKS", 20, benchY);
-    
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(71, 85, 105);
-    const avgLabel = res.finalScore >= 85 ? 'Above average (top performer)' : res.finalScore >= 68 ? 'Above average' : 'Below average';
-    doc.text(`Your Score: ${res.finalScore}% | Industry Average: 68% | Top Performers: 85%+ | Status: ${avgLabel}`, 20, benchY + 6);
-    
-    // Dynamic Expert Tip — reflects the user's actual biggest weakness
-    let expertTip = '';
-    if (res.formatCheck && res.formatCheck.issues.filter(i => i.severity === 'critical').length > 0) {
-        expertTip = 'Expert Tip: Your biggest win is fixing your template. A single-column layout can immediately raise your score by 20-40 points without changing a word of content.';
-    } else if (res.keywordMatchPct < 70) {
-        expertTip = `Expert Tip: With ${res.missing.length} missing keywords, tailoring your resume to each job description is your highest-impact action. Even adding 5-10 missing terms can push you past the 75% threshold.`;
-    } else if (res.bulletMetrics && res.bulletMetrics.pct < 40) {
-        expertTip = `Expert Tip: Only ${res.bulletMetrics.pct}% of your bullets have numbers. Recruiters spend 7 seconds on a resume — quantified achievements (30%, $500K, team of 12) are what make them stop and read.`;
-    } else {
-        expertTip = `Expert Tip: Your resume is well-optimized. The final step is tailoring 2-3 bullets per role to mirror exact phrases from each job description before applying.`;
-    }
-    doc.setFillColor(248, 250, 252);
-    doc.rect(20, benchY + 10, 170, 14, 'F');
-    doc.setTextColor(100, 116, 139);
-    doc.setFont("helvetica", "italic");
-    const splitTip = doc.splitTextToSize(expertTip, 160);
-    doc.text(splitTip, 25, benchY + 17);
-    benchY += (splitTip.length > 1 ? 4 : 0);
-
-    // PAGE 2: Detailed Analysis & Strategic Action Plan
-    doc.addPage();
-    
-    // Header for Page 2
-    doc.setFillColor(30, 41, 59);
-    doc.rect(0, 0, 210, 25, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    doc.text("Detailed Analysis & Recommendations", 20, 16);
-
-    // Strategic Action Plan
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Strategic Action Plan", 20, 40);
-    doc.setDrawColor(226, 232, 240);
-    doc.line(20, 42, 190, 42);
-
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(51, 65, 85);
-    
-    y = 48;
-    res.tips.forEach((tipObj, idx) => {
-        // Handle new tip object structure {type, html}
-        const tipHtml = (tipObj && tipObj.html) ? tipObj.html : (typeof tipObj === 'string' ? tipObj : '');
-        const tipType = (tipObj && tipObj.type) || 'info';
-
-        // Convert <br> to newlines to preserve formatting, THEN strip HTML tags AND emojis
-        let rawText = tipHtml.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
-        // Remove consecutive spaces but preserve newlines
-        rawText = rawText.replace(/[ \t]{2,}/g, ' ');
-        let cleanedTip = cleanText(rawText);
-        
-        const splitTip = doc.splitTextToSize(cleanedTip, 160);
-        
-        // Add a colored background box for each action item to make it look premium
-        const boxHeight = (splitTip.length * 5) + 12;
-        if (y + boxHeight > 270) {
-            doc.addPage();
-            y = 20;
-        }
-        
-        doc.setFillColor(248, 250, 252);
-        doc.rect(15, y, 180, boxHeight, 'F');
-        
-        doc.setFont("helvetica", "bold");
-        // Color header based on tip type
-        const headerColor = tipType === 'danger' ? [239, 68, 68] : (tipType === 'warning' ? [245, 158, 11] : [99, 102, 241]);
-        doc.setTextColor(headerColor[0], headerColor[1], headerColor[2]);
-        doc.text(`Action Item #${idx + 1}`, 20, y + 6);
-        
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(71, 85, 105);
-        doc.text(splitTip, 20, y + 12);
-        
-        y += boxHeight + 6;
-    });
-
-    // Keyword Intelligence
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(30, 41, 59);
-    
-    if (y > 200) {
-        doc.addPage();
-        y = 20;
-    }
-    
-    doc.text("Keyword Intelligence Report", 20, y);
-    doc.line(20, y + 2, 190, y + 2);
-    y += 10;
-
-    // Matching Keywords
-    if (res.hasJD && res.found.length > 0) {
-        doc.setTextColor(16, 185, 129);
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "bold");
-        doc.text(`Detected Skills (${res.found.length}):`, 20, y);
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(71, 85, 105);
-        const foundText = doc.splitTextToSize(res.found.slice(0, 30).join(" • "), 170);
-        doc.text(foundText, 20, y + 6);
-        y += (foundText.length * 4) + 12;
-    }
-
-    // Missing Keywords
-    const missingList = (res.filteredMissing && res.filteredMissing.length > 0) ? res.filteredMissing : res.missing;
-    if (missingList.length > 0) {
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(10);
-        doc.setTextColor(239, 68, 68);
-        doc.text(`Missing Skills (${Math.min(missingList.length, 25)}${missingList.length > 25 ? ` of ${missingList.length}` : ''}):`, 20, y);
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(71, 85, 85);
-        const missingText = doc.splitTextToSize(missingList.slice(0, 25).join(" • "), 170);
-        doc.text(missingText, 20, y + 6);
-        y += (missingText.length * 4) + 12;
-    }
-
-    // Before & After Example Section — uses REAL weak bullet from the user's resume if available
-    if (y > 220) {
-        doc.addPage();
-        y = 20;
-    }
-    
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("Example Improvements (from your resume)", 20, y);
-    doc.line(20, y + 2, 190, y + 2);
-    y += 10;
-    
-    const weakSamples = res.weakBulletSamples && res.weakBulletSamples.length > 0 ? res.weakBulletSamples : null;
-
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-
-    if (weakSamples) {
-        // Use the real bullet from the user's resume
-        weakSamples.forEach((bullet, idx) => {
-            const beforeText = `"${cleanText(bullet)}"`;
-            const splitBefore = doc.splitTextToSize(beforeText, 150);
-            
-            const suggestion = idx === 0
-                ? `Quantify with a number or % — e.g., add "reduced X by 30%", "managed team of N", or "delivered Y in Z weeks".`
-                : `Add a strong action verb at the start ("Led", "Built", "Drove", "Reduced") and at least one measurable outcome.`;
-            const splitSuggestion = doc.splitTextToSize(suggestion, 150);
-
-            const boxHeight = (splitBefore.length * 4) + (splitSuggestion.length * 4) + 20;
-            if (y + boxHeight > 270) {
-                doc.addPage();
-                y = 20;
-            }
-
-            doc.setDrawColor(226, 232, 240);
-            doc.setFillColor(255, 255, 255);
-            doc.rect(15, y, 180, boxHeight, 'FD');
-
-            doc.setTextColor(239, 68, 68);
-            doc.setFont("helvetica", "bold");
-            doc.text(`BEFORE (your resume - bullet ${idx + 1}):`, 20, y + 6);
-            y += 10;
-            doc.setTextColor(71, 85, 105);
-            doc.setFont("helvetica", "italic");
-            doc.text(splitBefore, 20, y);
-            y += (splitBefore.length * 4) + 4;
-
-            doc.setTextColor(16, 185, 129);
-            doc.setFont("helvetica", "bold");
-            doc.text(`SUGGESTED FORMAT:`, 20, y);
-            y += 4;
-            doc.setTextColor(71, 85, 105);
-            doc.setFont("helvetica", "normal");
-            doc.text(splitSuggestion, 20, y);
-            y += (splitSuggestion.length * 4) + 12;
-        });
-
-        doc.setTextColor(100, 116, 139);
-        doc.setFontSize(7);
-        const notice = doc.splitTextToSize("Tip: The bullets above are from your resume that have no metrics detected. Adding specific numbers, percentages, or team sizes will dramatically increase your Impact score.", 170);
-        doc.text(notice, 20, y);
-        y += (notice.length * 4) + 4;
-    } else {
-        // Fallback: generic example when all bullets already have metrics (great resume!)
-        doc.setTextColor(16, 185, 129);
-        doc.text("Great news: All detected bullet points in your resume already contain metrics!", 20, y);
-        y += 6;
-        doc.setTextColor(100, 116, 139);
-        const genericNote = doc.splitTextToSize("Generic example for reference — BEFORE: \"Responsible for managing team projects and helping with development tasks\" — AFTER: \"Led cross-functional team of 8 to deliver 5 features, reducing deployment time by 40%\"", 170);
-        doc.text(genericNote, 20, y);
-        y += (genericNote.length * 4) + 4;
-    }
-
-    // Footer on last page
-    y = 275;
-    
-    // Add strong CTA
-    doc.setTextColor(79, 70, 229);
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "bold");
-    doc.text("Rescan your updated resume for free at www.getatsready.com", 105, y, { align: "center" });
-    
-    // Add QR Code
-    if (typeof QRCode !== 'undefined') {
+    return new Promise((resolve, reject) => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
         try {
-            const qrContainer = document.createElement('div');
-            new QRCode(qrContainer, {
-                text: "https://www.getatsready.com/",
-                width: 64,
-                height: 64,
-                colorDark : "#1e293b",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.M
-            });
-            const qrCanvas = qrContainer.querySelector('canvas');
-            if (qrCanvas) {
-                const qrDataUrl = qrCanvas.toDataURL("image/png");
-                doc.addImage(qrDataUrl, 'PNG', 15, y - 10, 16, 16);
-            }
-        } catch (e) {
-            console.warn("QR generation failed", e);
+            document.execCommand('copy');
+            resolve();
+        } catch (err) {
+            reject(err);
+        } finally {
+            document.body.removeChild(ta);
         }
-    }
-    
-    y = 285;
-    doc.setFontSize(7);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(148, 163, 184);
-    doc.text("END OF REPORT | PRIVACY: ALL DATA PROCESSED LOCALLY | NO STORAGE", 105, y, { align: "center" });
-    doc.text(`Generated: ${date} | ATS Optimizer v3.0`, 105, y + 4, { align: "center" });
+    });
+}
 
-    doc.save(`ATS-Audit-Enhanced-${date.replace(/\//g, '-')}.pdf`);
-    } catch (reportError) {
-        console.error('PDF report generation failed:', reportError);
-        showInlineAlert('Unable to create the PDF report. Please try again later.');
+function copyRewriteBrief(btn) {
+    const notes = gatherScanNotes();
+    if (!notes) {
+        showInlineAlert('Analyze your resume first, then copy the rewrite brief.');
+        return;
     }
-});
+    saveScanNotesForMaker();
+    copyTextToClipboard(notes.brief).then(() => {
+        if (btn) {
+            const original = btn.textContent;
+            btn.textContent = 'Copied — paste into an AI';
+            setTimeout(() => { btn.textContent = original; }, 2200);
+        }
+        if (typeof trackEvent === 'function') trackEvent('copy_rewrite_brief');
+    }).catch(() => {
+        showInlineAlert('Could not copy automatically. Select the text in a new tab after opening the maker.');
+    });
+}
+
+function wireScanNextStepButtons() {
+    const copyBtn = document.getElementById('downloadReport');
+    if (copyBtn) {
+        copyBtn.textContent = 'Copy rewrite brief';
+        copyBtn.type = 'button';
+        copyBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            copyRewriteBrief(copyBtn);
+        });
+    }
+
+    let makerLink = document.getElementById('openMakerWithNotes');
+    if (!makerLink && copyBtn) {
+        makerLink = document.createElement('a');
+        makerLink.id = 'openMakerWithNotes';
+        makerLink.className = 'analyze-btn';
+        makerLink.style.cssText = 'width:auto;margin:10px 0 0;padding:10px 16px;text-decoration:none;display:inline-flex;align-items:center;';
+        makerLink.textContent = 'Open in resume maker';
+        copyBtn.insertAdjacentElement('afterend', makerLink);
+    }
+    if (makerLink) {
+        makerLink.href = '/resume-maker.html';
+        makerLink.addEventListener('click', () => {
+            if (window.lastResults) saveScanNotesForMaker();
+        });
+    }
+
+    const cta = document.getElementById('openMakerWithNotesCta');
+    if (cta) {
+        cta.addEventListener('click', () => {
+            if (window.lastResults) saveScanNotesForMaker();
+        });
+    }
+}
+
+wireScanNextStepButtons();
 
 // Tooltip: Viewport-aware positioning + mobile tap support
 document.addEventListener('DOMContentLoaded', () => {

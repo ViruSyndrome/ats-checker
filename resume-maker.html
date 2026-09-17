@@ -136,6 +136,74 @@
         #humanReview {
             scroll-margin-top: 96px;
         }
+        .scan-notes-panel {
+            margin-bottom: 24px;
+            padding: 20px 22px;
+            border-radius: 1.25rem;
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(180deg, rgba(15, 98, 254, 0.12), rgba(255, 255, 255, 0.03));
+        }
+        .scan-notes-panel h3 {
+            margin: 0 0 8px;
+            color: var(--primary);
+            font-size: 1.15rem;
+        }
+        .scan-notes-panel p {
+            margin: 0 0 12px;
+            color: var(--text-muted, #94a3b8);
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+        .scan-notes-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .scan-notes-actions button,
+        .scan-notes-actions a {
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .scan-notes-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0 0 12px;
+        }
+        .scan-notes-keywords span {
+            font-size: 0.78rem;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+        }
+        .scan-notes-panel textarea {
+            width: 100%;
+            min-height: 180px;
+            box-sizing: border-box;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.25);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.85rem;
+            line-height: 1.45;
+        }
+        .scan-notes-weak {
+            margin: 0 0 12px;
+            padding-left: 1.1rem;
+            color: var(--text-main);
+            font-size: 0.88rem;
+        }
     </style>
     <script type="application/ld+json">
     {
@@ -243,6 +311,26 @@
         <div class="builder-container">
             <!-- Left Pane: Form -->
             <div class="builder-form-pane">
+                <div id="scanNotesPanel" class="scan-notes-panel" hidden>
+                    <h3>Notes from your last scan</h3>
+                    <p id="scanNotesSummary">Split this extracted text into the form. Missing keywords stay here so you can add them. Nothing below is filled in for you.</p>
+                    <div class="scan-notes-actions">
+                        <button type="button" id="scanNotesCopyBrief">Copy rewrite brief</button>
+                        <button type="button" id="scanNotesCopyText">Copy extracted text</button>
+                        <a href="/">Back to scanner</a>
+                        <button type="button" id="scanNotesDismiss">Hide notes</button>
+                    </div>
+                    <div id="scanNotesKeywordsWrap" hidden>
+                        <p style="margin-bottom:6px;font-weight:600;color:var(--text-main);">Missing keywords to weave in</p>
+                        <div id="scanNotesKeywords" class="scan-notes-keywords"></div>
+                    </div>
+                    <div id="scanNotesWeakWrap" hidden>
+                        <p style="margin-bottom:6px;font-weight:600;color:var(--text-main);">Weak bullets from the scan</p>
+                        <ul id="scanNotesWeak" class="scan-notes-weak"></ul>
+                    </div>
+                    <label for="scanNotesText" style="display:block;margin-bottom:6px;font-weight:600;color:var(--text-main);">Extracted resume text</label>
+                    <textarea id="scanNotesText" readonly></textarea>
+                </div>
                 <form id="resumeForm">
                     
                     <div class="form-section">
@@ -517,7 +605,121 @@
             });
             updatePreview();
             checkHiddenForms();
+            renderScanNotes();
         };
+
+        const MAKER_FIELDS = [
+            'b_name', 'b_email', 'b_phone', 'b_link', 'b_summary',
+            'b_jobtitle1', 'b_company1', 'b_dates1', 'b_desc1',
+            'b_jobtitle2', 'b_company2', 'b_dates2', 'b_desc2',
+            'b_jobtitle3', 'b_company3', 'b_dates3', 'b_desc3',
+            'b_degree', 'b_uni', 'b_degree2', 'b_uni2', 'b_skills'
+        ];
+
+        function loadScanNotes() {
+            try {
+                const raw = localStorage.getItem('ats_scan_notes');
+                if (!raw) return null;
+                const notes = JSON.parse(raw);
+                if (!notes || typeof notes !== 'object') return null;
+                if (!notes.resumeText && !(notes.missingKeywords && notes.missingKeywords.length)) return null;
+                return notes;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function copyMakerText(text, btn, doneLabel) {
+            const finish = () => {
+                if (!btn) return;
+                const original = btn.textContent;
+                btn.textContent = doneLabel || 'Copied';
+                setTimeout(() => { btn.textContent = original; }, 2000);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(finish).catch(() => {
+                    alert('Could not copy. Select the extracted text instead.');
+                });
+                return;
+            }
+            const ta = document.getElementById('scanNotesText');
+            if (ta) {
+                ta.focus();
+                ta.select();
+            }
+        }
+
+        function renderScanNotes() {
+            const panel = document.getElementById('scanNotesPanel');
+            if (!panel) return;
+            const notes = loadScanNotes();
+            if (!notes) {
+                panel.hidden = true;
+                return;
+            }
+            if (sessionStorage.getItem('ats_scan_notes_dismissed') === String(notes.savedAt)) {
+                panel.hidden = true;
+                return;
+            }
+            panel.hidden = false;
+            const summary = document.getElementById('scanNotesSummary');
+            if (summary) {
+                const score = Number.isFinite(notes.score) ? notes.score : '—';
+                summary.textContent = 'Last scan scored ' + score + '. Split this extracted text into the form yourself — fields are not auto-filled. Missing keywords stay here so you can add them, then download a PDF and scan again.';
+            }
+            const textEl = document.getElementById('scanNotesText');
+            if (textEl) textEl.value = notes.resumeText || '';
+
+            const kwWrap = document.getElementById('scanNotesKeywordsWrap');
+            const kwBox = document.getElementById('scanNotesKeywords');
+            if (kwWrap && kwBox) {
+                kwBox.innerHTML = '';
+                const kws = Array.isArray(notes.missingKeywords) ? notes.missingKeywords : [];
+                if (kws.length) {
+                    kws.forEach(k => {
+                        const span = document.createElement('span');
+                        span.textContent = k;
+                        kwBox.appendChild(span);
+                    });
+                    kwWrap.hidden = false;
+                } else {
+                    kwWrap.hidden = true;
+                }
+            }
+
+            const weakWrap = document.getElementById('scanNotesWeakWrap');
+            const weakList = document.getElementById('scanNotesWeak');
+            if (weakWrap && weakList) {
+                weakList.innerHTML = '';
+                const weaks = Array.isArray(notes.weakBullets) ? notes.weakBullets : [];
+                if (weaks.length) {
+                    weaks.forEach(b => {
+                        const li = document.createElement('li');
+                        li.textContent = b;
+                        weakList.appendChild(li);
+                    });
+                    weakWrap.hidden = false;
+                } else {
+                    weakWrap.hidden = true;
+                }
+            }
+
+            const copyBrief = document.getElementById('scanNotesCopyBrief');
+            if (copyBrief) {
+                copyBrief.onclick = () => copyMakerText(notes.brief || notes.resumeText || '', copyBrief, 'Copied — paste into an AI');
+            }
+            const copyText = document.getElementById('scanNotesCopyText');
+            if (copyText) {
+                copyText.onclick = () => copyMakerText(notes.resumeText || '', copyText, 'Copied');
+            }
+            const dismiss = document.getElementById('scanNotesDismiss');
+            if (dismiss) {
+                dismiss.onclick = () => {
+                    sessionStorage.setItem('ats_scan_notes_dismissed', String(notes.savedAt));
+                    panel.hidden = true;
+                };
+            }
+        }
 
         function showNextJob() {
             if (document.getElementById('job_form_2').style.display === 'none') {
@@ -604,7 +806,7 @@
 
         function clearDraft() {
             if(confirm('Are you sure you want to clear your entire draft?')) {
-                localStorage.clear();
+                MAKER_FIELDS.forEach(id => localStorage.removeItem(id));
                 document.getElementById('resumeForm').reset();
                 updatePreview();
             }
