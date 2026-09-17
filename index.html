@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <script src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
     <script>
       Sentry.onLoad(function() {
@@ -45,8 +45,12 @@
     <meta name="twitter:title" content="Free ATS Resume Checker | Get ATS Ready">
     <meta name="twitter:description" content="Instantly score your resume against any job description. Free, no signup, 100% private.">
     <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2" />
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#070A14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="style.css?v=13">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -64,20 +68,13 @@
     }
     </script>
     <!-- FAQPage schema is injected dynamically from the live FAQ section via script.js -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959862133855422" crossorigin="anonymous"></script>
     <!-- PDF and DOCX libraries — deferred to avoid blocking page render -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
-  /* Cross-Linking Footer Network CSS */
-  .network-footer { max-width: 800px; margin: 40px auto 20px; padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-  .network-title { font-size: 0.95rem; font-weight: 600; color: #64748b; margin-bottom: 16px; margin-top: 0; text-transform: uppercase; letter-spacing: 0.5px; font-family: sans-serif; }
-  .network-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-  .network-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: transparent; color: #1e293b !important; text-decoration: none !important; border-radius: 8px; font-size: 0.95rem; font-weight: 600; transition: all 0.2s ease; border: 1.5px solid #94a3b8; font-family: sans-serif; }
-  .network-link:hover { background: #f8fafc; border-color: #64748b; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-  .network-icon-img { width: 18px; height: 18px; object-fit: contain; }
+  /* Cross-site footer chips inherit .network-* from style.css */
   </style>
 
 
@@ -152,14 +149,7 @@
         <header>
             <div class="header-top-row">
                 <a href="/" class="logo-link">
-                    <svg class="logo-svg" width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 4h8l5 5v17a1 1 0 01-1 1H10a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.8" fill="none"/>
-                        <path d="M18 4v5h5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
-                        <line x1="6" y1="18" x2="26" y2="18" stroke="var(--accent, #818cf8)" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
-                        <line x1="12" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
-                        <line x1="12" y1="15" x2="18" y2="15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
-                        <line x1="12" y1="22" x2="20" y2="22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
-                    </svg>
+                    <img class="logo-mark" src="logo.svg" width="36" height="36" alt="">
                     <span class="logo-text">GetATS<span class="logo-accent">Ready</span></span>
                 </a>
                 <button class="hamburger" id="atsHamburger" aria-label="Toggle navigation" onclick="document.getElementById('atsNavLinks').classList.toggle('open');this.classList.toggle('open')">
@@ -177,18 +167,9 @@
                 
                 
             </nav>
-            <div class="privacy-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                100% Private: Processed entirely in your browser. No Signup Required.
-            </div>
-            <div style="text-align: center;">
-                <div id="scanner-badge-container" style="margin-top: 15px; margin-bottom: 5px; display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #059669; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">&#9889; <span id="scanner-counter-display">14,230</span> Resumes Scanned</div>
-            </div>
-
-            <h1 style="font-size: 0; position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);">Free ATS Resume Checker — Optimize Your Resume for Job Descriptions</h1>
+            <h1>Free ATS resume checker</h1>
             <p class="hero-tagline">
-                Score your resume against any job description in <strong>seconds</strong> —
-                see exactly which keywords you're missing and why ATS systems reject good candidates.
+                See how Workday, Taleo, and Greenhouse read your file — in your browser, no signup.
             </p>
             <div class="hero-stats">
                 <span class="hero-stat">
@@ -201,8 +182,11 @@
                 </span>
                 <span class="hero-stat">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    No data stored
+                    Runs in your browser
                 </span>
+            </div>
+            <div style="text-align: center;">
+                <div id="scanner-badge-container" style="margin-top: 4px; margin-bottom: 12px; display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #34d399; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;"> <span id="scanner-counter-display">14,230</span> resumes scanned</div>
             </div>
 
             <!-- BEFORE/AFTER VISUAL -->
@@ -234,10 +218,6 @@
         </header>
 
         <main>
-            
-        <div style="max-width: 800px; margin: 0 auto 2rem; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); border-left: 4px solid var(--accent); padding: 1rem 1.25rem; border-radius: 8px;">
-            <strong style="color: var(--accent);">New Guide:</strong> Want to know exactly how Workday, Taleo, and Greenhouse parse your resume? <a href="/guides/how-ats-works.html" style="color: var(--accent); text-decoration: underline; font-weight: 600;">Read our complete 2026 breakdown of how ATS works.</a>
-        </div>
         <div class="tool-grid">
                 <!-- Left: Job Description -->
                 <div class="card">
@@ -266,8 +246,14 @@
                         Your Resume
                     </div>
                     <div class="upload-area" id="dropZone" tabindex="0" role="button" aria-label="Upload resume — click or drag and drop a PDF or DOCX file">
-                        <div class="upload-icon">📄</div>
-                        <p>Drag & drop your resume (PDF or DOCX)</p>
+                        <div class="upload-icon" aria-hidden="true">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <path d="M12 18v-6M9 14l3-3 3 3"/>
+                            </svg>
+                        </div>
+                        <p>Drop a PDF or DOCX</p>
                         <p class="inline-style-a71c0e">or click to browse</p>
                         <input type="file" id="fileInput" hidden accept=".pdf,.docx">
                         <p id="fileName" class="inline-style-f4f939"></p>
@@ -279,6 +265,7 @@
                     </button>
                 </div>
             </div>
+            <p class="guide-nudge">How Workday, Taleo, and Greenhouse parse a resume — <a href="/guides/how-ats-works.html">read the 2026 guide</a>.</p>
 
             <!-- Client-Side Scan History (100% Private, stored in user's browser localStorage) -->
             <div class="card hidden inline-style-f3ef69" id="historyCard">
@@ -471,7 +458,7 @@
                     </div>
                     <div class="cta-box alt">
                         <h3>Need help fixing your score?</h3>
-                        <p>Use our free resume maker to generate a perfectly parsable template, or read our guides for manual formatting tips.</p>
+                        <p>Use the free resume maker for a single-column, ATS-safer layout, or read the guides for formatting tips.</p>
                         <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
                             <a href="resume-maker.html" style="display:inline-block; text-decoration:none; background-color: var(--primary); color: #ffffff; padding: 10px 20px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(15, 98, 254, 0.2); transition: transform 0.2s;">Free resume maker &rarr;</a>
                             <a href="guides/index.html" class="secondary-btn" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.05);">Read Guides</a>
@@ -492,7 +479,7 @@
                     <li><strong>Structure (25%):</strong> We verify that you are using standard, industry-recognized section headers (e.g., "Professional Experience" instead of "My Journey").</li>
                 </ul>
                 <p style="margin-bottom: 12px;">Next, we apply the <strong>Template Compliance Multiplier</strong>. We simulate the PDF/DOCX extraction process. If we detect multi-column layouts, hidden tables, or unreadable graphical elements, your Template Compliance score drops. This acts as a direct discount factor on your baseline score. For example, if your keyword match is perfect (100) but your template compliance is only 40%, your final ATS score will accurately reflect that the ATS system can only read 40% of your resume.</p>
-                <p style="margin-bottom: 0;">By simulating the exact technical limitations of modern HR software, GetATSReady ensures that when you hit submit on a job application, your resume is guaranteed to reach human eyes.</p>
+                <p style="margin-bottom: 0;">By simulating those parser limits, GetATSReady shows what software is likely to extract before you apply. It cannot guarantee interviews, or that a specific ATS will rank you the same way.</p>
             </div>
 
             <!-- Ad Zone: In-Content -->
