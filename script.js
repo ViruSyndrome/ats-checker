@@ -80,6 +80,34 @@ function trackEvent(eventName, params = {}) {
     }
 }
 
+// Public usage tallies. Scanner increments after a finished analysis.
+// Maker increments from resume-maker.html after a PDF actually saves.
+const USAGE_COUNTER_CONFIG = {
+    apiKey: "AIzaSyAaNW63xpS09AZ6ZH6DvpwGx4n_0lhTKco",
+    authDomain: "ats-counters.firebaseapp.com",
+    databaseURL: "https://ats-counters-default-rtdb.firebaseio.com",
+    projectId: "ats-counters",
+    storageBucket: "ats-counters.firebasestorage.app",
+    messagingSenderId: "804950922331",
+    appId: "1:804950922331:web:db0784099c50c5fdd79b7e"
+};
+
+let usageCounterDbPromise = null;
+
+function bumpUsageCounter(path) {
+    usageCounterDbPromise = usageCounterDbPromise || (async () => {
+        const { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
+        const { getDatabase } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js");
+        const app = getApps().length ? getApps()[0] : initializeApp(USAGE_COUNTER_CONFIG);
+        return getDatabase(app);
+    })();
+
+    usageCounterDbPromise.then(async (db) => {
+        const { ref, runTransaction } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js");
+        await runTransaction(ref(db, path), (current) => (current == null ? 1 : current + 1));
+    }).catch((err) => console.error("Usage counter failed", err));
+}
+
 // Cookie Consent
 function acceptCookies() {
     _ls.setRaw('cookieConsent', 'true');
@@ -581,6 +609,72 @@ const NOISE_KEYWORDS = new Set([
 ]);
 
 
+// Words from company marketing, job titles, and cities. Not skills to paste into a resume.
+const JD_NOT_SKILLS = new Set([
+    'bring', 'bringing', 'launching', 'limitless', 'seamlessly', 'believes', 'breakthrough',
+    'discover', 'trusted', 'biggest', 'players', 'resilient', 'matter', 'follow', 'today',
+    'bangalore', 'bengaluru', 'principal', 'hands-on', 'exploring', 'potential', 'game-changing'
+]);
+
+// Whole-word equivalents only. "docs" must not count as "mkdocs", and "data" must not count as "analytics".
+const NARROW_SYNONYMS = {
+    rest: ['api'],
+    api: ['rest'],
+    js: ['javascript'],
+    javascript: ['js'],
+    k8s: ['kubernetes'],
+    kubernetes: ['k8s'],
+    nosql: ['no-sql'],
+    'no-sql': ['nosql'],
+    genai: ['generative']
+};
+
+function keywordsMatch(jdKw, freqMap) {
+    const needle = String(jdKw || '').toLowerCase();
+    if (!needle || !freqMap) return false;
+    if (freqMap[needle] > 0) return true;
+    const alts = NARROW_SYNONYMS[needle] || [];
+    return alts.some(alt => freqMap[alt] > 0);
+}
+
+// Keep the role, responsibilities, and requirements. Drop the company introduction.
+function isolateJobRequirements(text) {
+    const src = String(text || '').replace(/\r/g, '');
+    const hadCompanyIntro = /about the job\b|about the company\b|about us\b|who we are\b/i.test(src);
+    const headerRes = [
+        /about the role\b/i,
+        /about this role\b/i,
+        /key responsibilities\b/i,
+        /roles?\s+and\s+responsibilities\b/i,
+        /what you(?:'|’)ll (?:do|bring)\b/i,
+        /what you will (?:do|bring)\b/i,
+        /what we(?:'|’)re looking for\b/i,
+        /what we are looking for\b/i,
+        /requirements?\s*(?:&|and)\s*experience\b/i,
+        /minimum qualifications\b/i,
+        /required qualifications\b/i,
+        /basic qualifications\b/i,
+        /qualifications\b/i,
+        /\bresponsibilities\b/i,
+        /\brequirements\b/i
+    ];
+    let start = -1;
+    headerRes.forEach(re => {
+        const match = re.exec(src);
+        if (match && (start === -1 || match.index < start)) start = match.index;
+    });
+    let body = start >= 0 ? src.slice(start) : src;
+    const beforeStrip = body;
+    body = body.replace(/\n(?:about (?:the|our) company|who we are|equal opportunity|we are an equal)[\s\S]*$/i, '');
+    const trimmed = (start > 0) || body.length < beforeStrip.length;
+    return {
+        text: body,
+        trimmed,
+        hadCompanyIntro,
+        foundRole: start >= 0
+    };
+}
+
 // Professional Keyword Extraction Logic
 
 function getKeywords(text, isJD = false) {
@@ -592,29 +686,14 @@ function getKeywords(text, isJD = false) {
     processingText = processingText.replace(/https?:\/\/\S+/gi, ' ').replace(/\bwww\.\S+/gi, ' ');
 
     if (isJD) {
-        // Surgical Noise Removal: Strip known corporate "fluff" blocks
         processingText = processingText
-            .replace(/who we are[\s\S]*?job description/gi, '') // Strip HPE-style intro
-            .replace(/diversity[\s\S]*?equal opportunity/gi, '') // Strip diversity statements
-            .replace(/we have the flexibility to manage[\s\S]*?embrace you/gi, '') // Strip culture fluff
+            .replace(/who we are[\s\S]*?job description/gi, '')
+            .replace(/diversity[\s\S]*?equal opportunity/gi, '')
+            .replace(/we have the flexibility to manage[\s\S]*?embrace you/gi, '')
             .replace(/hewlett packard enterprise is the global[\s\S]*?thrive in today/gi, '');
-
-        // Isolate the core sections
-        const sections = processingText.split(/(?=\n[A-Z][a-z]+\s[A-Z][a-z]+|\n[A-Z]{2,})/);
-        const coreHeaders = ['do', 'bring', 'need', 'requirements', 'responsibilities', 'experience', 'skills', 'plus', 'preferred', 'description', 'role'];
-        
-        let coreText = "";
-        sections.forEach(section => {
-            const lines = section.trim().split('\n');
-            const header = lines[0].toLowerCase();
-            if (coreHeaders.some(h => header.includes(h))) {
-                coreText += section + " ";
-            }
-        });
-        
-        if (coreText.length > 100) {
-            processingText = coreText;
-        }
+        const isolated = isolateJobRequirements(processingText);
+        processingText = isolated.text;
+        window.lastJdScope = isolated;
     }
 
     const companyCandidates = isJD ? getCompanyNameCandidates(processingText) : new Set();
@@ -628,6 +707,7 @@ function getKeywords(text, isJD = false) {
     const frequencyMap = {};
     words.forEach(w => {
         if (companyCandidates.has(w)) return;
+        if (isJD && JD_NOT_SKILLS.has(w)) return;
         if (PROTECTED_KEYWORDS.has(w) || !NOISE_KEYWORDS.has(w)) {
             frequencyMap[w] = (frequencyMap[w] || 0) + 1;
         }
@@ -635,36 +715,6 @@ function getKeywords(text, isJD = false) {
 
     return frequencyMap;
 }
-
-// Semantic Synonym Map - Universal Library
-const SYNONYMS = {
-    // Data & Performance
-    'data': ['analytics', 'databases', 'analysis', 'dataset', 'datasets', 'big data', 'metrics', 'kpis', 'statistics', 'visualization', 'tableau', 'power bi'],
-    'metrics': ['kpis', 'data points', 'roi', 'conversion', 'analytics', 'metrics', 'measurements', 'okrs', 'dashboards'],
-    'seo': ['search', 'visibility', 'optimization', 'metadata', 'google search', 'organic traffic', 'serp'],
-    'ai': ['artificial intelligence', 'ml', 'machine learning', 'chatbot', 'nlp', 'llm', 'generative', 'pytorch', 'tensorflow', 'neural networks'],
-    
-    // Technical Writing & Content
-    'writing': ['documentation', 'content', 'authoring', 'editorial', 'write', 'writer', 'technical writing', 'tech docs', 'copywriting', 'ghostwriting'],
-    'content developer': ['technical writer', 'content creator', 'documentation specialist', 'information architecture', 'knowledge management'],
-    'xml': ['dita', 'xml', 'structured authoring', 'authoring tools', 'content-as-code', 'madcap flare', 'framemaker'],
-    
-    // Cloud & Infrastructure
-    'cloud': ['aws', 'azure', 'gcp', 'cloud computing', 'saas', 'paas', 'iaas', 'serverless', 'infrastructure'],
-    'devops': ['ci/cd', 'docker', 'kubernetes', 'k8s', 'jenkins', 'automation', 'terraform', 'ansible'],
-
-    // Software & Web
-    'software': ['application', 'platform', 'product', 'saas', 'solution', 'tools', 'software products', 'systems'],
-    'web': ['online', 'cloud', 'browser', 'internet', 'portal', 'web-based', 'frontend', 'backend', 'fullstack'],
-    'javascript': ['js', 'typescript', 'react', 'node', 'vue', 'angular', 'jquery', 'npm', 'webpack'],
-    'api': ['rest', 'graphql', 'soap', 'microservices', 'endpoints', 'json', 'postman'],
-    
-    // Leadership & Business
-    'project management': ['pm', 'pmp', 'agile', 'scrum', 'leadership', 'stakeholder', 'partnerships', 'strategy', 'roadmap'],
-    'problem solving': ['analytical', 'troubleshooting', 'problem-solving', 'resolved', 'critical thinking', 'debugging'],
-    'communication': ['communications', 'communicating', 'interpersonal', 'collaborate', 'collaboration', 'stakeholder engagement'],
-    'certification': ['training', 'certified', 'cert', 'credentials', 'program', 'course', 'degree', 'diploma']
-};
 
 const TECH_BOOST = new Set(['xml', 'agile', 'scrum', 'ai', 'seo', 'api', 'cloud', 'wireless', '5g', 'gui', 'architecture', 'dita', 'cms', 'software', 'documentation', 'content', 'technical', 'kubernetes', 'docker', 'aws', 'typescript']);
 
@@ -770,12 +820,13 @@ function getStructureDetails(text) {
         { name: 'Summary / Profile',      patterns: ['summary', 'profile', 'objective', 'about me', 'professional profile'],           weight: 10 },
         { name: 'Contact Info',           patterns: ['contact', 'phone', 'email', 'linkedin', 'address'],                              weight: 10 },
         { name: 'Projects / Portfolio',   patterns: ['projects', 'portfolio', 'key initiatives', 'selected works', 'publications'],    weight: 3  },
-        { name: 'Certifications / Awards',patterns: ['certifications', 'awards', 'training', 'certification', 'license', 'credentials'], weight: 2 }
+        { name: 'Certifications / Awards',patterns: ['certifications', 'awards', 'training', 'certification', 'license', 'credentials'], weight: 2, optional: true }
     ];
     const totalWeight = sectionGroups.reduce((s, g) => s + g.weight, 0); // = 100
 
     const found = [];
     const missing = [];
+    const optional = [];
     let earnedWeight = 0;
 
     sectionGroups.forEach(group => {
@@ -791,13 +842,16 @@ function getStructureDetails(text) {
         if (detected) {
             found.push(group.name);
             earnedWeight += group.weight;
+        } else if (group.optional) {
+            optional.push(group.name);
+            earnedWeight += group.weight;
         } else {
             missing.push(group.name);
         }
     });
 
     const score = Math.min(Math.round((earnedWeight / totalWeight) * 100), 100);
-    return { score, found, missing };
+    return { score, found, missing, optional };
 }
 
 function calculateImpactScore(text) {
@@ -813,7 +867,7 @@ function getImpactDetails(text) {
     const yearPattern = /\b(19|20)\d{2}\b/g;
     const cleanedText = text.replace(phonePattern, '').replace(yearPattern, '');
 
-    const metricPattern = /\b\d+%|\$[\d,]+|\d+[kKmMbB]\b|\+\d{1,3}%|\b\d{1,4}(?:\+)?\s*(users?|customers?|people|engineers?|writers?|teams?|products?|projects?|companies|countries|articles?|clients?)/gi;
+    const metricPattern = /\b\d+%|\$[\d,]+|\d+[kKmMbB]\b|\+\d{1,3}%|\b\d{1,3}\s*\+|\b\d{1,3}-member\b|\b\d{1,4}(?:\+)?\s*(?:years?|users?|customers?|people|engineers?|writers?|teams?|products?|projects?|companies|countries|articles?|clients?|packs?|members?)/gi;
     const softMetricPattern = /\b(reduced|increased|saved|growth|revenue|efficiency)\b/gi;
 
     const rawMetrics = cleanedText.match(metricPattern) || [];
@@ -887,7 +941,7 @@ function getBulletMetricsPct(text) {
         
         return isLikelyBullet && !isMetadata && !isSkillList;
     });
-    const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+%|\d+x\b|\d+\s*(users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|cycles?|platforms?|members?|roles?|sites?)/i;
+    const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+%|\d+x\b|\d{1,3}\s*\+|\d{1,3}-member|\d+\s*(years?|users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|cycles?|platforms?|members?|roles?|sites?|packs?)/i;
     const withMetrics = bullets.filter(line => metricPattern.test(line));
     const withoutMetrics = bullets.filter(line => !metricPattern.test(line));
     const total = bullets.length;
@@ -940,33 +994,7 @@ analyzeBtn.addEventListener('click', () => {
 
             if (hasJD) {
                 // Helper for Universal (Bi-directional) Synonym Matching
-                const checkMatch = (jdKw, freqMap) => {
-                    // 1. Direct Match
-                    if (freqMap[jdKw] > 0) return true;
-                    
-                    // 2. Family Match (Bi-directional lookup)
-                    const families = [];
-                    for (const [key, values] of Object.entries(SYNONYMS)) {
-                        if (key === jdKw || values.includes(jdKw)) {
-                            families.push(...values, key);
-                        }
-                    }
-                    
-                    for (const member of families) {
-                        if (freqMap[member] > 0) return true;
-                        if (member.length >= 3) {
-                            const root = member.substring(0, 4);
-                            if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(member) || member.includes(rk))) return true;
-                        }
-                    }
-                    
-                    // 3. Fallback: Fuzzy root on the JD keyword itself
-                    if (jdKw.length >= 3) {
-                        const root = jdKw.substring(0, 4);
-                        if (Object.keys(freqMap).some(rk => rk.startsWith(root) || rk.includes(jdKw) || jdKw.includes(rk))) return true;
-                    }
-                    return false;
-                };
+                const checkMatch = (jdKw, freqMap) => keywordsMatch(jdKw, freqMap);
 
                 // Keyword matching: each JD keyword is scored by frequency (capped at 3 occurrences).
                 // TECH_BOOST removed: the 5x multiplier made scores unpredictable and opaque.
@@ -984,6 +1012,7 @@ analyzeBtn.addEventListener('click', () => {
             }
 
             displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
+            bumpUsageCounter('counters/v2_scanner');
         } catch (analysisError) {
             console.error('Resume analysis failed:', analysisError);
             if (!window.lastResults || !resultsSection || resultsSection.classList.contains('hidden')) {
@@ -1230,7 +1259,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             .join(' ');
         const filteredMissingRaw = Array.from(new Set(
             missing
-            .filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw))
+            .filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw) && !JD_NOT_SKILLS.has(kw))
             .sort((a, b) => jdFreq[b] - jdFreq[a])
         ));
         filteredMissing = filteredMissingRaw;
@@ -1238,6 +1267,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         const displayMissing = filteredMissing.slice(0, INITIAL_MISSING_COUNT);
         extraMissingCount = Math.max(0, filteredMissing.length - displayMissing.length);
         document.getElementById('missingKeywords').innerHTML =
+            `<p id="jdScopeNote" style="color:var(--text-muted);font-size:0.82rem;line-height:1.45;margin:0 0 0.75rem;"></p>` +
             displayMissing.map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ') +
             (extraMissingCount > 0
                 ? `<div id="allMissingKeywords" style="display:none; margin-top:0.5rem; line-height:1.8;">
@@ -1260,6 +1290,17 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         }
         window.lastResults = window.lastResults || {};
         window.lastResults.filteredMissing = filteredMissing;
+        const scopeEl = document.getElementById('jdScopeNote');
+        const scope = window.lastJdScope || {};
+        if (scopeEl) {
+            if (scope.trimmed) {
+                scopeEl.textContent = 'Company introduction was skipped. These terms come from the role, responsibilities, and requirements. Add one only if you have done that work.';
+            } else if (scope.hadCompanyIntro && !scope.foundRole) {
+                scopeEl.textContent = 'This paste includes a company introduction and no Role or Requirements heading, so marketing sentences may appear as keywords. Paste from the role or responsibilities section if the list looks wrong.';
+            } else {
+                scopeEl.textContent = 'Keyword match uses the role, responsibilities, and requirements. Add a missing term only if you have done that work.';
+            }
+        }
     } else {
         document.getElementById('missingKeywords').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;margin:0;">Paste a job description and re-analyse to see which keywords your resume is missing for that specific role.</p>';
         document.getElementById('foundKeywords').innerHTML = '';
@@ -1270,14 +1311,22 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     if (structureDetailsEl) {
         const foundHTML = structureResult.found.map(s => 
             `<span class="keyword-badge keyword-found">✓ ${s}</span>`).join(' ');
+        const optional = structureResult.optional || [];
         const missingHTML = structureResult.missing.length > 0
             ? structureResult.missing.map(s => 
                 `<span class="keyword-badge keyword-missing">✗ ${s}</span>`).join(' ')
-            : '<span style="color: var(--success); font-size: 0.85rem;">All standard sections detected!</span>';
+            : '';
+        const optionalHTML = optional.length > 0
+            ? optional.map(s => `<span class="keyword-badge" style="opacity:0.8;">○ ${s} — optional, skip if you have none</span>`).join(' ')
+            : '';
+        const missingBlock = structureResult.missing.length > 0
+            ? `<p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0 0.3rem;">Missing:</p><div>${missingHTML}</div>`
+            : (optional.length ? '' : '<span style="color: var(--success); font-size: 0.85rem;">All standard sections detected!</span>');
         structureDetailsEl.innerHTML = `
-            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.6rem;">Checks for 7 standard resume sections. ATS systems need these headers to correctly categorize your information.</p>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.6rem;">Checks for standard resume sections. ATS systems need these headers to correctly categorize your information.</p>
             <div style="margin-bottom: 0.5rem;">${foundHTML}</div>
-            ${structureResult.missing.length > 0 ? `<p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0 0.3rem;">Missing:</p><div>${missingHTML}</div>` : missingHTML}`;
+            ${missingBlock}
+            ${optionalHTML ? `<p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0 0.3rem;">Not required:</p><div>${optionalHTML}</div>` : ''}`;
         // detailsSection is now inside a <details> accordion — no display toggle needed
     }
 
@@ -1360,33 +1409,14 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
 
     // 1. Keyword Gap Strategy with SPECIFIC EXAMPLES
     if (keywordMatchPct < 85 && missing.length > 0) {
-        let filteredMissing = missing.filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw));
+        let filteredMissing = missing.filter(kw => kw.length > 2 && !NOISE_KEYWORDS.has(kw) && !JD_NOT_SKILLS.has(kw));
         filteredMissing = Array.from(new Set(filteredMissing));
-        const topMissing = filteredMissing.slice(0, 3);
-        
-        const templates = [
-            (kw) => `<em>"Optimized ${kw} workflows, resulting in a 20% increase in team productivity."</em>`,
-            (kw) => `<em>"Led the transition to ${kw}-based systems, improving scalability for 50k+ users."</em>`,
-            (kw) => `<em>"Implemented advanced ${kw} strategies that reduced manual processing time by 15 hours/week."</em>`,
-            (kw) => `<em>"Directed cross-functional initiatives involving ${kw} to deliver project 3 weeks early."</em>`
-        ];
-
-        const examples = topMissing.map((kw, idx) => {
-            const lowerKw = kw.toLowerCase();
-            if (lowerKw.includes('aws') || lowerKw.includes('cloud') || lowerKw.includes('azure')) {
-                return `<em>"Deployed microservices on ${kw.toUpperCase()}, reducing infrastructure costs by 30%"</em>`;
-            } else if (lowerKw.includes('data') || lowerKw.includes('analytics')) {
-                return `<em>"Conducted ${kw} to identify trends, resulting in 25% efficiency improvement"</em>`;
-            } else if (lowerKw.includes('team') || lowerKw.includes('lead')) {
-                return `<em>"Led cross-functional ${kw} of 8 members to deliver project 2 weeks ahead of schedule"</em>`;
-            } else {
-                return templates[idx % templates.length](kw);
-            }
-        }).join('<br>        ');
+        const topMissing = filteredMissing.slice(0, 8);
+        const extraMissingCount = Math.max(0, filteredMissing.length - topMissing.length);
         
         tips.push({
             type: 'warning',
-            html: `<strong>🎯 Top Missing Keywords (${keywordMatchPct}% match):</strong> Showing the top ${topMissing.length}${extraMissingCount > 0 ? ` of ${filteredMissing.length}` : ''} missing keywords. Add these to your resume: <strong>${topMissing.join(', ')}</strong><br><br>Example phrases you can use:<br>        ${examples}`
+            html: `<strong>🎯 Missing terms (${keywordMatchPct}% match):</strong> These are in the role requirements and not as whole words on your resume. Add one only if you have actually done that work. Do not invent a result to make it fit.<br><br><strong>${topMissing.join(', ')}</strong>${extraMissingCount > 0 ? `<br><span style="color:var(--text-muted);">Plus ${extraMissingCount} more in the list below.</span>` : ''}`
         });
     }
 
@@ -1402,15 +1432,13 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             exampleHTML = weakSamples.map((b, i) => {
                 const clean = b.replace(/<[^>]+>/g, '').trim();
                 const suggestion = i === 0
-                    ? `Add a number, %, or team size — e.g., "<em>...reducing X by 30%</em>" or "<em>...for a team of N</em>"`
-                    : `Start with a power verb ("Led", "Reduced", "Delivered") and quantify the result.`;
+                    ? `If this work had a real count — years, a team size, a release count — add that number. Do not invent a percentage.`
+                    : `Start with a verb you can stand behind ("Led", "Mentored", "Documented") and add a real count if you have one.`;
                 return `❌ <strong>Your resume:</strong> "${clean}"<br>✅ <strong>Improve it:</strong> ${suggestion}`;
             }).join('<br><br>');
         } else {
-            exampleHTML = `❌ Weak: "Responsible for improving system performance"<br>
-            ✅ Strong: "Optimized database queries, reducing load time by 45% for 50K+ users"<br><br>
-            ❌ Weak: "Managed documentation projects"<br>
-            ✅ Strong: "Delivered 12 documentation projects on time, reducing support tickets by 25%"`;
+            exampleHTML = `A duty with no count: "Documented the admin guide."<br>
+            A duty with a real count: "Documented the admin guide across 12 service packs" — only if that number is true.`;
         }
         tips.push({
             type: 'warning',
@@ -2183,3 +2211,17 @@ function setupReviewPricing() {
         });
 }
 document.addEventListener('DOMContentLoaded', setupReviewPricing);
+
+function explainJobDescriptionField() {
+    const area = document.getElementById('jobDescription');
+    if (!area || document.getElementById('jdPasteHint')) return;
+    const hint = 'Paste the full posting if you like. Keyword match skips the company introduction and uses the role, responsibilities, and requirements.';
+    area.placeholder = 'Paste the full job posting, or only the responsibilities and requirements.';
+    area.title = hint;
+    const note = document.createElement('p');
+    note.id = 'jdPasteHint';
+    note.textContent = hint;
+    note.style.cssText = 'margin:8px 0 0;font-size:0.82rem;line-height:1.45;color:var(--text-muted,#94a3b8);';
+    area.insertAdjacentElement('afterend', note);
+}
+explainJobDescriptionField();
