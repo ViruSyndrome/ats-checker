@@ -619,22 +619,209 @@ const JD_NOT_SKILLS = new Set([
 // Whole-word equivalents only. "docs" must not count as "mkdocs", and "data" must not count as "analytics".
 const NARROW_SYNONYMS = {
     rest: ['api'],
-    api: ['rest'],
+    api: ['rest', 'apis'],
+    apis: ['api', 'rest'],
     js: ['javascript'],
     javascript: ['js'],
     k8s: ['kubernetes'],
     kubernetes: ['k8s'],
     nosql: ['no-sql'],
     'no-sql': ['nosql'],
-    genai: ['generative']
+    genai: ['generative'],
+    kpi: ['kpis'],
+    kpis: ['kpi'],
+    vscode: ['vs-code']
 };
 
+// Concrete tools and skills. Ordinary posting words are not in this set.
+const SKILL_TERMS = new Set([
+    'sql', 'nosql', 'no-sql', 'mysql', 'postgresql', 'postgres', 'oracle', 'mongodb', 'couchbase',
+    'scylladb', 'dynamodb', 'redis', 'kafka', 'spark', 'hadoop', 'snowflake', 'databricks',
+    'graphql', 'rest', 'api', 'apis', 'grpc', 'json', 'yaml', 'xml', 'html', 'css', 'javascript',
+    'typescript', 'python', 'java', 'ruby', 'rust', 'kotlin', 'swift', 'php', 'scala', 'go', 'golang',
+    'c#', 'c++', 'csharp', 'cpp', 'git', 'github', 'gitlab', 'vscode', 'vs-code', 'docker', 'kubernetes',
+    'k8s', 'aws', 'azure', 'gcp', 'terraform', 'jenkins', 'linux', 'unix', 'bash', 'powershell',
+    'react', 'angular', 'vue', 'node', 'nodejs', 'express', 'django', 'flask', 'pandas', 'numpy',
+    'tensorflow', 'pytorch', 'tableau', 'powerbi', 'excel', 'figma', 'sketch', 'seo', 'jira',
+    'confluence', 'slack', 'salesforce', 'sap', 'workday', 'servicenow', 'hubspot', 'wordpress',
+    'shopify', 'photoshop', 'illustrator', 'autocad', 'matlab', 'spss', 'sas', 'quickbooks',
+    'bloomberg', 'hipaa', 'osha', 'gaap', 'agile', 'scrum', 'kanban', 'devops', 'markdown', 'dita',
+    'antora', 'mkdocs', 'mintlify', 'hugo', 'madcap', 'flare', 'paligo', 'oxygen', 'framemaker',
+    'acrolinx', 'genai', 'ai', 'llm', 'rag', 'openai', 'kpi', 'kpis', 'analytics', 'query', 'queries',
+    'database', 'databases', 'cloud', 'security', 'testing', 'writing', 'documentation', 'tutorial',
+    'tutorials', 'mentoring', 'reference', 'references', 'docs-as-code', 'infrastructure', 'etl',
+    'erp', 'crm', 'saas', 'nlp', 'cad', 'revit', 'hvac', 'cnc', 'pmp', 'cpa', 'gdpr', 'sox'
+]);
+
+// Sentence words that survived the stop list. They are not skills to add to a resume.
+const JD_PROSE = new Set([
+    'ecosystem', 'diving', 'produce', 'producing', 'high-impact', 'developer-focused', 'practical',
+    'workflows', 'workflow', 'identify', 'identifying', 'cases', 'case', 'standard', 'standards',
+    'excellence', 'continuously', 'continuous', 'development', 'programming', 'languages', 'language',
+    'tools', 'tool', 'seasoned', 'communicator', 'craft', 'crafting', 'comprehensive', 'examples',
+    'example', 'championing', 'elevating', 'points', 'point', 'translate', 'translating', 'architect',
+    'architecting', 'high-quality', 'realistic', 'feature', 'features', 'alignment', 'partner',
+    'partners', 'complete', 'launch-ready', 'capabilities', 'capability', 'cross-functional',
+    'collaboration', 'analyze', 'analyse', 'analyzing', 'feedback', 'intuitive', 'refining',
+    'leveraging', 'leverage', 'measure', 'measuring', 'elevate', 'mentorship', 'foster', 'fostering',
+    'reviews', 'review', 'initiatives', 'initiative', 'engagement', 'forefront', 'communication',
+    'trends', 'trend', 'benchmarking', 'approaches', 'approach', 'exposure', 'architectures',
+    'architecture', 'developer-centric', 'static', 'generation', 'platforms', 'platform', 'documenting',
+    'write', 'writes', 'sample', 'samples', 'metrics', 'metric', 'integration', 'paired', 'record',
+    'records', 'direction', 'lifting', 'action-oriented', 'thrive', 'autonomy', 'solve', 'solving',
+    'architectural', 'learn', 'learning', 'curious', 'ahead', 'shifts', 'shift', 'quality-driven',
+    'uncompromising', 'clarity', 'everything', 'technical', 'content', 'engineering', 'developer',
+    'developers', 'quality', 'customer', 'customers', 'user', 'users', 'enterprise', 'writer',
+    'writers', 'structure', 'release', 'releases', 'style', 'guide', 'guides', 'peer', 'editorial',
+    'system', 'systems', 'suite', 'accuracy', 'publish', 'published', 'software', 'data', 'training',
+    'web', 'code', 'hands', 'modern', 'solid', 'proven', 'strategic', 'strategy', 'process',
+    'information', 'solutions', 'solution', 'services', 'service', 'applications', 'application',
+    'environment', 'stakeholders', 'stakeholder', 'impact', 'outcomes', 'outcome', 'success',
+    'ownership', 'mindset', 'culture', 'mission', 'vision', 'industry', 'demonstrated', 'demonstrate',
+    'internal', 'external', 'global', 'complex', 'clear', 'major', 'ensure', 'deliver', 'provide',
+    'enable', 'focused', 'closely', 'specific', 'general', 'overall', 'current', 'existing', 'future',
+    'working', 'across', 'within', 'various', 'multiple', 'related', 'based', 'driven', 'oriented',
+    'clean', 'rules', 'rule', 'safety', 'welds', 'weld', 'certification', 'certifications', 'certified',
+    'shop', 'follow', 'follows', 'reading', 'card'
+]);
+
+const JD_PHRASES = [
+    ['static', 'site']
+];
+
+function canonicalSkill(word) {
+    const w = String(word || '').toLowerCase();
+    if (w === 'kpis') return 'kpi';
+    if (w === 'apis') return 'api';
+    if (w === 'queries') return 'query';
+    if (w === 'databases') return 'database';
+    if (w === 'tutorials') return 'tutorial';
+    if (w === 'references') return 'reference';
+    if (w.endsWith('s') && SKILL_TERMS.has(w.slice(0, -1))) return w.slice(0, -1);
+    return w;
+}
+
 function keywordsMatch(jdKw, freqMap) {
-    const needle = String(jdKw || '').toLowerCase();
+    const needle = canonicalSkill(jdKw);
     if (!needle || !freqMap) return false;
-    if (freqMap[needle] > 0) return true;
-    const alts = NARROW_SYNONYMS[needle] || [];
-    return alts.some(alt => freqMap[alt] > 0);
+    const forms = new Set([needle, String(jdKw || '').toLowerCase()]);
+    if (needle.length >= 3) forms.add(needle + 's');
+    (NARROW_SYNONYMS[needle] || []).forEach(alt => forms.add(alt));
+    (NARROW_SYNONYMS[String(jdKw || '').toLowerCase()] || []).forEach(alt => forms.add(alt));
+    return Array.from(forms).some(form => freqMap[form] > 0);
+}
+
+function isRequiredJdSkill(word) {
+    const w = canonicalSkill(word);
+    if (!w || w.length < 2) return false;
+    if (SKILL_TERMS.has(w)) return true;
+    if (NOISE_KEYWORDS.has(w) || JD_NOT_SKILLS.has(w) || JD_PROSE.has(w)) return false;
+    if (w.includes('-') && w.length >= 5) return true;
+    if (w.length >= 5) return true;
+    return false;
+}
+
+function textOutsideExamples(text) {
+    return String(text || '')
+        .replace(/\((?:[^)]*(?:such as|e\.g\.|eg\.|for example|i\.e\.)[^)]*)\)/gi, ' ')
+        .replace(/(?:such as|e\.g\.|eg\.|for example)\s+[^.;\n)]{0,240}/gi, ' ');
+}
+
+function mentionedOutsideExamples(scopeText, term) {
+    const hay = textOutsideExamples(scopeText).toLowerCase();
+    const needle = String(term || '').toLowerCase();
+    if (!needle) return false;
+    const forms = [needle];
+    if (!needle.endsWith('s')) forms.push(needle + 's');
+    return forms.some(form => {
+        const escaped = form.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return new RegExp('\\b' + escaped + '\\b', 'i').test(hay);
+    });
+}
+
+function extractExampleTerms(text) {
+    const examples = new Set();
+    const chunks = [];
+    const parenRe = /\(([^)]{0,400})\)/g;
+    const inlineRe = /(?:such as|e\.g\.|eg\.|for example)\s+([^.;\n)]{0,240})/gi;
+    let match;
+    while ((match = parenRe.exec(text))) {
+        if (/(?:such as|e\.g\.|eg\.|for example|i\.e\.)/i.test(match[1])) chunks.push(match[1]);
+    }
+    while ((match = inlineRe.exec(text))) chunks.push(match[1]);
+    const skip = new Set([
+        'eg', 'ie', 'etc', 'and', 'or', 'such', 'as', 'for', 'example', 'like', 'including',
+        'platforms', 'platform', 'systems', 'system', 'languages', 'language', 'tools', 'tool',
+        'products', 'product', 'modern', 'programming', 'sample', 'code', 'management'
+    ]);
+    chunks.forEach(chunk => {
+        chunk.split(/,|\/|\bor\b|\band\b/i).forEach(part => {
+            const tokens = part.match(/[A-Za-z0-9+#][A-Za-z0-9+#.-]*/g) || [];
+            tokens.forEach(token => {
+                const normalized = token.toLowerCase().replace(/^[.\-]+|[.\-]+$/g, '');
+                if (!normalized || skip.has(normalized) || NOISE_KEYWORDS.has(normalized) || JD_PROSE.has(normalized)) return;
+                const looksNamed = /[A-Z]/.test(token) || /[#+]/.test(token) || SKILL_TERMS.has(normalized);
+                if (looksNamed && normalized.length > 1) examples.add(canonicalSkill(normalized));
+            });
+        });
+    });
+    return examples;
+}
+
+function matchJdSkills(jdFreq, resumeFreq, scopeText, resumeText) {
+    const found = [];
+    const missing = [];
+    let keywordScore = 0;
+    let maxPossibleScore = 0;
+    const exampleTerms = extractExampleTerms(scopeText || '');
+    const required = new Map();
+
+    Object.keys(jdFreq || {}).forEach(jdKw => {
+        const canon = canonicalSkill(jdKw);
+        const onlyExample = (exampleTerms.has(canon) || exampleTerms.has(jdKw))
+            && !mentionedOutsideExamples(scopeText, canon);
+        if (onlyExample) return;
+        if (!isRequiredJdSkill(jdKw)) return;
+        const weight = Math.min(jdFreq[jdKw], 3);
+        required.set(canon, Math.max(required.get(canon) || 0, weight));
+    });
+
+    JD_PHRASES.forEach(parts => {
+        const phrase = parts.join(' ');
+        const jdHas = new RegExp('\\b' + parts.join('\\W+') + '\\b', 'i').test(scopeText || '');
+        if (!jdHas || required.has(phrase)) return;
+        required.set(phrase, 1);
+        jdFreq[phrase] = 1;
+    });
+
+    required.forEach((jdWeight, jdKw) => {
+        maxPossibleScore += jdWeight * 10;
+        const phraseParts = jdKw.split(' ');
+        const matched = phraseParts.length > 1
+            ? new RegExp('\\b' + phraseParts.join('\\W+') + '\\b', 'i').test(resumeText || '')
+            : keywordsMatch(jdKw, resumeFreq);
+        if (matched) {
+            found.push(jdKw);
+            keywordScore += jdWeight * 10;
+        } else {
+            missing.push(jdKw);
+        }
+    });
+
+    const exampleList = Array.from(exampleTerms).filter(term => {
+        if (mentionedOutsideExamples(scopeText, term)) return false;
+        return isRequiredJdSkill(term) || SKILL_TERMS.has(term);
+    });
+    return {
+        found,
+        missing,
+        keywordScore,
+        maxPossibleScore,
+        examples: {
+            missing: exampleList.filter(term => !keywordsMatch(term, resumeFreq)),
+            covered: exampleList.filter(term => keywordsMatch(term, resumeFreq))
+        }
+    };
 }
 
 // Keep the role, responsibilities, and requirements. Drop the company introduction.
@@ -993,22 +1180,15 @@ analyzeBtn.addEventListener('click', () => {
             let maxPossibleScore = 0;
 
             if (hasJD) {
-                // Helper for Universal (Bi-directional) Synonym Matching
-                const checkMatch = (jdKw, freqMap) => keywordsMatch(jdKw, freqMap);
-
-                // Keyword matching: each JD keyword is scored by frequency (capped at 3 occurrences).
-                // TECH_BOOST removed: the 5x multiplier made scores unpredictable and opaque.
-                // Instead, all keywords are scored equally — the quality of match is what matters.
-                Object.keys(jdFreq).forEach(jdKw => {
-                    const jdWeight = Math.min(jdFreq[jdKw], 3);
-                    maxPossibleScore += jdWeight * 10;
-                    if (checkMatch(jdKw, resumeFreq)) {
-                        found.push(jdKw);
-                        keywordScore += jdWeight * 10;
-                    } else {
-                        missing.push(jdKw);
-                    }
-                });
+                const scopeText = (window.lastJdScope && window.lastJdScope.text) || jdText;
+                const skillMatch = matchJdSkills(jdFreq, resumeFreq, scopeText, resumeText);
+                found.push(...skillMatch.found);
+                missing.push(...skillMatch.missing);
+                keywordScore = skillMatch.keywordScore;
+                maxPossibleScore = skillMatch.maxPossibleScore;
+                window.lastJdExamples = skillMatch.examples;
+            } else {
+                window.lastJdExamples = { missing: [], covered: [] };
             }
 
             displayResults(found, missing, resumeText, jdFreq, resumeFreq, keywordScore, maxPossibleScore, hasJD);
@@ -1259,8 +1439,8 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             .join(' ');
         const filteredMissingRaw = Array.from(new Set(
             missing
-            .filter(kw => kw.length > 4 && !NOISE_KEYWORDS.has(kw) && !JD_NOT_SKILLS.has(kw))
-            .sort((a, b) => jdFreq[b] - jdFreq[a])
+            .filter(kw => kw.length >= 2 && !NOISE_KEYWORDS.has(kw) && !JD_NOT_SKILLS.has(kw) && !JD_PROSE.has(kw))
+            .sort((a, b) => (jdFreq[b] || 0) - (jdFreq[a] || 0))
         ));
         filteredMissing = filteredMissingRaw;
         const INITIAL_MISSING_COUNT = 8;
@@ -1294,12 +1474,21 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         const scope = window.lastJdScope || {};
         if (scopeEl) {
             if (scope.trimmed) {
-                scopeEl.textContent = 'Company introduction was skipped. These terms come from the role, responsibilities, and requirements. Add one only if you have done that work.';
+                scopeEl.textContent = 'Company introduction was skipped. These are skills and tools from the role, not ordinary words from the posting. Add one only if you have done that work.';
             } else if (scope.hadCompanyIntro && !scope.foundRole) {
                 scopeEl.textContent = 'This paste includes a company introduction and no Role or Requirements heading, so marketing sentences may appear as keywords. Paste from the role or responsibilities section if the list looks wrong.';
             } else {
-                scopeEl.textContent = 'Keyword match uses the role, responsibilities, and requirements. Add a missing term only if you have done that work.';
+                scopeEl.textContent = 'Keyword match uses skills and tools from the role, responsibilities, and requirements. Add a missing term only if you have done that work.';
             }
+            const examples = window.lastJdExamples || {};
+            const exampleBits = [];
+            if (examples.missing && examples.missing.length) {
+                exampleBits.push(`Named as examples only, so they do not change the score: ${examples.missing.join(', ')}.`);
+            }
+            if (examples.covered && examples.covered.length) {
+                exampleBits.push(`Already on your resume: ${examples.covered.join(', ')}.`);
+            }
+            if (exampleBits.length) scopeEl.textContent += ' ' + exampleBits.join(' ');
         }
     } else {
         document.getElementById('missingKeywords').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;margin:0;">Paste a job description and re-analyse to see which keywords your resume is missing for that specific role.</p>';
@@ -1409,14 +1598,14 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
 
     // 1. Keyword Gap Strategy with SPECIFIC EXAMPLES
     if (keywordMatchPct < 85 && missing.length > 0) {
-        let filteredMissing = missing.filter(kw => kw.length > 2 && !NOISE_KEYWORDS.has(kw) && !JD_NOT_SKILLS.has(kw));
+        let filteredMissing = missing.filter(kw => kw.length >= 2 && !NOISE_KEYWORDS.has(kw) && !JD_NOT_SKILLS.has(kw) && !JD_PROSE.has(kw));
         filteredMissing = Array.from(new Set(filteredMissing));
-        const topMissing = filteredMissing.slice(0, 8);
+        const topMissing = filteredMissing.slice(0, 12);
         const extraMissingCount = Math.max(0, filteredMissing.length - topMissing.length);
         
         tips.push({
             type: 'warning',
-            html: `<strong>🎯 Missing terms (${keywordMatchPct}% match):</strong> These are in the role requirements and not as whole words on your resume. Add one only if you have actually done that work. Do not invent a result to make it fit.<br><br><strong>${topMissing.join(', ')}</strong>${extraMissingCount > 0 ? `<br><span style="color:var(--text-muted);">Plus ${extraMissingCount} more in the list below.</span>` : ''}`
+            html: `<strong>🎯 Missing terms (${keywordMatchPct}% match):</strong> These are skills or tools from the role, and they are not whole words on your resume. Add one only if you have actually done that work. Do not invent a result to make it fit.<br><br><strong>${topMissing.join(', ')}</strong>${extraMissingCount > 0 ? `<br><span style="color:var(--text-muted);">Plus ${extraMissingCount} more in the list below.</span>` : ''}`
         });
     }
 
