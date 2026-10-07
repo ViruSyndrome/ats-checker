@@ -1832,7 +1832,9 @@ function buildRewriteBrief(notes) {
     const tips = notes.tips && notes.tips.length
         ? notes.tips.map((t, i) => (i + 1) + '. ' + t).join('\n\n')
         : 'None.';
-    return `You are helping me rewrite my resume so applicant tracking systems (ATS) can parse it and match a specific job.
+    return `Paste this whole message into ChatGPT, Claude, or another chat AI. It is a prompt, not a finished resume.
+
+You are helping me rewrite my resume so applicant tracking systems (ATS) can parse it and match a specific job.
 
 Rules:
 - Do not invent jobs, employers, dates, degrees, certifications, or metrics I did not provide.
@@ -1901,14 +1903,14 @@ function copyTextToClipboard(text) {
 function copyRewriteBrief(btn) {
     const notes = gatherScanNotes();
     if (!notes) {
-        showInlineAlert('Analyze your resume first, then copy the rewrite brief.');
+        showInlineAlert('Analyze your resume first, then copy the AI prompt.');
         return;
     }
     saveScanNotesForMaker();
     copyTextToClipboard(notes.brief).then(() => {
         if (btn) {
             const original = btn.textContent;
-            btn.textContent = 'Copied — paste into an AI';
+            btn.textContent = 'Copied. Paste it into ChatGPT or Claude.';
             setTimeout(() => { btn.textContent = original; }, 2200);
         }
         if (typeof trackEvent === 'function') trackEvent('copy_rewrite_brief');
@@ -1917,10 +1919,35 @@ function copyRewriteBrief(btn) {
     });
 }
 
+function bindScoreNoteForm() {
+    const form = document.getElementById('ats-email-form');
+    if (!form || form.dataset.scoreBound) return;
+    form.dataset.scoreBound = '1';
+    const ensure = (name) => {
+        let input = form.querySelector('input[name="' + name + '"]');
+        if (!input) {
+            input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.setAttribute('data-fs-field', '');
+            form.appendChild(input);
+        }
+        return input;
+    };
+    form.addEventListener('submit', () => {
+        const res = window.lastResults || {};
+        ensure('score').value = Number.isFinite(res.finalScore) ? String(res.finalScore) : '';
+        ensure('keyword_match').value = Number.isFinite(res.keywordMatchPct) ? String(res.keywordMatchPct) : '';
+        ensure('template').value = Number.isFinite(res.formatScore) ? String(res.formatScore) : '';
+        ensure('page').value = location.pathname || '/';
+    });
+}
+
 function wireScanNextStepButtons() {
     const copyBtn = document.getElementById('downloadReport');
     if (copyBtn) {
-        copyBtn.textContent = 'Copy rewrite brief';
+        copyBtn.textContent = 'Copy AI prompt';
+        copyBtn.title = 'Copies a prompt. Paste it into ChatGPT, Claude, or another chat AI.';
         copyBtn.type = 'button';
         copyBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -1950,6 +1977,7 @@ function wireScanNextStepButtons() {
             if (window.lastResults) saveScanNotesForMaker();
         });
     }
+    bindScoreNoteForm();
 }
 
 wireScanNextStepButtons();

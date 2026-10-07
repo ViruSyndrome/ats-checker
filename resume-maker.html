@@ -315,7 +315,7 @@
                     <h3>Notes from your last scan</h3>
                     <p id="scanNotesSummary">Split this extracted text into the form. Missing keywords stay here so you can add them. Nothing below is filled in for you.</p>
                     <div class="scan-notes-actions">
-                        <button type="button" id="scanNotesCopyBrief">Copy rewrite brief</button>
+                        <button type="button" id="scanNotesCopyBrief" title="Copies a prompt. Paste it into ChatGPT, Claude, or another chat AI.">Copy AI prompt</button>
                         <button type="button" id="scanNotesCopyText">Copy extracted text</button>
                         <a href="/">Back to scanner</a>
                         <button type="button" id="scanNotesDismiss">Hide notes</button>
@@ -356,19 +356,19 @@
                         
                         <!-- 📧 EMAIL CAPTURE WIDGET 📧 -->
                         <div style="margin-top: 24px; padding: 20px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; text-align: center;">
-                            <h3 style="color: var(--text); font-size: 1.1rem; margin-bottom: 8px;">Save Your Score & Get ATS Tips</h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; margin-bottom: 16px;">Job hunting takes 4-12 weeks on average. Drop your email below and we'll send you a copy of this score plus weekly resume templates.</p>
+                            <h3 style="color: #0f172a; font-size: 1.1rem; margin-bottom: 8px;">Send me this score</h3>
+                            <p style="color: #334155; font-size: 0.9rem; line-height: 1.4; margin-bottom: 16px;">Leave your email. I get a note with your address and this score. I do not email the score back to you, and there is no weekly template series.</p>
                             
-                            <div data-fs-success style="display:none; color: #15803d; font-weight: 600; padding: 10px; background: #dcfce7; border-radius: 6px; margin-bottom: 10px;">Thanks! You're subscribed.</div>
+                            <div data-fs-success style="display:none; color: #15803d; font-weight: 600; padding: 10px; background: #dcfce7; border-radius: 6px; margin-bottom: 10px;">Sent. I have your email and this score.</div>
                             <div data-fs-error style="display:none; color: #b91c1c; font-size: 0.9rem; margin-bottom: 10px;"></div>
                             
                             <form id="ats-email-form" style="display:flex; gap:8px; align-items:center;">
                                 <input type="email" name="email" data-fs-field placeholder="Your email address" required style="flex:1; padding:10px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.95rem; outline:none;">
-                                <input type="hidden" name="_subject" value="New Subscriber from ATS-Checker">
-                                <button type="submit" data-fs-submit-btn style="padding:10px 16px; background:var(--primary); color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.95rem; transition:0.2s;">Subscribe</button>
+                                <input type="hidden" name="_subject" value="Score note from GetATSReady">
+                                <button type="submit" data-fs-submit-btn style="padding:10px 16px; background:var(--primary); color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.95rem; transition:0.2s;">Send</button>
                             </form>
                             <span data-fs-error="email" style="color: #b91c1c; font-size: 0.8rem; display:block; text-align:left; margin-top:4px;"></span>
-                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 12px; margin-bottom:0;">No spam. Unsubscribe anytime. 100% free.</p>
+                            <p style="font-size: 0.75rem; color: #64748b; margin-top: 12px; margin-bottom:0;">No newsletter. To remove your address, email hello@getatsready.com.</p>
                         </div>
                         
                         <!-- Formspree AJAX -->
@@ -706,7 +706,7 @@
 
             const copyBrief = document.getElementById('scanNotesCopyBrief');
             if (copyBrief) {
-                copyBrief.onclick = () => copyMakerText(notes.brief || notes.resumeText || '', copyBrief, 'Copied — paste into an AI');
+                copyBrief.onclick = () => copyMakerText(notes.brief || notes.resumeText || '', copyBrief, 'Copied. Paste it into ChatGPT or Claude.');
             }
             const copyText = document.getElementById('scanNotesCopyText');
             if (copyText) {
