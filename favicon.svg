@@ -1,24 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1B1740"/>
-      <stop offset="1" stop-color="#070A14"/>
-    </linearGradient>
-    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFF6E4"/>
-      <stop offset="1" stop-color="#E8D4A8"/>
-    </linearGradient>
-    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#67E8F9" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#67E8F9"/>
-      <stop offset="1" stop-color="#67E8F9" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
-  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
-  <path fill="url(#paper)" d="M10.2 6.2h7.2l4.4 4.4V25a1.2 1.2 0 0 1-1.2 1.2H10.2A1.2 1.2 0 0 1 9 25V7.4a1.2 1.2 0 0 1 1.2-1.2z"/>
-  <path fill="#C4A574" d="M17.4 6.2v4.2h4.2z"/>
-  <rect x="12" y="13.2" width="8" height="1.1" rx=".5" fill="#1B1740" opacity=".28"/>
-  <rect x="12" y="16" width="6.2" height="1.1" rx=".5" fill="#1B1740" opacity=".2"/>
-  <rect x="12" y="21.4" width="8" height="1.1" rx=".5" fill="#1B1740" opacity=".2"/>
-  <rect x="6.5" y="17.35" width="19" height="2.1" rx="1" fill="url(#beam)"/>
+  <rect width="32" height="32" rx="8" fill="#6D7CFF"/>
+  <path fill="#FFFFFF" d="M7.2 8.2c0-.9.7-1.6 1.6-1.6h8.2l5.6 5.5v12.1c0 .9-.7 1.6-1.6 1.6H8.8c-.9 0-1.6-.7-1.6-1.6V8.2z"/>
+  <path fill="#D5DBFF" d="M17 6.6v5.5h5.6z"/>
+  <path fill="#2A3178" d="M10.1 16.1h7.4a1.05 1.05 0 0 1 0 2.1h-7.4a1.05 1.05 0 0 1 0-2.1zm0 3.7h4.7a1.05 1.05 0 0 1 0 2.1h-4.7a1.05 1.05 0 0 1 0-2.1z"/>
+  <circle cx="23.5" cy="23.5" r="6.7" fill="#34D399"/>
+  <path d="M20.4 23.6l2.05 2.1 4.15-4.5" fill="none" stroke="#FFFFFF" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
