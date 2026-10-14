@@ -16,8 +16,8 @@
         Sentry.init({
           ignoreErrors: [/runtime\.sendMessage/i, /Tab not found/i, /Extension context invalidated/i],
           tracesSampleRate: 1.0,
-          replaysSessionSampleRate: 0.1,
-          replaysOnErrorSampleRate: 1.0,
+          replaysSessionSampleRate: 0,
+          replaysOnErrorSampleRate: 0,
         });
       });
     </script>
@@ -36,8 +36,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
     <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-    <meta property="og:image" content="https://www.getatsready.com/og-image.webp">
-    <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp">
+    <meta property="og:image" content="https://www.getatsready.com/og-image.webp?v=2">
+    <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp?v=2">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -80,7 +80,7 @@
 
         <main class="legal-page">
             <h1>Built so you can see the robot before the recruiter does</h1>
-            <p>GetATSReady is a free ATS resume checker that runs in your browser. Paste a job description, drop a PDF or DOCX, and see how software like Workday, Taleo, and Greenhouse is likely to read the file. No account. The file is not uploaded to our servers.</p>
+            <p>GetATSReady is a free ATS resume checker that runs in your browser. Paste a job description, drop a PDF or DOCX, and see a local estimate of keyword overlap, structure, and layout risk. No account. The file is not uploaded for the free scan. The page still loads Google Analytics, ads, and error reporting.</p>
 
             <div class="card">
                 <h2>Who makes this</h2>
@@ -108,13 +108,13 @@
                 <h2>What is free, and what is not</h2>
                 <ul>
                     <li><strong>Scanner and resume maker</strong> are free, unlimited, no signup.</li>
-                    <li><strong>Your resume stays on the device</strong> for the scan. We do not receive the file unless you pay for a human review and send it on the intake form.</li>
+                    <li><strong>Your resume stays on the device</strong> for the free scan. We do not receive the file unless you pay for a human review and send it on the intake form. The optional email box sends the address and the score, not the file.</li>
                     <li><strong>Ads</strong> help keep the scanner free. This site is not ad-free.</li>
                     <li><strong>Optional human review</strong> ($49 / $79) is a paid writing pass if you want a person to edit the file. It is not a placement service.</li>
                 </ul>
 
                 <h2>Contact</h2>
-                <p>Questions, bugs, or partnerships: <a href="mailto:vinodjamesisaac@gmail.com">vinodjamesisaac@gmail.com</a>.</p>
+                <p>Questions, bugs, or partnerships: <a href="mailto:hello@getatsready.com">hello@getatsready.com</a>.</p>
             </div>
         </main>
 

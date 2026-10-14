@@ -3,6 +3,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+*.csv
 node_modules/
 
 data/jobs-feed.json

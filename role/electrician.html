@@ -9,8 +9,8 @@
         Sentry.init({
           ignoreErrors: [/runtime\.sendMessage/i, /Tab not found/i, /Extension context invalidated/i],
           tracesSampleRate: 0.1,
-          replaysSessionSampleRate: 0.05,
-          replaysOnErrorSampleRate: 1.0,
+          replaysSessionSampleRate: 0,
+          replaysOnErrorSampleRate: 0,
         });
       });
     </script>
@@ -35,16 +35,16 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.getatsready.com/">
     <meta property="og:title" content="Free Electrician ATS Resume Checker | Get ATS Ready">
-    <meta property="og:description" content="Instantly score your resume against any job description. Free, no signup, 100% private. See exactly which keywords you're missing.">
+    <meta property="og:description" content="Instantly score your resume against any job description. Free, no signup. The resume file is parsed in your browser. See exactly which keywords you're missing.">
     <meta property="og:site_name" content="GetATSReady">
-    <meta property="og:image" content="https://www.getatsready.com/og-image.webp">
+    <meta property="og:image" content="https://www.getatsready.com/og-image.webp?v=2">
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Free Electrician ATS Resume Checker | Get ATS Ready">
-    <meta name="twitter:description" content="Instantly score your resume against any job description. Free, no signup, 100% private.">
-    <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp">
+    <meta name="twitter:description" content="Instantly score your resume against any job description. Free, no signup. The resume file is parsed in your browser.">
+    <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp?v=2">
     <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
     <meta name="theme-color" content="#070A14">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=4" />
@@ -59,7 +59,7 @@
       "@type": "WebApplication",
       "name": "GetATSReady",
       "url": "https://www.getatsready.com",
-      "description": "Free, 100% private ATS resume checker. Optimize your resume for job descriptions without signing up.",
+      "description": "Free ATS resume checker. The resume file is parsed in your browser. No signup.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "All",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -111,7 +111,7 @@
             </nav>
             <div class="privacy-badge">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                100% Private: Processed entirely in your browser. No Signup Required.
+                Parsed in your browser. No signup. The resume file is not uploaded for the free scan.
             </div>
 
             <p class="hero-tagline">
@@ -203,11 +203,11 @@
                 </div>
             </div>
 
-            <!-- Client-Side Scan History (100% Private, stored in user's browser localStorage) -->
+            <!-- Scan history stays in localStorage on this device -->
             <div class="card hidden inline-style-f3ef69" id="historyCard">
                 <div class="card-title inline-style-4986ec">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    Recent Scans <span class="inline-style-147513">100% Private (Local Storage)</span>
+                    Recent Scans <span class="inline-style-147513">Stored on this device</span>
                 </div>
                 <div id="historyList"></div>
             </div>
@@ -418,11 +418,11 @@
             <!-- SEO Text Section: How the Multiplicative Scoring Model Works -->
             <div class="card inline-style-text-seo" id="scoringModelExplanation" style="margin-top: 24px; line-height: 1.6; color: var(--text-muted, #64748b);">
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main, #f8fafc); margin-bottom: 12px; margin-top: 0;">How Our Multiplicative Scoring Model Works</h2>
-                <p style="margin-bottom: 12px;">GetATSReady isn't just a simple keyword counter. Our algorithm was built by analyzing how enterprise Applicant Tracking Systems (like Workday, Taleo, and Greenhouse) actually parse and rank resumes in the real world.</p>
+                <p style="margin-bottom: 12px;">GetATSReady isn't just a simple keyword counter. The score is a local estimate of keyword overlap, section headers, numbers in bullets, and layout risk. It is not a live connection to Workday, Taleo, or Greenhouse.</p>
                 <p style="margin-bottom: 12px;">Most legacy resume checkers use an additive scoring model: they give you 50 points for keywords, 25 points for structure, and 25 points for metrics, resulting in a perfect 100. However, this is fundamentally flawed. If your resume uses a multi-column design, complex tables, or a heavy Canva template, the ATS parser physically cannot read the text. It scrambles the words into an unreadable "word salad."</p>
                 <p style="margin-bottom: 12px;">To solve this, GetATSReady uses a <strong>Multiplicative Scoring Model</strong>. First, we calculate a baseline score using three core metrics:</p>
                 <ul style="margin-bottom: 12px; margin-left: 20px; list-style-type: disc;">
-                    <li><strong>Keyword Match (50%):</strong> We use bidirectional semantic analysis to measure the overlap between your resume and the provided job description.</li>
+                    <li><strong>Keyword Match (50%):</strong> We compare words, plurals, and a short list of close variants between your resume and the job description.</li>
                     <li><strong>Impact & Metrics (25%):</strong> We scan for quantifiable achievements (numbers, percentages) and strong action verbs that demonstrate leadership.</li>
                     <li><strong>Structure (25%):</strong> We verify that you are using standard, industry-recognized section headers (e.g., "Professional Experience" instead of "My Journey").</li>
                 </ul>
@@ -457,12 +457,12 @@
                 
                 <div class="faq-item">
                     <h3>How does the scoring work?</h3>
-                    <p>We use a <strong>Multiplicative Scoring Model</strong> that mimics real-world ATS behavior (Workday, Taleo). If your resume template is structurally broken (multi-columns, tables), it physically hides keywords from the parser. Our engine calculates a "Template Compliance" score which acts as a multiplier on your keyword match — a poor template can cut your effective score by up to 70%.</p>
+                    <p>The score multiplies keyword overlap by a template factor. Multi-column and table-heavy files are treated as a parse risk, so the keyword portion is discounted. A weak template can cut the score sharply. The number is an estimate, not a result from Workday or Taleo.</p>
                 </div>
 
                 <div class="faq-item">
                     <h3>Is this tool really free and private?</h3>
-                    <p>Yes! We process everything locally in your browser using JavaScript — your resume never leaves your device. We use ethical Google AdSense to generate revenue, allowing us to provide institutional-grade analysis without requiring a signup or selling your data.</p>
+                    <p>The free scan runs in your browser. The resume file is not uploaded for that scan. The page also loads Google Analytics, Google AdSense, and error reporting. There is no account. If you type an email after a score, that address and the score are sent. A paid review is separate, and that form is how a file is sent.</p>
                 </div>
 
                 <div class="faq-item">
@@ -477,7 +477,7 @@
 
                 <div class="faq-item">
                     <h3>How accurate is the ATS score?</h3>
-                    <p>Our algorithm replicates real ATS behavior using a <strong>multiplicative model</strong>: Template Compliance acts as a discount factor on your keyword score, because a broken template (multi-column, tables) physically prevents ATS parsers from finding your keywords — exactly like Workday, Taleo, and iCIMS behave. The four factors are: Template Compliance (multiplier), Keyword Match (50%), Structure (25%), and Impact/Metrics (25%). Based on Jobscan research covering 97.8% of Fortune 500 ATS systems.</p>
+                    <p>The score uses a multiplicative model. Template compliance discounts the keyword score when the file looks multi-column or table-heavy, because those layouts are a common parse risk. The parts are template compliance (a multiplier), keyword match (50%), structure (25%), and impact and metrics (25%). This is an estimate. It is not Workday, Taleo, or iCIMS, and it does not predict how those products will rank you.</p>
                 </div>
 
                 <div class="faq-item">
@@ -502,7 +502,7 @@
 
                 <div class="faq-item">
                     <h3>Does this work for all industries?</h3>
-                    <p>Yes. Our keyword matching uses semantic analysis that works across industries—tech, finance, healthcare, marketing, engineering, and more. The tool identifies role-specific keywords regardless of field.</p>
+                    <p>Yes. Matching is word overlap plus a short list of close variants. Paste any job description. The field does not matter.</p>
                 </div>
 
                 <div class="faq-item">

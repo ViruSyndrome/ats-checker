@@ -15,7 +15,7 @@
       gtag('config', 'G-8HMGTGQ4B8');
     </script>
 
-    <meta name="description" content="Privacy policy for GetATSReady. Your data is processed locally and never stored on our servers.">
+    <meta name="description" content="Privacy policy for GetATSReady. The free scan parses your resume in the browser. Analytics, ads, and error reporting still load.">
     <link rel="canonical" href="https://www.getatsready.com/privacy.html">
     <link rel="stylesheet" href="style.css?v=8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,8 +44,8 @@
   .network-icon-img { width: 18px; height: 18px; object-fit: contain; }
   </style>
 
-    <meta property="og:image" content="https://www.getatsready.com/og-image.webp">
-    <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp">
+    <meta property="og:image" content="https://www.getatsready.com/og-image.webp?v=2">
+    <meta name="twitter:image" content="https://www.getatsready.com/og-image.webp?v=2">
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
@@ -127,7 +127,7 @@
             </nav>
             <div class="privacy-badge">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                100% Private: Processed entirely in your browser. No Signup Required.
+                Parsed in your browser. No signup. The resume file is not uploaded for the free scan.
             </div>
             <div style="text-align: center;">
                 <div id="scanner-badge-container" style="margin-top: 15px; margin-bottom: 5px; display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #059669; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">&#9889; <span id="scanner-counter-display">14,230</span> Resumes Scanned</div>
@@ -139,16 +139,19 @@
     <h1 style="font-size:1.8rem; font-weight:800; margin-bottom:12px;">Privacy Policy</h1>
             <div class="card">
                 <h2>Privacy Policy</h2>
-                <p><em>Last updated: September 3, 2026</em></p>
+                <p><em>Last updated: October 13, 2026</em></p>
 
                 <h3>Our Privacy Commitment</h3>
-                <p>GetATSReady is built with privacy as our core principle. Unlike other resume checkers that upload your data to servers, we process everything <strong>100% locally in your browser</strong>.</p>
+                <p>The free scan parses your PDF or DOCX in the browser. That file is not uploaded to GetATSReady for the scan. The page still loads other services, listed below.</p>
 
                 <h3>What Data We Collect</h3>
                 <ul>
-                    <li><strong>Analytics:</strong> We use Google Analytics to understand how visitors use our site (page views, time spent, country). This data is anonymized.</li>
+                    <li><strong>Analytics:</strong> We use Google Analytics to understand how visitors use our site (page views, time spent, country).</li>
                     <li><strong>Cookies:</strong> We use cookies for Google AdSense advertising and analytics. You can disable cookies in your browser settings.</li>
-                    <li><strong>Your Resume:</strong> We do NOT collect, store, or transmit your resume or job descriptions. All processing happens in your browser using JavaScript.</li>
+                    <li><strong>Error reporting:</strong> Sentry receives error and performance reports. Session replay is off, so it is not recording a video of the page.</li>
+                    <li><strong>Scan counter:</strong> A successful scan increments a number in Firebase. The resume file and the job description are not part of that count.</li>
+                    <li><strong>Your Resume:</strong> The free scan does not upload your resume or the job description. Parsing happens in your browser. Recent scans on this device stay in local storage.</li>
+                    <li><strong>Optional score note:</strong> If you submit the email box after a score, Formspree receives that email address and the score. It does not receive the resume file. There is no newsletter. To remove an address, email hello@getatsready.com.</li>
                     <li><strong>Paid review submissions:</strong> If you voluntarily purchase a review and submit the intake form, Formspree receives the name, email, payment reference, job description, instructions, and uploaded files so we can provide the service. We retain these materials only as long as reasonably necessary to deliver the service, handle revisions, resolve disputes, and meet legal or accounting obligations, then delete them from our working systems.</li>
                     <li><strong>Payment data:</strong> Payments are processed by Razorpay or Gumroad. We do not receive or store full card, bank, or wallet credentials. Review the applicable provider's privacy policy at checkout.</li>
                 </ul>
@@ -169,7 +172,7 @@
                 </ul>
                 
                 <h3>Data Security</h3>
-                <p>Since we don't collect or store your resume data, there's no risk of data breaches or unauthorized access to your personal information on our end. All processing is done client-side in your browser.</p>
+                <p>The free scan keeps the resume file in the browser. Analytics, ads, error reports, the optional email note, a paid intake, and the scan counter are the cases where data leaves the device. Those are described above.</p>
 
                 <h3>Contact Us</h3>
                 <p>If you have questions about this privacy policy, please contact us at: <a href="mailto:hello@getatsready.com">hello@getatsready.com</a></p>
