@@ -1375,6 +1375,27 @@ h1, h2, h3, .logo-text, .logo-accent, .score-value, .card-title, .stat-header sp
   line-height: 1.5;
   margin-bottom: 0;
 }
+.maker-card-body > .maker-card-p + .book-mention {
+  margin-top: 0.85rem;
+}
+.book-mention {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+.book-cover-link {
+  flex-shrink: 0;
+  line-height: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+.book-cover-thumb {
+  display: block;
+  width: 90px;
+  height: auto;
+  vertical-align: top;
+}
 .scoring-box {
   background: rgba(99, 102, 241, 0.05);
   padding: 1.5rem;
