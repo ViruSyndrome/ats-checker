@@ -142,7 +142,7 @@
     <!-- Cookie Consent Banner -->
     <div id="cookieConsent" class="cookie-banner">
         <p>We use cookies for analytics and advertising. By continuing, you accept our <a href="privacy.html">Privacy Policy</a>.</p>
-        <button onclick="acceptCookies()">Accept</button>
+        <button onclick="try{localStorage.setItem('cookieConsent','true')}catch(e){}var b=document.getElementById('cookieConsent');if(b)b.classList.add('hidden')">Accept</button>
     </div>
 
     <div class="container">
