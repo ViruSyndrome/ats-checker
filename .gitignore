@@ -16,6 +16,7 @@ scripts/
 *.ps1
 roles_data.json
 patch.js
+# extension/ stays in git for "Load unpacked"; deploy-pages.yml --exclude's it from Pages
 
 # Keep GitHub Pages custom domain
 !CNAME

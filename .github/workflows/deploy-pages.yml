@@ -33,6 +33,7 @@ jobs:
             --exclude 'node_modules/' \
             --exclude 'docs/' \
             --exclude 'scripts/' \
+            --exclude 'extension/' \
             --exclude 'assets/alternativeto/' \
             --exclude '*.py' \
             --exclude '*.ps1' \

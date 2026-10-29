@@ -299,7 +299,7 @@
                         </div>
                         <h2>ATS Compatibility Score</h2>
                         <div id="scoreVerdictBadge" class="inline-style-df703b">Analyzing...</div>
-                        <p id="scoreText" class="inline-style-1f8f6c">Local estimate: keyword overlap, section headers, metrics, and layout risk — not a Workday/Taleo/Greenhouse emulator.</p>
+                        <p id="scoreText" class="inline-style-1f8f6c">Local estimate: keyword overlap (with light stemming), section headers, metrics, and layout risk — not a vendor ATS.</p>
                         <div class="scan-next-actions" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
                             <button id="downloadReport" type="button" class="secondary-btn inline-style-8a5dc8" title="Copies a prompt. Paste it into ChatGPT, Claude, or another chat AI.">Copy AI prompt</button>
                             <a href="/resume-maker.html" id="openMakerWithNotes" class="analyze-btn" style="width:auto;margin:0;padding:10px 16px;text-decoration:none;display:inline-flex;align-items:center;">Open in resume maker</a>
@@ -521,7 +521,7 @@
                 
                 <div class="faq-item">
                     <h3>How does the scoring work?</h3>
-                    <p>The score multiplies keyword overlap by a template factor. Multi-column and table-heavy files are treated as a parse risk, so the keyword portion is discounted. A weak template can cut the score sharply. The number is an estimate, not a result from Workday or Taleo.</p>
+                    <p>The score multiplies keyword overlap by a template factor. Keyword matching uses overlap with light stemming (plurals and common variants), not a vendor ATS. Multi-column and table-heavy files are treated as a parse risk, so the keyword portion is discounted. The number is a local estimate.</p>
                 </div>
 
                 <div class="faq-item">

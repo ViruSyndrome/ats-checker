@@ -1,11 +1,20 @@
 // --- UI Helpers ---
-function showInlineAlert(message) {
+function showInlineAlert(message, tone = 'error') {
     let alertBox = document.getElementById('global-inline-alert');
     if (!alertBox) {
         alertBox = document.createElement('div');
         alertBox.id = 'global-inline-alert';
-        alertBox.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#fef2f2; color:#b91c1c; border:1px solid #f87171; padding:10px 20px; border-radius:6px; z-index:10000; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); font-weight:500; font-family:sans-serif; text-align:center; transition:opacity 0.3s;';
+        alertBox.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); padding:10px 20px; border-radius:6px; z-index:10000; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); font-weight:500; font-family:sans-serif; text-align:center; transition:opacity 0.3s; max-width:min(520px,92vw);';
         document.body.appendChild(alertBox);
+    }
+    if (tone === 'success') {
+        alertBox.style.background = '#ecfdf5';
+        alertBox.style.color = '#047857';
+        alertBox.style.border = '1px solid #34d399';
+    } else {
+        alertBox.style.background = '#fef2f2';
+        alertBox.style.color = '#b91c1c';
+        alertBox.style.border = '1px solid #f87171';
     }
     alertBox.textContent = message;
     alertBox.style.opacity = '1';
@@ -616,7 +625,12 @@ const NOISE_KEYWORDS = new Set([
     'forward-thinking', 'results-oriented', 'metrics-driven', 'outcome-focused',
 
     // Diversity / inclusion boilerplate
-    'diverse', 'diversify', 'diversified', 'inclusion', 'inclusive', 'belong', 'belonging'
+    'diverse', 'diversify', 'diversified', 'inclusion', 'inclusive', 'belong', 'belonging',
+
+    // Ultra-generic JD filler (expand slightly — not skill signal)
+    'responsive', 'performance', 'endpoint', 'endpoints', 'bachelor', 'bachelors',
+    'strongly', 'preferred', 'required', 'including', 'using', 'based',
+    'experience', 'years', 'ability', 'skills', 'team', 'work', 'role', 'position'
 ]);
 
 
@@ -700,8 +714,183 @@ const JD_PHRASES = [
     ['static', 'site']
 ];
 
+// Do not crude-stem these (plurals / short tech tokens break badly).
+const DONT_STEM = new Set([
+    'analysis', 'business', 'css', 'aws', 'access', 'process', 'success', 'address',
+    'basis', 'series', 'status', 'canvas', 'class', 'glass', 'bias', 'gas',
+    'saas', 'paas', 'iaas', 'ios', 'os', 'axios', 'express', 'redis', 'linux', 'unix',
+    'postgres', 'mysql', 'nosql', 'kafka', 'jenkins', 'analytics', 'operations',
+    'communications', 'sales', 'news', 'always', 'across', 'focus', 'campus'
+]);
+
+// Common inflection / spelling variants → stem used for overlap matching.
+const STEM_MAP = {
+    mentored: 'mentor', mentoring: 'mentor', mentors: 'mentor', mentorship: 'mentor', mentor: 'mentor',
+    pipelines: 'pipeline', pipeline: 'pipeline',
+    managed: 'manage', managing: 'manage', manages: 'manage', manage: 'manage',
+    developing: 'develop', developed: 'develop', develops: 'develop', develop: 'develop',
+    analysed: 'analyze', analyzed: 'analyze', analysing: 'analyze', analyzing: 'analyze',
+    analyse: 'analyze', analyze: 'analyze',
+    optimised: 'optimize', optimized: 'optimize', optimising: 'optimize', optimizing: 'optimize',
+    optimise: 'optimize', optimize: 'optimize'
+};
+
+// Extra resume-skill allowlist beyond SKILL_TERMS (modest, not every English noun).
+const SKILLISH = new Set([
+    'mentor', 'mentoring', 'mentorship', 'coaching', 'pipeline', 'pipelines',
+    'fullstack', 'full-stack', 'frontend', 'front-end', 'backend', 'back-end',
+    'microservices', 'cicd', 'ci-cd', 'devops', 'sre', 'observability',
+    'troubleshooting', 'debugging', 'refactoring', 'prototyping',
+    'forecasting', 'budgeting', 'negotiation', 'onboarding', 'offboarding',
+    'wireframing', 'prototyping', 'storytelling', 'copywriting',
+    'bookkeeping', 'underwriting', 'procurement', 'logistics', 'warehousing',
+    'recruiting', 'sourcing', 'scheduling', 'forecasting', 'merchandising',
+    'compliance', 'governance', 'risk', 'audit', 'auditing',
+    'automation', 'orchestration', 'containerization', 'virtualization',
+    'networking', 'routing', 'switching', 'firewalls', 'encryption',
+    'machine-learning', 'deeplearning', 'deep-learning', 'datascience', 'data-science',
+    'cybersecurity', 'pentesting', 'penetration-testing', 'threat-modeling',
+    'powerbi', 'power-bi', 'looker', 'snowflake', 'databricks', 'airflow',
+    'terraform', 'ansible', 'puppet', 'chef', 'helm', 'prometheus', 'grafana',
+    'fastapi', 'springboot', 'spring-boot', 'dotnet', '.net', 'nextjs', 'next-js',
+    'nodejs', 'node-js', 'reactjs', 'vuejs', 'angularjs', 'tailwind', 'bootstrap',
+    'photoshop', 'illustrator', 'indesign', 'premiere', 'after-effects',
+    'salesforce', 'hubspot', 'marketo', 'mailchimp', 'zendesk', 'intercom',
+    'quickbooks', 'netsuite', 'sap', 'oracle', 'workday', 'servicenow',
+    'pmp', 'scrum', 'kanban', 'jira', 'confluence', 'figma', 'sketch', 'notion'
+]);
+
+const STEM_EXPANSIONS = {
+    mentor: ['mentor', 'mentors', 'mentored', 'mentoring', 'mentorship'],
+    pipeline: ['pipeline', 'pipelines'],
+    manage: ['manage', 'managed', 'manages', 'managing', 'management'],
+    develop: ['develop', 'developed', 'develops', 'developing', 'development'],
+    analyze: ['analyze', 'analyse', 'analyzed', 'analysed', 'analyzing', 'analysing', 'analysis'],
+    optimize: ['optimize', 'optimise', 'optimized', 'optimised', 'optimizing', 'optimising', 'optimization', 'optimisation']
+};
+
+function stripKeywordPunctuation(word) {
+    return String(word || '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9+#.\-/\s]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function compactKeywordForm(word) {
+    return stripKeywordPunctuation(word).replace(/[\s\-_/]+/g, '');
+}
+
+function crudePluralFold(word) {
+    const w = String(word || '');
+    if (!w || w.length <= 3 || DONT_STEM.has(w)) return w;
+    if (w.endsWith('ies') && w.length > 5) return w.slice(0, -3) + 'y';
+    if (/(?:ches|shes|sses|xes|zes)$/.test(w) && w.length > 5) return w.slice(0, -2);
+    if (w.endsWith('s') && !w.endsWith('ss') && !w.endsWith('us') && !w.endsWith('is')) {
+        return w.slice(0, -1);
+    }
+    return w;
+}
+
+/** Light normalize for overlap: lowercase, strip punct, map variants, crude plural, hyphen/space fold. */
+function stemNormalize(word) {
+    const cleaned = stripKeywordPunctuation(word);
+    if (!cleaned) return '';
+    const compact = compactKeywordForm(cleaned);
+    if (STEM_MAP[cleaned]) return STEM_MAP[cleaned];
+    if (STEM_MAP[compact]) return STEM_MAP[compact];
+    if (DONT_STEM.has(cleaned) || DONT_STEM.has(compact)) return compact || cleaned;
+    let base = crudePluralFold(compact || cleaned);
+    if (STEM_MAP[base]) return STEM_MAP[base];
+    base = crudePluralFold(base);
+    return STEM_MAP[base] || base;
+}
+
+function hyphenSpaceVariants(word) {
+    const forms = new Set();
+    const cleaned = stripKeywordPunctuation(word);
+    if (!cleaned) return forms;
+    forms.add(cleaned);
+    forms.add(cleaned.replace(/[\s\-_/]+/g, ''));
+    forms.add(cleaned.replace(/\s+/g, '-'));
+    forms.add(cleaned.replace(/-/g, ' '));
+    forms.add(cleaned.replace(/_/g, ' '));
+    return forms;
+}
+
+function expandMatchForms(word) {
+    const forms = new Set();
+    const raw = stripKeywordPunctuation(word);
+    if (!raw) return forms;
+    const stem = stemNormalize(raw);
+    const seeds = new Set([raw, stem, ...hyphenSpaceVariants(raw), ...hyphenSpaceVariants(stem)]);
+    seeds.forEach(seed => {
+        if (!seed) return;
+        forms.add(seed);
+        forms.add(compactKeywordForm(seed));
+        (STEM_EXPANSIONS[seed] || STEM_EXPANSIONS[stemNormalize(seed)] || []).forEach(v => {
+            forms.add(v);
+            hyphenSpaceVariants(v).forEach(h => forms.add(h));
+        });
+        if (seed.length >= 3) {
+            forms.add(seed + 's');
+            forms.add(seed + 'ed');
+            forms.add(seed + 'ing');
+        }
+    });
+    (NARROW_SYNONYMS[stem] || []).forEach(alt => forms.add(alt));
+    (NARROW_SYNONYMS[raw] || []).forEach(alt => forms.add(alt));
+    forms.delete('');
+    return forms;
+}
+
+/** Capitalized multi-word phrases from the JD (e.g. "Power BI", "GitHub Actions"). */
+function extractCapitalizedPhrases(text) {
+    const phrases = new Set();
+    const src = String(text || '');
+    const re = /\b([A-Z][a-zA-Z0-9+#]*(?:[\s\-][A-Za-z0-9+#][a-zA-Z0-9+#]*)+)\b/g;
+    let match;
+    while ((match = re.exec(src))) {
+        const phrase = match[1];
+        // Skip sentence-start generics: "The Company", "Our Team"
+        const tokens = phrase.split(/[\s\-]+/).map(t => t.toLowerCase());
+        if (tokens.every(t => NOISE_KEYWORDS.has(t) || JD_PROSE.has(t) || t.length < 2)) continue;
+        if (tokens.length >= 2 && tokens[0].length <= 3 && NOISE_KEYWORDS.has(tokens[0])) continue;
+        const lower = phrase.toLowerCase();
+        phrases.add(lower);
+        hyphenSpaceVariants(lower).forEach(v => phrases.add(v));
+        phrases.add(compactKeywordForm(lower));
+    }
+    return phrases;
+}
+
+function tokenLooksSkillish(word, capitalizedPhrases) {
+    const w = canonicalSkill(word);
+    if (!w || w.length < 2) return false;
+    if (SKILL_TERMS.has(w) || SKILLISH.has(w)) return true;
+    if (SKILL_TERMS.has(stemNormalize(w)) || SKILLISH.has(stemNormalize(w))) return true;
+    if (TECH_BOOST.has(w) || TECH_BOOST.has(stemNormalize(w))) return true;
+    const compact = compactKeywordForm(w);
+    if (SKILL_TERMS.has(compact) || SKILLISH.has(compact)) return true;
+    if (capitalizedPhrases && (capitalizedPhrases.has(w) || capitalizedPhrases.has(compact) || capitalizedPhrases.has(String(word || '').toLowerCase()))) {
+        return true;
+    }
+    // Contains a known tech term as a substring (reactjs, nodejs, …)
+    for (const tech of SKILL_TERMS) {
+        if (tech.length >= 3 && (compact.includes(tech) || w.includes(tech))) return true;
+    }
+    for (const skill of SKILLISH) {
+        if (skill.length >= 5 && (compact.includes(skill.replace(/-/g, '')) || w.includes(skill))) return true;
+    }
+    // Hyphenated compounds that survived stop lists often name tools/domains
+    if (w.includes('-') && w.length >= 5) return true;
+    return false;
+}
+
 function canonicalSkill(word) {
-    const w = String(word || '').toLowerCase();
+    let w = stemNormalize(word);
+    if (!w) w = String(word || '').toLowerCase();
     if (w === 'kpis') return 'kpi';
     if (w === 'apis') return 'api';
     if (w === 'queries') return 'query';
@@ -713,23 +902,28 @@ function canonicalSkill(word) {
 }
 
 function keywordsMatch(jdKw, freqMap) {
-    const needle = canonicalSkill(jdKw);
-    if (!needle || !freqMap) return false;
-    const forms = new Set([needle, String(jdKw || '').toLowerCase()]);
-    if (needle.length >= 3) forms.add(needle + 's');
-    (NARROW_SYNONYMS[needle] || []).forEach(alt => forms.add(alt));
-    (NARROW_SYNONYMS[String(jdKw || '').toLowerCase()] || []).forEach(alt => forms.add(alt));
-    return Array.from(forms).some(form => freqMap[form] > 0);
+    if (!freqMap) return false;
+    const forms = expandMatchForms(jdKw);
+    if (Array.from(forms).some(form => freqMap[form] > 0)) return true;
+    const needleStem = stemNormalize(jdKw);
+    if (!needleStem || needleStem.length < 2) return false;
+    // Resume may use Mentored / full-stack while JD has mentor / fullstack
+    return Object.keys(freqMap).some(key => {
+        if (!(freqMap[key] > 0)) return false;
+        if (stemNormalize(key) === needleStem) return true;
+        return compactKeywordForm(key) === compactKeywordForm(jdKw);
+    });
 }
 
 function isRequiredJdSkill(word) {
     const w = canonicalSkill(word);
     if (!w || w.length < 2) return false;
-    if (SKILL_TERMS.has(w)) return true;
-    if (NOISE_KEYWORDS.has(w) || JD_NOT_SKILLS.has(w) || JD_PROSE.has(w)) return false;
-    if (w.includes('-') && w.length >= 5) return true;
-    if (w.length >= 5) return true;
-    return false;
+    const rawLower = String(word || '').toLowerCase();
+    if (NOISE_KEYWORDS.has(w) || NOISE_KEYWORDS.has(rawLower) || NOISE_KEYWORDS.has(compactKeywordForm(w))) return false;
+    if (JD_NOT_SKILLS.has(w) || JD_NOT_SKILLS.has(rawLower) || JD_PROSE.has(w) || JD_PROSE.has(rawLower)) return false;
+    if (SKILL_TERMS.has(w) || SKILL_TERMS.has(rawLower)) return true;
+    const phrases = window.lastJdCapitalizedPhrases || null;
+    return tokenLooksSkillish(word, phrases);
 }
 
 function textOutsideExamples(text) {
@@ -892,6 +1086,9 @@ function getKeywords(text, isJD = false) {
         const isolated = isolateJobRequirements(processingText);
         processingText = isolated.text;
         window.lastJdScope = isolated;
+        window.lastJdCapitalizedPhrases = extractCapitalizedPhrases(processingText);
+    } else if (!window.lastJdCapitalizedPhrases) {
+        window.lastJdCapitalizedPhrases = new Set();
     }
 
     const companyCandidates = isJD ? getCompanyNameCandidates(processingText) : new Set();
@@ -908,8 +1105,24 @@ function getKeywords(text, isJD = false) {
         if (isJD && JD_NOT_SKILLS.has(w)) return;
         if (PROTECTED_KEYWORDS.has(w) || !NOISE_KEYWORDS.has(w)) {
             frequencyMap[w] = (frequencyMap[w] || 0) + 1;
+            // Also index compact / stem forms so Mentored ↔ mentor and full-stack ↔ fullstack hit
+            const compact = compactKeywordForm(w);
+            const stem = stemNormalize(w);
+            if (compact && compact !== w) frequencyMap[compact] = (frequencyMap[compact] || 0) + 1;
+            if (stem && stem !== w && stem !== compact) frequencyMap[stem] = (frequencyMap[stem] || 0) + 1;
         }
     });
+
+    if (isJD && window.lastJdCapitalizedPhrases) {
+        window.lastJdCapitalizedPhrases.forEach(phrase => {
+            if (!phrase || phrase.length < 3) return;
+            if (NOISE_KEYWORDS.has(phrase) || JD_PROSE.has(phrase)) return;
+            // Prefer spaced / hyphenated phrases as JD keyword keys
+            if (phrase.includes(' ') || phrase.includes('-')) {
+                frequencyMap[phrase] = Math.max(frequencyMap[phrase] || 0, 1);
+            }
+        });
+    }
 
     return frequencyMap;
 }
@@ -1320,13 +1533,13 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     if (criticalAlert) {
         if (criticalFormatIssues.length > 0) {
             const keywordText = hasJD ? 
-                `<li>Our engine detected strong keyword content: <strong>${keywordMatchPct}%</strong></li>
-                 <li>But enterprise ATS systems will likely only find <strong>${effectiveKeywordScore}%</strong> of them due to your template.</li>` :
-                `<li>Paste a job description above to see your predicted keyword match score.</li>`;
+                `<li>Keyword overlap looks solid on a clean read: <strong>${keywordMatchPct}%</strong></li>
+                 <li>With this layout risk, a typical parser may only surface about <strong>${effectiveKeywordScore}%</strong> of that overlap.</li>` :
+                `<li>Paste a job description above to see your keyword overlap estimate.</li>`;
             
             const jumpText = hasJD ? 
-                `<li>Fix your template → your score jumps from <strong>${finalScore}% → ~${projectedWithFix}%</strong></li>` :
-                `<li>Fixing your template is the fastest way to improve your visibility to recruiters.</li>`;
+                `<li>Fix your template → your score estimate moves from <strong>${finalScore}% → ~${projectedWithFix}%</strong></li>` :
+                `<li>Fixing your template is the fastest way to improve parse reliability.</li>`;
 
             criticalAlert.innerHTML = `
                 <div class="card critical-alert-card">
@@ -1336,7 +1549,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
                             <h3 style="margin: 0 0 0.5rem 0; color: var(--danger); font-size: 1.1rem;">Template Compliance: ${formatScore}% — Action Required</h3>
                             <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1rem;">
                                 Detected: <strong>${formatCheck.issues.map(i => i.label).join(' + ')}</strong>.<br><br>
-                                Even if the <strong>Raw Text Preview</strong> below looks readable, older ATS systems (Workday, Taleo) often "mash" columns together, creating unreadable word salad. We've penalized your score to reflect this high risk of automated rejection.
+                                Even if the <strong>Raw Text Preview</strong> below looks readable, multi-column and table-heavy layouts often scramble word order for automated parsers. Your score is discounted for that parse risk — this is a local estimate, not a live vendor ATS result.
                             </p>
                             <div style="background: rgba(239, 68, 68, 0.05); border-radius: 8px; padding: 1rem; border: 1px solid rgba(239, 68, 68, 0.1);">
                                 <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-muted);">
@@ -1372,7 +1585,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         } else if (criticalFormatIssues.length > 0) {
             scoreTextEl.innerHTML = `Template issues are hiding your keywords from ATS parsers. Fix your template to unlock ~<strong>${projectedWithFix}%</strong>.`;
         } else {
-            scoreTextEl.textContent = 'Local estimate: keyword overlap, section headers, metrics in bullets, and layout risk — not a vendor ATS emulator.';
+            scoreTextEl.textContent = 'Local estimate: keyword overlap (with light stemming), section headers, metrics in bullets, and layout risk — not a vendor ATS.';
         }
     }
 
@@ -1568,7 +1781,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         tips.push({
             type: 'danger',
             html: `<strong>🚨 File Size Alert (${(fileMetadata.size / (1024 * 1024)).toFixed(1)} MB)</strong><br>
-            Your file is over 2MB. Older ATS portals (like Workday or Taleo) often have strict file size limits and may reject your application automatically.`
+            Your file is over 2MB. Many application portals cap upload size and may reject large files automatically.`
         });
     }
 
@@ -2453,3 +2666,67 @@ function explainJobDescriptionField() {
     area.insertAdjacentElement('afterend', note);
 }
 explainJobDescriptionField();
+
+/** Fill JD from extension storage or #jd= hash (hash used when query strings are too short for long postings). */
+async function bootstrapJdFromExtensionOrHash() {
+    const area = document.getElementById('jobDescription');
+    if (!area) return;
+
+    let jd = '';
+    let source = '';
+
+    if (location.hash && location.hash.indexOf('#jd=') === 0) {
+        try {
+            jd = decodeURIComponent(location.hash.slice(4));
+            source = 'hash';
+        } catch (e) {
+            jd = '';
+        }
+    }
+
+    if (!jd && typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        try {
+            const data = await new Promise(resolve => {
+                chrome.storage.local.get(['getatsready_jd'], resolve);
+            });
+            if (data && data.getatsready_jd) {
+                jd = String(data.getatsready_jd);
+                source = 'extension';
+                try { chrome.storage.local.remove(['getatsready_jd']); } catch (e) { /* ignore */ }
+            }
+        } catch (e) {
+            // Pages cannot read extension storage without a content script — hash / content script handle that path.
+        }
+    }
+
+    // Content script may set this marker + value before script.js runs, or dispatch an event.
+    if (!jd && window.__getatsreadyExtensionJd) {
+        jd = String(window.__getatsreadyExtensionJd);
+        source = 'extension';
+        try { delete window.__getatsreadyExtensionJd; } catch (e) { /* ignore */ }
+    }
+
+    if (!jd || !String(jd).trim()) return;
+
+    area.value = String(jd).trim();
+    showInlineAlert('Job description loaded from extension', 'success');
+    if (source === 'hash' && location.hash.indexOf('#jd=') === 0) {
+        try {
+            history.replaceState(null, '', location.pathname + location.search);
+        } catch (e) { /* ignore */ }
+    }
+}
+
+document.addEventListener('getatsready:jd', (ev) => {
+    const area = document.getElementById('jobDescription');
+    const text = ev && ev.detail != null ? String(ev.detail) : '';
+    if (!area || !text.trim()) return;
+    area.value = text.trim();
+    showInlineAlert('Job description loaded from extension', 'success');
+});
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { bootstrapJdFromExtensionOrHash(); });
+} else {
+    bootstrapJdFromExtensionOrHash();
+}

@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "GetATSReady JD Grabber",
+  "version": "1.0.0",
+  "description": "Copy a job description from common boards and paste it into GetATSReady. Helps paste faster — does not bypass ATS; no account.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://linkedin.com/*",
+    "https://*.greenhouse.io/*",
+    "https://boards.greenhouse.io/*",
+    "https://jobs.lever.co/*",
+    "https://*.lever.co/*",
+    "https://jobs.ashbyhq.com/*",
+    "https://*.ashbyhq.com/*",
+    "https://www.getatsready.com/*",
+    "https://getatsready.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "GetATSReady JD Grabber",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/*",
+        "https://linkedin.com/*",
+        "https://*.greenhouse.io/*",
+        "https://boards.greenhouse.io/*",
+        "https://jobs.lever.co/*",
+        "https://*.lever.co/*",
+        "https://jobs.ashbyhq.com/*",
+        "https://*.ashbyhq.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.getatsready.com/*",
+        "https://getatsready.com/*"
+      ],
+      "js": ["getatsready-bridge.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

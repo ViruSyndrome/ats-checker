@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GetATSReady JD Grabber</title>
+  <style>
+    :root {
+      --bg: #f7faf8;
+      --ink: #1a2e28;
+      --muted: #5c6f68;
+      --accent: #0f766e;
+      --accent-ink: #ecfdf5;
+      --line: #d5e2dc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      width: 320px;
+      font-family: "Segoe UI", "Avenir Next", system-ui, sans-serif;
+      background: linear-gradient(165deg, #eef6f2 0%, var(--bg) 45%, #e8f0ec 100%);
+      color: var(--ink);
+      padding: 16px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    p {
+      margin: 0 0 12px;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 0.9rem;
+      font-weight: 650;
+      cursor: pointer;
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+    button:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+    button.secondary {
+      margin-top: 8px;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--line);
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+    #status.err { color: #b91c1c; }
+    #status.ok { color: #047857; }
+  </style>
+</head>
+<body>
+  <h1>GetATSReady JD Grabber</h1>
+  <p>Grabs the job description from this tab and opens GetATSReady so you can paste faster. Does not bypass ATS. No account.</p>
+  <button id="sendBtn" type="button">Send to GetATSReady</button>
+  <button id="copyBtn" class="secondary" type="button">Copy JD only</button>
+  <div id="status" role="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
