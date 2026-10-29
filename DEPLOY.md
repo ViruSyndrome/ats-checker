@@ -1,17 +1,22 @@
 # Deploy notes (GetATSReady)
 
-## GitHub Pages publishes the whole repo
+## Clean Pages deploy (recommended)
 
-If Pages is set to “Deploy from a branch” at `/` (root), **already-tracked** files are still served even when listed in `.gitignore`. Ignoring only stops *new* untracked copies from being added.
+Workflow: `.github/workflows/deploy-pages.yml`
 
-To stop serving tooling (`*.py`, `docs/`, `scripts/`, `assets/alternativeto/`, etc.):
+It publishes only public HTML/CSS/JS/assets (excludes `*.py`, `docs/`, `scripts/`, `assets/alternativeto/`, etc.).
 
-1. Configure Pages from a `/docs` publish folder that contains only the public site, **or**
-2. Use a GitHub Action that copies only HTML/CSS/JS and public image assets into the Pages artifact.
+**You must flip this once:** GitHub repo → Settings → Pages → Source → **GitHub Actions**.
 
-Do not rely on `.gitignore` alone to hide files that are already in git history.
+Until then, “Deploy from a branch” still serves the whole `main` tree (including tooling).
+
+## Why this helps
+
+- Stops strangers downloading your generators, patch scripts, and internal docs
+- Slightly cleaner crawl surface for Google
+- Same live site for users; tooling stays in git for you
 
 ## Keep
 
-- `CNAME` — custom domain for GitHub Pages (`www.getatsready.com`)
-- Public HTML/CSS/JS, `favicon`, `og-image`, role pages that should stay live
+- `CNAME` — `www.getatsready.com`
+- Public HTML/CSS/JS, favicon, og-image

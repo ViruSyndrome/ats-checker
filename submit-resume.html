@@ -375,6 +375,39 @@
       }
     }
 
+    function notifyIntakeTrouble(reason) {
+      // Silent ping to Formspree so you get an email if a payer gets stuck.
+      // Does not include the resume file — only tier, email (if filled), and reason.
+      try {
+        const emailEl = document.querySelector('input[name="email"]');
+        const paymentEl = document.querySelector('input[name="payment_reference"], input[name="payment_id"], input[name="order_id"]');
+        const payload = {
+          _subject: 'GetATSReady intake trouble (payer may be stuck)',
+          kind: 'intake_failsafe',
+          reason: reason,
+          tier: document.getElementById('serviceTier') ? document.getElementById('serviceTier').value : '',
+          page: location.href,
+          email: emailEl && emailEl.value ? emailEl.value : '(not filled yet)',
+          payment_reference: paymentEl && paymentEl.value ? paymentEl.value : '(not filled yet)',
+          when: new Date().toISOString()
+        };
+        fetch('https://formspree.io/f/mdeogkpb', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(function () {});
+      } catch (err) {}
+    }
+
+    // If they returned from payment (?tier=), show how to reach you if stuck.
+    if (params.get('tier') && !params.get('submitted')) {
+      const alertBox = document.querySelector('.alert-box');
+      if (alertBox) {
+        alertBox.insertAdjacentHTML('beforeend',
+          '<p style="margin:10px 0 0;"><strong>Stuck after paying?</strong> Email <a href="mailto:hello@getatsready.com">hello@getatsready.com</a> with your payment ID — or finish this form (file or Drive link required). If submit is blocked, we also get an automatic notice.</p>');
+      }
+    }
+
     document.getElementById('submitForm').addEventListener('submit', function (e) {
       const fileInput = document.getElementById('resumeFile');
       const notes = (document.querySelector('textarea[name="special_instructions"]') || {}).value || '';
@@ -387,9 +420,11 @@
           err.style.display = 'block';
           err.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+        if (params.get('tier')) notifyIntakeTrouble('submit_blocked_no_file_or_drive_link');
         return;
       }
       if (err) err.style.display = 'none';
+      window.__atsIntakeSubmitted = true;
       const btn = document.getElementById('submitBtn');
       btn.textContent = 'Submitting...';
       btn.disabled = true;

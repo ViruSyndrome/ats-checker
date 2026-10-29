@@ -1,0 +1,56 @@
+# Publishes only public site files to GitHub Pages (no .py, docs/, scripts/, etc.).
+# One-time: Repo Settings → Pages → Source → GitHub Actions
+name: Deploy Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build clean _site
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '_site/' \
+            --exclude 'node_modules/' \
+            --exclude 'docs/' \
+            --exclude 'scripts/' \
+            --exclude 'assets/alternativeto/' \
+            --exclude '*.py' \
+            --exclude '*.ps1' \
+            --exclude '*.pyc' \
+            --exclude '__pycache__/' \
+            --exclude '.gitignore' \
+            --exclude 'DEPLOY.md' \
+            --exclude 'README.md' \
+            --exclude 'roles_data.json' \
+            --exclude 'patch.js' \
+            --exclude '*.md' \
+            ./ _site/
+          # Keep verification / ads / domain files
+          test -f CNAME && cp CNAME _site/
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
