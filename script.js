@@ -60,8 +60,19 @@ function lsDel(key)                  { return _ls.del(key); }
 // ──────────────────────────────────────────────────────────────────────────// ──────────────────────────────────────────────────────────────────────────
 
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+// Configure PDF.js worker (guard pages that do not load pdf.js)
+if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+function escHtml(str) {
+    return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -108,32 +119,32 @@ function bumpUsageCounter(path) {
     }).catch((err) => console.error("Usage counter failed", err));
 }
 
-// Cookie Consent
+// Cookie Consent — Accept grants analytics/ads storage; no auto-dismiss without consent
 function acceptCookies() {
     _ls.setRaw('cookieConsent', 'true');
     const cookieBanner = document.getElementById('cookieConsent');
     if (cookieBanner) cookieBanner.classList.add('hidden');
+    if (typeof gtag === 'function') {
+        gtag('consent', 'update', {
+            ad_storage: 'granted',
+            analytics_storage: 'granted',
+            ad_user_data: 'granted',
+            ad_personalization: 'granted'
+        });
+    }
 }
 
 window.addEventListener('load', () => {
     const cookieBanner = document.getElementById('cookieConsent');
-    if (cookieBanner) {
-        if (_ls.getRaw('cookieConsent') === 'true') {
-            cookieBanner.classList.add('hidden');
-        } else {
-            const autoHideOnInteraction = () => {
-                setTimeout(() => {
-                    if (!cookieBanner.classList.contains('hidden')) {
-                        cookieBanner.style.transition = 'opacity 0.5s ease';
-                        cookieBanner.style.opacity = '0';
-                        setTimeout(() => cookieBanner.classList.add('hidden'), 500);
-                    }
-                }, 8000);
-                document.removeEventListener('click', autoHideOnInteraction);
-                document.removeEventListener('keydown', autoHideOnInteraction);
-            };
-            document.addEventListener('click', autoHideOnInteraction);
-            document.addEventListener('keydown', autoHideOnInteraction);
+    if (cookieBanner && _ls.getRaw('cookieConsent') === 'true') {
+        cookieBanner.classList.add('hidden');
+        if (typeof gtag === 'function') {
+            gtag('consent', 'update', {
+                ad_storage: 'granted',
+                analytics_storage: 'granted',
+                ad_user_data: 'granted',
+                ad_personalization: 'granted'
+            });
         }
     }
     try {
@@ -299,7 +310,7 @@ let fileMetadata = { name: "", size: 0 }; // Track for warnings
 
 async function readPdf(file) {
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
     let text = "";
     let streamText = "";
     layoutWarnings = [];
@@ -929,9 +940,9 @@ function checkContactInfo(text) {
         emailCandidates.forEach(raw => {
             const e = raw.replace(/\s/g, '').toLowerCase();
             if ((e.match(/@/g) || []).length > 1) {
-                issues.push(`Email looks broken: <strong>${e}</strong> — has two @ symbols.`);
+                issues.push(`Email looks broken: <strong>${escHtml(e)}</strong> — has two @ symbols.`);
             } else if (/\.(con|cmo|ocm|cm|gmal|gmial|yahooo|outlok|outlookcom)$/i.test(e)) {
-                issues.push(`Email domain looks like a typo: <strong>${e}</strong> — check the domain spelling.`);
+                issues.push(`Email domain looks like a typo: <strong>${escHtml(e)}</strong> — check the domain spelling.`);
             }
         });
     }
@@ -947,7 +958,7 @@ function checkContactInfo(text) {
         validPhones.forEach(raw => {
             const digits = raw.replace(/\D/g, '');
             if (digits.length < 10 && digits.length > 0) {
-                issues.push(`Phone number looks incomplete: <strong>${raw.trim()}</strong> — only ${digits.length} digits found (expected 10+).`);
+                issues.push(`Phone number looks incomplete: <strong>${escHtml(raw.trim())}</strong> — only ${digits.length} digits found (expected 10+).`);
             }
         });
     }
@@ -965,11 +976,11 @@ function checkContactInfo(text) {
             const url = raw.toLowerCase();
             // Must have /in/ followed by a username of at least 3 chars
             if (!/linkedin\.com\/in\/[a-zA-Z0-9\-]{3,}/.test(url)) {
-                issues.push(`LinkedIn URL looks broken: <strong>${raw}</strong><br>
+                issues.push(`LinkedIn URL looks broken: <strong>${escHtml(raw)}</strong><br>
                     Expected format: <code>linkedin.com/in/your-name</code><br>
                     Common issues: missing /in/, extra spaces, broken copy-paste from PDF.`);
             } else if (/linkedin\.com\/in\/$/.test(url) || /linkedin\.com\/in\/[^a-zA-Z0-9]/.test(url)) {
-                issues.push(`LinkedIn URL appears incomplete: <strong>${raw}</strong> — the username part is missing or invalid.`);
+                issues.push(`LinkedIn URL appears incomplete: <strong>${escHtml(raw)}</strong> — the username part is missing or invalid.`);
             }
         });
     }
@@ -979,11 +990,11 @@ function checkContactInfo(text) {
     urlMatches.forEach(raw => {
         // Catch obviously broken URLs
         if (/https?:\/\/(www\.)?linkedin/i.test(raw) && !/\/in\/[a-zA-Z0-9\-]{3,}/.test(raw)) {
-            issues.push(`LinkedIn URL is broken: <strong>${raw}</strong> — missing the /in/username part.`);
+            issues.push(`LinkedIn URL is broken: <strong>${escHtml(raw)}</strong> — missing the /in/username part.`);
         }
         // Catch URLs with spaces (common PDF copy-paste artifact)
         if (/https?:\/\/[^\s]*\s/.test(raw + ' ')) {
-            issues.push(`URL appears to have a space or line-break in it (common in PDFs): <strong>${raw}</strong>`);
+            issues.push(`URL appears to have a space or line-break in it (common in PDFs): <strong>${escHtml(raw)}</strong>`);
         }
     });
 
@@ -1361,7 +1372,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         } else if (criticalFormatIssues.length > 0) {
             scoreTextEl.innerHTML = `Template issues are hiding your keywords from ATS parsers. Fix your template to unlock ~<strong>${projectedWithFix}%</strong>.`;
         } else {
-            scoreTextEl.textContent = 'ATS compatibility: keyword match, template compliance, structure, and impact — based on how real ATS systems score resumes.';
+            scoreTextEl.textContent = 'Local estimate: keyword overlap, section headers, metrics in bullets, and layout risk — not a vendor ATS emulator.';
         }
     }
 
@@ -1619,7 +1630,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         const weakSamples = bulletMetrics.weakBulletSamples || [];
         if (weakSamples.length > 0) {
             exampleHTML = weakSamples.map((b, i) => {
-                const clean = b.replace(/<[^>]+>/g, '').trim();
+                const clean = escHtml(b.replace(/<[^>]+>/g, '').trim());
                 const suggestion = i === 0
                     ? `If this work had a real count — years, a team size, a release count — add that number. Do not invent a percentage.`
                     : `Start with a verb you can stand behind ("Led", "Mentored", "Documented") and add a real count if you have one.`;
@@ -2244,8 +2255,8 @@ function renderHistory() {
         return `
             <div class="history-item">
                 <div class="history-item-left">
-                    <span class="history-item-name">${item.filename}</span>
-                    <span class="history-item-sub">${item.jobTitle}</span>
+                    <span class="history-item-name">${escHtml(item.filename)}</span>
+                    <span class="history-item-sub">${escHtml(item.jobTitle)}</span>
                 </div>
                 <div class="history-item-right">
                     <span class="history-item-date">${item.timestamp}</span>

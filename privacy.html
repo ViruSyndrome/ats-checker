@@ -11,6 +11,13 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      });
       gtag('js', new Date());
       gtag('config', 'G-8HMGTGQ4B8');
     </script>
@@ -139,43 +146,37 @@
     <h1 style="font-size:1.8rem; font-weight:800; margin-bottom:12px;">Privacy Policy</h1>
             <div class="card">
                 <h2>Privacy Policy</h2>
-                <p><em>Last updated: October 13, 2026</em></p>
+                <p><em>Last updated: October 2026</em></p>
 
                 <h3>Our Privacy Commitment</h3>
-                <p>The free scan parses your PDF or DOCX in the browser. That file is not uploaded to GetATSReady for the scan. The page still loads other services, listed below.</p>
+                <p>The free scan parses your PDF or DOCX in the browser. That file is not uploaded to GetATSReady for the scan. The page still loads third-party scripts and services listed below. Cookie storage for analytics and ads starts denied until you Accept cookies.</p>
 
-                <h3>What Data We Collect</h3>
+                <h3>What this site uses</h3>
                 <ul>
-                    <li><strong>Analytics:</strong> We use Google Analytics to understand how visitors use our site (page views, time spent, country).</li>
-                    <li><strong>Cookies:</strong> We use cookies for Google AdSense advertising and analytics. You can disable cookies in your browser settings.</li>
-                    <li><strong>Error reporting:</strong> Sentry receives error and performance reports. Session replay is off, so it is not recording a video of the page.</li>
-                    <li><strong>Scan counter:</strong> A successful scan increments a number in Firebase. The resume file and the job description are not part of that count.</li>
-                    <li><strong>Your Resume:</strong> The free scan does not upload your resume or the job description. Parsing happens in your browser. Recent scans on this device stay in local storage.</li>
-                    <li><strong>Optional score note:</strong> If you submit the email box after a score, Formspree receives that email address and the score. It does not receive the resume file. There is no newsletter. To remove an address, email hello@getatsready.com.</li>
-                    <li><strong>Paid review submissions:</strong> If you voluntarily purchase a review and submit the intake form, Formspree receives the name, email, payment reference, job description, instructions, and uploaded files so we can provide the service. We retain these materials only as long as reasonably necessary to deliver the service, handle revisions, resolve disputes, and meet legal or accounting obligations, then delete them from our working systems.</li>
-                    <li><strong>Payment data:</strong> Payments are processed by Razorpay or Gumroad. We do not receive or store full card, bank, or wallet credentials. Review the applicable provider's privacy policy at checkout.</li>
-                </ul>
-
-                <h3>User-Initiated Troubleshooting (Debug Log)</h3>
-                <p>To assist with technical support, we provide a "Download Debug Log" feature. This feature is <strong>strictly user-initiated</strong>.</p>
-                <ul>
-                    <li>When you click "Download Debug Log", a small file is generated <strong>locally</strong> on your device.</li>
-                    <li>This file contains technical metadata (browser type, error codes) and a truncated sample of extracted text (first 1,000 characters).</li>
-                    <li>We do not receive this file automatically. You must choose to share it with us via email if you require support.</li>
+                    <li><strong>Google Analytics (GA4):</strong> page views and basic usage after consent is granted.</li>
+                    <li><strong>Google AdSense:</strong> advertising. Ad storage and personalization stay denied until you Accept cookies. For EEA/UK, also enable a Google-certified CMP in the AdSense console — Consent Mode alone is not enough.</li>
+                    <li><strong>Sentry:</strong> error and performance reporting. Session replay sample rates are set to 0.</li>
+                    <li><strong>Formspree:</strong> optional “score note” email on the scanner (address + score only, not the resume file), and paid intake form submissions (name, email, payment reference, job description, instructions, and any uploaded resume file).</li>
+                    <li><strong>Firebase Realtime Database:</strong> anonymous public counters for scans and maker downloads. Resume text is not stored there.</li>
+                    <li><strong>geojs / ipapi:</strong> approximate country lookup so checkout can show INR or USD pricing. This is a network request from your browser.</li>
+                    <li><strong>Fonts and CDNs:</strong> Google Fonts, plus libraries such as pdf.js, mammoth, jsPDF, and Sentry/Firebase scripts loaded from public CDNs.</li>
+                    <li><strong>Payments:</strong> Razorpay and/or Gumroad (and PayPal if shown at checkout). Card and wallet details are handled by those processors, not by GetATSReady servers.</li>
+                    <li><strong>localStorage:</strong> cookie consent flag, recent scan history on this device, and resume-maker draft fields. Clearing site data removes them.</li>
                 </ul>
 
                 <h3>How We Use Your Information</h3>
                 <ul>
-                    <li>Improve our website and user experience</li>
-                    <li>Display relevant advertisements through Google AdSense</li>
-                    <li>Analyze traffic patterns and popular features</li>
+                    <li>Operate the free scanner and resume maker</li>
+                    <li>Measure traffic and keep the free tools funded with ads</li>
+                    <li>Deliver paid human reviews when you submit the intake form</li>
+                    <li>Diagnose site errors via Sentry</li>
                 </ul>
-                
-                <h3>Data Security</h3>
-                <p>The free scan keeps the resume file in the browser. Analytics, ads, error reports, the optional email note, a paid intake, and the scan counter are the cases where data leaves the device. Those are described above.</p>
 
-                <h3>Contact Us</h3>
-                <p>If you have questions about this privacy policy, please contact us at: <a href="mailto:hello@getatsready.com">hello@getatsready.com</a></p>
+                <h3>Data retention</h3>
+                <p>Free-scan resume files stay in the browser and are not uploaded for that scan. Paid intake materials are kept only as long as needed to deliver the review, handle revisions, resolve disputes, and meet legal or accounting needs, then removed from working systems.</p>
+
+                <h3>Contact</h3>
+                <p>Questions: <a href="mailto:hello@getatsready.com">hello@getatsready.com</a></p>
             </div>
         </main>
 

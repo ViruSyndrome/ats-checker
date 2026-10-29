@@ -7,3 +7,15 @@ Thumbs.db
 node_modules/
 
 data/jobs-feed.json
+
+# Tooling / internal — do not publish on future deploys
+assets/alternativeto/
+docs/
+scripts/
+*.py
+*.ps1
+roles_data.json
+patch.js
+
+# Keep GitHub Pages custom domain
+!CNAME

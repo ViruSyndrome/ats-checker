@@ -14,8 +14,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- PDF Generation Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Text PDF via jsPDF (not html2canvas/image) -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         .builder-container {
@@ -354,29 +354,6 @@
                             <input type="text" id="b_link" placeholder="linkedin.com/in/johndoe" oninput="updatePreview()">
                         </div>
                         
-                        <!-- 📧 EMAIL CAPTURE WIDGET 📧 -->
-                        <div style="margin-top: 24px; padding: 20px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; text-align: center;">
-                            <h3 style="color: #0f172a; font-size: 1.1rem; margin-bottom: 8px;">Send me this score</h3>
-                            <p style="color: #334155; font-size: 0.9rem; line-height: 1.4; margin-bottom: 16px;">Leave your email. I get a note with your address and this score. I do not email the score back to you, and there is no weekly template series.</p>
-                            
-                            <div data-fs-success style="display:none; color: #15803d; font-weight: 600; padding: 10px; background: #dcfce7; border-radius: 6px; margin-bottom: 10px;">Sent. I have your email and this score.</div>
-                            <div data-fs-error style="display:none; color: #b91c1c; font-size: 0.9rem; margin-bottom: 10px;"></div>
-                            
-                            <form id="ats-email-form" style="display:flex; gap:8px; align-items:center;">
-                                <input type="email" name="email" data-fs-field placeholder="Your email address" required style="flex:1; padding:10px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.95rem; outline:none;">
-                                <input type="hidden" name="_subject" value="Score note from GetATSReady">
-                                <button type="submit" data-fs-submit-btn style="padding:10px 16px; background:var(--primary); color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.95rem; transition:0.2s;">Send</button>
-                            </form>
-                            <span data-fs-error="email" style="color: #b91c1c; font-size: 0.8rem; display:block; text-align:left; margin-top:4px;"></span>
-                            <p style="font-size: 0.75rem; color: #64748b; margin-top: 12px; margin-bottom:0;">No newsletter. To remove your address, email hello@getatsready.com.</p>
-                        </div>
-                        
-                        <!-- Formspree AJAX -->
-                        <script>
-                            window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-                            formspree('initForm', { formElement: '#ats-email-form', formId: 'maeykznp' });
-                        </script>
-                        <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
                     </div>
 
                     <div class="form-section">
@@ -805,37 +782,148 @@
         }
 
         function clearDraft() {
-            if(confirm('Are you sure you want to clear your entire draft?')) {
-                MAKER_FIELDS.forEach(id => localStorage.removeItem(id));
-                document.getElementById('resumeForm').reset();
-                updatePreview();
+            if (!confirm('Are you sure you want to clear your entire draft?')) return;
+            MAKER_FIELDS.forEach(id => {
+                try { localStorage.removeItem(id); } catch (e) {}
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const form = document.getElementById('resumeForm');
+            if (form) {
+                form.querySelectorAll('input, textarea').forEach(el => { el.value = ''; });
+                form.reset();
             }
+            ['job_form_2', 'job_form_3', 'edu_form_2'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            const addJob = document.getElementById('addJobBtn');
+            const addEdu = document.getElementById('addEduBtn');
+            if (addJob) addJob.style.display = '';
+            if (addEdu) addEdu.style.display = '';
+            updatePreview();
         }
 
         function downloadPDF() {
-            const element = document.getElementById('resumeOutput');
-            const opt = {
-                margin:       0,
-                filename:     `${document.getElementById('b_name').value || 'Resume'}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                alert('PDF library is still loading. Please try again in a moment.');
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
+            const margin = 54;
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            const maxW = pageW - margin * 2;
+            let y = margin;
+
+            const val = (id) => {
+                const el = document.getElementById(id);
+                return el ? (el.value || '').trim() : '';
             };
 
-            // Temporarily remove transform scaling to render full resolution
-            element.style.transform = 'none';
-            element.style.width = '100%';
-            
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.transform = 'scale(0.75)';
-                element.style.width = '794px';
-                var next = document.getElementById('afterDownload');
-                if (next) {
-                    next.hidden = false;
-                    next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            function ensureSpace(needed) {
+                if (y + needed > pageH - margin) {
+                    doc.addPage();
+                    y = margin;
                 }
-                if (typeof window.incrementMakerCount === 'function') window.incrementMakerCount();
-            });
+            }
+
+            function addLines(text, fontSize, style, gapAfter) {
+                doc.setFont('helvetica', style || 'normal');
+                doc.setFontSize(fontSize || 10);
+                const lines = doc.splitTextToSize(String(text || ''), maxW);
+                lines.forEach(line => {
+                    ensureSpace(fontSize + 4);
+                    doc.text(line, margin, y);
+                    y += (fontSize || 10) + 3;
+                });
+                y += (gapAfter != null ? gapAfter : 6);
+            }
+
+            function addSection(title) {
+                ensureSpace(28);
+                y += 6;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(20);
+                doc.text(String(title).toUpperCase(), margin, y);
+                y += 3;
+                doc.setDrawColor(60);
+                doc.setLineWidth(0.8);
+                doc.line(margin, y, pageW - margin, y);
+                y += 14;
+                doc.setTextColor(0);
+            }
+
+            const name = val('b_name') || 'Resume';
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            doc.text(name, margin, y);
+            y += 20;
+
+            const contactParts = [val('b_email'), val('b_phone'), val('b_link')].filter(Boolean);
+            if (contactParts.length) {
+                addLines(contactParts.join('  |  '), 9, 'normal', 10);
+            }
+
+            const summary = val('b_summary');
+            if (summary) {
+                addSection('Professional Summary');
+                addLines(summary, 10, 'normal', 8);
+            }
+
+            const jobs = [1, 2, 3].map(n => ({
+                title: val('b_jobtitle' + n),
+                company: val('b_company' + n),
+                dates: val('b_dates' + n),
+                desc: val('b_desc' + n)
+            })).filter(j => j.title || j.company || j.desc);
+
+            if (jobs.length) {
+                addSection('Experience');
+                jobs.forEach(job => {
+                    const head = [job.title, job.company].filter(Boolean).join(' — ');
+                    if (head) addLines(head, 10, 'bold', 2);
+                    if (job.dates) addLines(job.dates, 9, 'italic', 4);
+                    if (job.desc) {
+                        job.desc.split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
+                            const bullet = line.replace(/^[-•*]\s*/, '');
+                            addLines('• ' + bullet, 10, 'normal', 2);
+                        });
+                        y += 6;
+                    }
+                });
+            }
+
+            const edu = [
+                { degree: val('b_degree'), uni: val('b_uni') },
+                { degree: val('b_degree2'), uni: val('b_uni2') }
+            ].filter(e => e.degree || e.uni);
+
+            if (edu.length) {
+                addSection('Education');
+                edu.forEach(e => {
+                    const line = [e.degree, e.uni].filter(Boolean).join(' — ');
+                    addLines(line, 10, 'normal', 4);
+                });
+            }
+
+            const skills = val('b_skills');
+            if (skills) {
+                addSection('Skills');
+                addLines(skills, 10, 'normal', 4);
+            }
+
+            const filename = (val('b_name') || 'Resume').replace(/[^\w\- ]+/g, '').trim() || 'Resume';
+            doc.save(filename + '.pdf');
+
+            var next = document.getElementById('afterDownload');
+            if (next) {
+                next.hidden = false;
+                next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            if (typeof window.incrementMakerCount === 'function') window.incrementMakerCount();
         }
 
         // --- CTA Checkout Logic ---
@@ -851,14 +939,22 @@
                     .catch(() => updateCheckoutButton());
             });
 
+        // Editable checkout links; Razorpay callback returns to intake. No payment API calls from this page.
+        const RETURN_BASE = 'https://www.getatsready.com/submit-resume.html';
         const ctaPlans = {
             standard: {
                 label: { india: 'Pay for Standard review (₹2,499)', international: 'Pay for Standard review ($49)' },
-                url: { india: 'https://rzp.io/rzp/03GFDB2', international: 'https://virusyndrome.gumroad.com/l/buhtlh' }
+                url: {
+                    india: 'https://rzp.io/rzp/03GFDB2?callback_url=' + encodeURIComponent(RETURN_BASE + '?tier=standard&market=india'),
+                    international: 'https://virusyndrome.gumroad.com/l/buhtlh?wanted=true'
+                }
             },
             express: {
                 label: { india: 'Pay for Express review (₹3,999)', international: 'Pay for Express review ($79)' },
-                url: { india: 'https://rzp.io/rzp/l7UFzUvu', international: 'https://virusyndrome.gumroad.com/l/emfsta' }
+                url: {
+                    india: 'https://rzp.io/rzp/l7UFzUvu?callback_url=' + encodeURIComponent(RETURN_BASE + '?tier=express&market=india'),
+                    international: 'https://virusyndrome.gumroad.com/l/emfsta?wanted=true'
+                }
             }
         };
 

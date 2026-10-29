@@ -85,8 +85,23 @@ def create_page(role, template):
     """
     html = html.replace('<div class="tool-grid">', h1_injection + '\n            <div class="tool-grid">')
     
-    # Modify the canonical link
-    html = html.replace('href="https://www.getatsready.com/"', f'href="https://www.getatsready.com/role/{slug}.html"')
+    # Role pages duplicate the public *-resume-checker.html pages: noindex + canonical to checker (or home).
+    ROLE_CANONICAL_ALIASES = {
+        "architect": "cloud-architect-resume-checker.html",
+        "quality-assurance": "quality-assurance-tester-resume-checker.html",
+        "ux-designer": "ux-ui-designer-resume-checker.html",
+        "system-administrator": "systems-administrator-resume-checker.html",
+    }
+    canon_file = ROLE_CANONICAL_ALIASES.get(slug, f"{slug}-resume-checker.html")
+    if not os.path.exists(canon_file):
+        canon_url = "https://www.getatsready.com/"
+    else:
+        canon_url = f"https://www.getatsready.com/{canon_file}"
+
+    if 'name="robots"' not in html:
+        html = html.replace("<head>", '<head>\n    <meta name="robots" content="noindex,follow">', 1)
+    html = html.replace('href="https://www.getatsready.com/"', f'href="{canon_url}"')
+    html = html.replace('content="https://www.getatsready.com/"', f'content="{canon_url}"')
     
     # Fix asset paths since this is in a subdirectory (/role/)
     html = html.replace('href="style.css', 'href="../style.css')
@@ -98,6 +113,16 @@ def create_page(role, template):
     html = html.replace('href="terms.html', 'href="../terms.html')
     html = html.replace('href="guides/index.html', 'href="../guides/index.html')
     html = html.replace('href="/"', 'href="../"')
+
+    # Never reintroduce interview/human-eyes guarantee language when cloning index.
+    html = html.replace(
+        "your resume is guaranteed to reach human eyes",
+        "helps you see parsing and keyword gaps before you apply",
+    )
+    html = html.replace(
+        "which one guarantees your resume passes",
+        "which formats parse more reliably in common ATS tools",
+    )
     
     # Inject SEO Content specifically below the newly added scoring explanation
     keyword_list = "".join([f'<li style="display: inline-block; background: var(--bg-secondary); padding: 4px 12px; margin: 4px; border-radius: 99px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color);">{kw}</li>' for kw in keywords])

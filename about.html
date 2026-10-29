@@ -10,12 +10,12 @@
     <meta name="description" content="GetATSReady is a free, in-browser ATS resume checker built by Vinod Isaac in Bengaluru. No signup. Your file stays on your device.">
     <link rel="canonical" href="https://www.getatsready.com/about.html">
     <meta name="msvalidate.01" content="FA7405A0B7623E8A404F74AE4952777C">
-    <script src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
     <script>
       Sentry.onLoad(function() {
         Sentry.init({
           ignoreErrors: [/runtime\.sendMessage/i, /Tab not found/i, /Extension context invalidated/i],
-          tracesSampleRate: 1.0,
+          tracesSampleRate: 0.1,
           replaysSessionSampleRate: 0,
           replaysOnErrorSampleRate: 0,
         });
@@ -26,6 +26,13 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      });
       gtag('js', new Date());
       gtag('config', 'G-8HMGTGQ4B8');
     </script>
@@ -49,7 +56,7 @@
         "name": "Vinod Isaac",
         "jobTitle": "Product builder",
         "address": { "@type": "PostalAddress", "addressLocality": "Bengaluru", "addressCountry": "IN" },
-        "email": "mailto:vinodjamesisaac@gmail.com",
+        "email": "mailto:hello@getatsready.com",
         "url": "https://www.getatsready.com"
       }
     }
@@ -103,11 +110,12 @@
                 <p>This is not a black-box “ATS score” from a vendor. We extract the text in your browser, then apply a <strong>multiplicative model</strong>:</p>
                 <div class="scoring-box">
                     <ul class="scoring-list">
-                        <li><strong>Keyword match (50%)</strong> against the job description you paste (optional).</li>
-                        <li><strong>Structure (25%)</strong> — standard sections a parser expects.</li>
-                        <li><strong>Impact (25%)</strong> — metrics and action verbs in bullets.</li>
+                        <li><strong>Keyword overlap (40%)</strong> against the job description you paste (optional).</li>
+                        <li><strong>Structure (20%)</strong> — standard sections a parser expects.</li>
+                        <li><strong>Impact &amp; metrics (20%)</strong> — numbers and action verbs in bullets.</li>
+                        <li><strong>Format / layout risk (20%)</strong> — multi-column or table-heavy files score lower here.</li>
                     </ul>
-                    <p style="margin-bottom:0">Template compliance is a <strong>multiplier</strong>. A multi-column or table-heavy file can hide keywords even if the writing is good. That is why a pretty Canva resume can still score poorly.</p>
+                    <p style="margin-bottom:0">Template issues can also <strong>discount</strong> the keyword portion. A multi-column or table-heavy file can hide keywords even if the writing is good. That is why a pretty Canva resume can still score poorly. Without a job description, the score uses format, structure, and impact only.</p>
                 </div>
                 <p>The number is a diagnostic, not a job offer. Different employers use different ATS products and settings. We cannot guarantee interviews.</p>
 

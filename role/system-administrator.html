@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="robots" content="noindex,follow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <script src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
     <script>
       Sentry.onLoad(function() {
         Sentry.init({
@@ -23,6 +24,13 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      });
       gtag('js', new Date());
       gtag('config', 'G-8HMGTGQ4B8');
     </script>
@@ -30,10 +38,10 @@
     
     <!-- QR Code Generator for PDF reports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-    <link rel="canonical" href="https://www.getatsready.com/role/system-administrator.html">
+    <link rel="canonical" href="https://www.getatsready.com/systems-administrator-resume-checker.html">
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.getatsready.com/">
+    <meta property="og:url" content="https://www.getatsready.com/systems-administrator-resume-checker.html">
     <meta property="og:title" content="Free System Administrator ATS Resume Checker | Get ATS Ready">
     <meta property="og:description" content="Instantly score your resume against any job description. Free, no signup. The resume file is parsed in your browser. See exactly which keywords you're missing.">
     <meta property="og:site_name" content="GetATSReady">
@@ -68,7 +76,7 @@
     <!-- FAQPage schema is injected dynamically from the live FAQ section via script.js -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959862133855422" crossorigin="anonymous"></script>
     <!-- PDF and DOCX libraries — deferred to avoid blocking page render -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -87,7 +95,7 @@
     <!-- Cookie Consent Banner -->
     <div id="cookieConsent" class="cookie-banner">
         <p>We use cookies for analytics and advertising. By continuing, you accept our <a href="../privacy.html">Privacy Policy</a>.</p>
-        <button onclick="try{localStorage.setItem('cookieConsent','true')}catch(e){}var b=document.getElementById('cookieConsent');if(b)b.classList.add('hidden')">Accept</button>
+        <button onclick="acceptCookies()">Accept</button>
     </div>
 
     <div class="container">
@@ -228,7 +236,7 @@
                         </div>
                         <h2>ATS Compatibility Score</h2>
                         <div id="scoreVerdictBadge" class="inline-style-df703b">Analyzing...</div>
-                        <p id="scoreText" class="inline-style-1f8f6c">Keyword match x template compliance x structure x impact — mirroring how enterprise ATS systems rank candidates.</p>
+                        <p id="scoreText" class="inline-style-1f8f6c">Local estimate: keyword overlap, section headers, metrics, and layout risk — not a Workday/Taleo/Greenhouse emulator.</p>
                         <button id="downloadReport" class="secondary-btn inline-style-8a5dc8">&#8595; Download Full PDF Report</button>
                         
                         <div class="ats-pro-cta" style="margin-top: 24px; padding: 20px; border-radius: 8px; background: linear-gradient(135deg, var(--bg-soft), #fff); border: 2px solid var(--primary); text-align: left;">
@@ -311,7 +319,7 @@
                             <div class="stat-header">
                                 <span>Impact & Metrics
                                     <span class="tooltip-icon">&#8505;&#65039;
-                                        <span class="tooltip-text">Driven by the % of your bullet points that contain quantified results (numbers, %, $, team sizes). 80% of this score comes from bullet metrics; 20% from strong action verbs — mirroring what recruiters reward.</span>
+                                        <span class="tooltip-text">Driven by the % of your bullet points that contain quantified results (numbers, %, $, team sizes). 80% of this score comes from bullet metrics; 20% from strong action verbs — signals that often matter to recruiters.</span>
                                     </span>
                                 </span>
                                 <span id="impactPct">0%</span>
@@ -422,12 +430,13 @@
                 <p style="margin-bottom: 12px;">Most legacy resume checkers use an additive scoring model: they give you 50 points for keywords, 25 points for structure, and 25 points for metrics, resulting in a perfect 100. However, this is fundamentally flawed. If your resume uses a multi-column design, complex tables, or a heavy Canva template, the ATS parser physically cannot read the text. It scrambles the words into an unreadable "word salad."</p>
                 <p style="margin-bottom: 12px;">To solve this, GetATSReady uses a <strong>Multiplicative Scoring Model</strong>. First, we calculate a baseline score using three core metrics:</p>
                 <ul style="margin-bottom: 12px; margin-left: 20px; list-style-type: disc;">
-                    <li><strong>Keyword Match (50%):</strong> We compare words, plurals, and a short list of close variants between your resume and the job description.</li>
-                    <li><strong>Impact & Metrics (25%):</strong> We scan for quantifiable achievements (numbers, percentages) and strong action verbs that demonstrate leadership.</li>
-                    <li><strong>Structure (25%):</strong> We verify that you are using standard, industry-recognized section headers (e.g., "Professional Experience" instead of "My Journey").</li>
+                    <li><strong>Keyword overlap (40%):</strong> We compare words, plurals, and a short list of close variants between your resume and the job description.</li>
+                    <li><strong>Structure (20%):</strong> We check for standard section headers a parser expects (e.g., "Professional Experience" instead of "My Journey").</li>
+                    <li><strong>Impact &amp; metrics (20%):</strong> We look for numbers in bullets and strong action verbs.</li>
+                    <li><strong>Format / layout risk (20%):</strong> Multi-column, table-heavy, or image-like layouts lower this part and can discount keyword credit.</li>
                 </ul>
                 <p style="margin-bottom: 12px;">Next, we apply the <strong>Template Compliance Multiplier</strong>. We simulate the PDF/DOCX extraction process. If we detect multi-column layouts, hidden tables, or unreadable graphical elements, your Template Compliance score drops. This acts as a direct discount factor on your baseline score. For example, if your keyword match is perfect (100) but your template compliance is only 40%, your final ATS score will accurately reflect that the ATS system can only read 40% of your resume.</p>
-                <p style="margin-bottom: 0;">By simulating the exact technical limitations of modern HR software, GetATSReady ensures that when you hit submit on a job application, your resume is guaranteed to reach human eyes.</p>
+                <p style="margin-bottom: 0;">GetATSReady helps you see parsing and keyword gaps before you apply. It cannot guarantee interviews or that a specific ATS will rank you the same way.</p>
             </div>
 
             <!-- Ad Zone: In-Content -->
@@ -436,7 +445,7 @@
                      data-ad-layout="in-article"
                      data-ad-format="fluid"
                      data-ad-client="ca-pub-2959862133855422"
-                     data-ad-slot="auto"></ins>
+                    ></ins>
                 <script>
                     (function() {
                         var adPush = function() {
@@ -477,7 +486,7 @@
 
                 <div class="faq-item">
                     <h3>How accurate is the ATS score?</h3>
-                    <p>The score uses a multiplicative model. Template compliance discounts the keyword score when the file looks multi-column or table-heavy, because those layouts are a common parse risk. The parts are template compliance (a multiplier), keyword match (50%), structure (25%), and impact and metrics (25%). This is an estimate. It is not Workday, Taleo, or iCIMS, and it does not predict how those products will rank you.</p>
+                    <p>The score uses a multiplicative model. Template compliance discounts the keyword score when the file looks multi-column or table-heavy, because those layouts are a common parse risk. With a job description, the score combines keyword overlap (40%), structure (20%), impact and metrics (20%), and format/layout risk (20%); template issues can further discount the keyword portion. This is an estimate. It is not Workday, Taleo, or iCIMS, and it does not predict how those products will rank you.</p>
                 </div>
 
                 <div class="faq-item">
@@ -537,7 +546,7 @@
                     <a href="guides/pdf-vs-docx-resume.html" class="inline-style-09a36b">
                         <div class="card inline-style-bf4089">
                             <h3 class="inline-style-10ed18">PDF vs. DOCX: Best Format</h3>
-                            <p class="inline-style-be958b">The technical breakdown of file structures and which one guarantees your resume passes.</p>
+                            <p class="inline-style-be958b">The technical breakdown of file structures and which formats parse more reliably in common ATS tools.</p>
                             <span class="inline-style-c39962">Read Guide →</span>
                         </div>
                     </a>

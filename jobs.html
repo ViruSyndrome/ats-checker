@@ -83,7 +83,7 @@
 <body>
   <div id="cookieConsent" class="cookie-banner">
     <p>We use cookies for analytics. By continuing, you accept our <a href="privacy.html">Privacy Policy</a>.</p>
-    <button type="button" onclick="try{localStorage.setItem('cookieConsent','true')}catch(e){}var b=document.getElementById('cookieConsent');if(b)b.classList.add('hidden')">Accept</button>
+    <button type="button" onclick="acceptCookies()">Accept</button>
   </div>
   <div class="container">
     <header>
@@ -162,7 +162,7 @@
       </div>
     </footer>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
   <script src="jobs.js?v=4"></script>
   <script>
@@ -311,7 +311,7 @@
     }
 
     if (window.pdfjsLib) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     }
     render();
     loadFeed();

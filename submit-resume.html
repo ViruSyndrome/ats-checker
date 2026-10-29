@@ -11,6 +11,13 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      wait_for_update: 500
+    });
     gtag('js', new Date());
     gtag('config', 'G-8HMGTGQ4B8');
   </script>
@@ -238,7 +245,7 @@
         <div class="field-group">
           <label>Upload Your Current Resume <span class="req">*</span></label>
           <div class="upload-box" onclick="document.getElementById('resumeFile').click()">
-            <input type="file" id="resumeFile" name="resume_file" accept=".pdf,.doc,.docx" onchange="handleFileSelect(this)" required>
+            <input type="file" id="resumeFile" name="resume_file" accept=".pdf,.doc,.docx" onchange="handleFileSelect(this)">
             <div class="upload-box-label">
               <strong>Click to upload</strong> your resume (PDF or Word)<br>
               <span class="or-link">Max 5MB · PDF, DOC, DOCX</span>
@@ -247,6 +254,7 @@
           <div class="file-preview" id="filePreview">
             <span>📄</span><span id="fileName"></span>
           </div>
+          <p id="resumeSourceError" style="display:none;color:#b91c1c;font-size:0.88rem;margin-top:8px;" role="alert">Upload a resume file or paste a Google Drive / Dropbox share link in Special Instructions.</p>
           <span class="hint">Can't upload? Instead, paste a Google Drive / Dropbox share link in "Special Instructions" below.</span>
         </div>
 
@@ -287,14 +295,31 @@
     if (params.get('tier')) document.getElementById('serviceTier').value = params.get('tier');
     if (marketParam) document.getElementById('billingMarket').value = marketParam;
 
+    // Editable payment destinations. callback/return points at this intake page.
+    // Do not invent API calls — these are plain checkout links only.
+    const RETURN_BASE = 'https://www.getatsready.com/submit-resume.html';
     const plans = {
       standard: {
-        india: { label: 'Pay Standard ₹2,499', url: 'https://rzp.io/rzp/03GFDB2' },
-        international: { label: 'Pay Standard $49', url: 'https://virusyndrome.gumroad.com/l/buhtlh' }
+        india: {
+          label: 'Pay Standard ₹2,499',
+          url: 'https://rzp.io/rzp/03GFDB2?callback_url=' + encodeURIComponent(RETURN_BASE + '?tier=standard&market=india')
+        },
+        international: {
+          label: 'Pay Standard $49',
+          // Set Gumroad product “Redirect after purchase” to submit-resume.html?tier=standard
+          url: 'https://virusyndrome.gumroad.com/l/buhtlh?wanted=true'
+        }
       },
       express: {
-        india: { label: 'Pay Express ₹3,999', url: 'https://rzp.io/rzp/l7UFzUvu' },
-        international: { label: 'Pay Express $79', url: 'https://virusyndrome.gumroad.com/l/emfsta' }
+        india: {
+          label: 'Pay Express ₹3,999',
+          url: 'https://rzp.io/rzp/l7UFzUvu?callback_url=' + encodeURIComponent(RETURN_BASE + '?tier=express&market=india')
+        },
+        international: {
+          label: 'Pay Express $79',
+          // Set Gumroad product “Redirect after purchase” to submit-resume.html?tier=express
+          url: 'https://virusyndrome.gumroad.com/l/emfsta?wanted=true'
+        }
       }
     };
 
@@ -350,7 +375,21 @@
       }
     }
 
-    document.getElementById('submitForm').addEventListener('submit', function () {
+    document.getElementById('submitForm').addEventListener('submit', function (e) {
+      const fileInput = document.getElementById('resumeFile');
+      const notes = (document.querySelector('textarea[name="special_instructions"]') || {}).value || '';
+      const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+      const hasDriveLink = /https?:\/\/[^\s]+/i.test(notes) && /(drive\.google|dropbox\.com|docs\.google)/i.test(notes);
+      const err = document.getElementById('resumeSourceError');
+      if (!hasFile && !hasDriveLink) {
+        e.preventDefault();
+        if (err) {
+          err.style.display = 'block';
+          err.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        return;
+      }
+      if (err) err.style.display = 'none';
       const btn = document.getElementById('submitBtn');
       btn.textContent = 'Submitting...';
       btn.disabled = true;

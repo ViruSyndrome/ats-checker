@@ -78,13 +78,27 @@ def generate_page(title_str, slug, q1, a1, q2, a2):
     
     # Hero
     content = content.replace("{H1_TITLE}", f"Free {title_str} Resume Checker")
-    content = content.replace("{HERO_SUBTITLE}", f"Optimize your resume specifically for {title_str} with our advanced, 100% private ATS scanner.")
+    content = content.replace("{HERO_SUBTITLE}", f"Check keyword overlap, section headers, metrics, and layout risk for {title_str} roles — local browser scan, not a vendor ATS emulator.")
     
     # FAQ
     content = content.replace("{FAQ_Q1}", q1)
     content = content.replace("{FAQ_A1}", a1)
     content = content.replace("{FAQ_Q2}", q2)
     content = content.replace("{FAQ_A2}", a2)
+
+    # Honesty guard — never reintroduce guarantee / human-eyes claims from older templates
+    content = content.replace(
+        "your resume is guaranteed to reach human eyes",
+        "helps you see parsing and keyword gaps before you apply",
+    )
+    content = content.replace(
+        "which one guarantees your resume passes",
+        "which formats parse more reliably in common ATS tools",
+    )
+    content = content.replace(
+        "mirroring how enterprise ATS systems rank candidates.",
+        "estimating keyword overlap, headers, metrics, and layout risk — not a vendor emulator.",
+    )
     
     file_name = f"{slug}-resume-checker.html"
     with open(file_name, "w", encoding="utf-8") as f:
@@ -96,16 +110,16 @@ def generate_page(title_str, slug, q1, a1, q2, a2):
 for role, slug in jobs:
     q1 = f"What keywords do ATS look for in a {role} resume?"
     a1 = f"For {role} positions, applicant tracking systems scan for specific hard skills, certifications, and software tools mentioned in the job description. Ensure you use the exact phrasing from the posting (e.g., if they ask for 'Project Management', don't just write 'Managed Projects')."
-    q2 = f"How can I ensure my {role} resume passes the ATS?"
-    a2 = f"To pass the ATS for {role}, use a clean, single-column layout without tables or complex graphics. Save your file as a PDF or DOCX, and ensure your job titles and dates of employment are clearly formatted."
+    q2 = f"How can I improve my {role} resume for ATS parsing?"
+    a2 = f"For {role} applications, use a clean, single-column layout without tables or complex graphics. Prefer a text-based PDF or DOCX, and keep job titles and dates clearly labeled. GetATSReady helps you see keyword and parsing gaps before you apply; it does not guarantee a human review or a vendor match score."
     generate_page(f"{role} ATS", slug, q1, a1, q2, a2)
 
 # Generate ATS Systems
 for sys, slug in ats_systems:
     q1 = f"How does the {sys} ATS parse resumes?"
-    a1 = f"{sys} uses semantic parsing to extract your contact info, work history, and skills. It can struggle with multi-column layouts, headers/footers, and complex graphics. A standard single-column chronological resume works best with {sys}."
-    q2 = f"Does {sys} score or rank resumes automatically?"
-    a2 = f"Yes, like many ATS platforms, {sys} can surface candidates who have a high keyword overlap with the job description. It is crucial to tailor your resume using the exact keywords found in the {sys} application posting."
+    a1 = f"{sys} products typically extract contact info, work history, and skills from uploaded files. Multi-column layouts, headers/footers, and complex graphics are common parse risks. A standard single-column chronological resume is usually safer. This page is guidance — GetATSReady is not a live {sys} emulator."
+    q2 = f"Does GetATSReady mirror {sys} scoring?"
+    a2 = f"No. GetATSReady estimates keyword overlap, section headers, metrics, and layout risk in your browser. Employers configure {sys} differently, so our number cannot predict how {sys} will rank you."
     generate_page(f"{sys} ATS", slug, q1, a1, q2, a2)
 
 print(f"Generated {len(jobs) + len(ats_systems)} pSEO pages for ATS-Checker.")
