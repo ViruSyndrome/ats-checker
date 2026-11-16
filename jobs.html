@@ -10,7 +10,15 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HMGTGQ4B8"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      wait_for_update: 500
+    });
+    gtag('js', new Date());
     gtag('config', 'G-8HMGTGQ4B8');
   </script>
   <link rel="stylesheet" href="style.css?v=13">
@@ -170,6 +178,14 @@
       try { localStorage.setItem("cookieConsent", "true"); } catch (e) {}
       var banner = document.getElementById("cookieConsent");
       if (banner) banner.classList.add("hidden");
+      if (typeof gtag === 'function') {
+        gtag('consent', 'update', {
+          ad_storage: 'granted',
+          analytics_storage: 'granted',
+          ad_user_data: 'granted',
+          ad_personalization: 'granted'
+        });
+      }
     }
     try {
       if (localStorage.getItem("cookieConsent") === "true") acceptCookies();
