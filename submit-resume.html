@@ -74,8 +74,29 @@
     .success-msg p { color: #374151; font-size: 0.95rem; line-height: 1.6; }
     .alert-box { background: #fff7ed; border: 1.5px solid #fb923c; border-radius: 10px; padding: 16px 20px; margin-bottom: 28px; font-size: 0.88rem; color: #9a3412; line-height: 1.5; }
     .alert-box strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
-    /* Navbar tweaks */
+    /* Navbar tweaks & light background contrast */
+    body { background: #f8fafc; color: #0f172a; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    header { padding-top: 16px; }
+    .logo-text {
+      background: none;
+      -webkit-background-clip: border-box;
+      -webkit-text-fill-color: #0f172a;
+      color: #0f172a;
+    }
+    .logo-accent {
+      background: none;
+      -webkit-background-clip: border-box;
+      -webkit-text-fill-color: #0f62fe;
+      color: #0f62fe;
+    }
+    .main-nav a { color: #334155; font-weight: 600; }
+    .main-nav a:hover { color: #0f172a; background: rgba(15, 23, 42, 0.06); }
+    .main-nav a.active { color: #0f62fe; background: rgba(15, 98, 254, 0.08); }
+    .hamburger span { background: #0f172a; }
+    @media (max-width: 768px) {
+      .main-nav { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12); }
+    }
   </style>
 
 <script type="module">
@@ -380,7 +401,7 @@
       // Does not include the resume file — only tier, email (if filled), and reason.
       try {
         const emailEl = document.querySelector('input[name="email"]');
-        const paymentEl = document.querySelector('input[name="payment_reference"], input[name="payment_id"], input[name="order_id"]');
+        const paymentEl = document.querySelector('input[name="payment_ref"], input[name="payment_reference"], input[name="payment_id"], input[name="order_id"]');
         const payload = {
           _subject: 'GetATSReady intake trouble (payer may be stuck)',
           kind: 'intake_failsafe',

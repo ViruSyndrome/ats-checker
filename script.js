@@ -242,7 +242,15 @@ tryExampleBtn.addEventListener('click', () => {
 });
 
 // File Upload Handling
-dropZone.addEventListener('click', () => fileInput.click());
+if (dropZone && fileInput) {
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            fileInput.click();
+        }
+    });
+}
 
 dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -278,12 +286,15 @@ async function handleFile(file) {
     fileNameDisplay.style.color = 'var(--warning)';
     
     try {
-        if (file.type === "application/pdf") {
+        const lowerName = (file.name || '').toLowerCase();
+        const isPdf = file.type === "application/pdf" || lowerName.endsWith(".pdf");
+        const isDocx = file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || lowerName.endsWith(".docx");
+        if (isPdf) {
             isPdfUpload = true;
             const pdfData = await readPdf(file);
             resumeText = pdfData.reconstructed;
             resumeStreamText = pdfData.stream;
-        } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+        } else if (isDocx) {
             isPdfUpload = false;
             layoutWarnings = [];
             resumeText = await readDocx(file);
@@ -506,7 +517,7 @@ function getCompanyNameCandidates(text) {
     return candidates;
 }
 
-const PROTECTED_KEYWORDS = new Set(['data', 'training', 'software', 'web', 'agile', 'scrum', 'code', 'writing', 'user', 'seo', 'api', 'cloud', 'security', 'database', 'testing', 'programming', 'engineering', 'development', 'management', 'analytics']);
+const PROTECTED_KEYWORDS = new Set(['data', 'training', 'software', 'web', 'agile', 'scrum', 'code', 'writing', 'user', 'seo', 'api', 'cloud', 'security', 'database', 'testing', 'programming', 'engineering', 'development', 'management', 'analytics', 'go']);
 const NOISE_KEYWORDS = new Set([
     // Standard English Stop Words (Articles, Prepositions, Conjunctions, Pronouns, Auxiliary Verbs)
     'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't",
@@ -535,7 +546,7 @@ const NOISE_KEYWORDS = new Set([
 
     // High-frequency generic verbs (no specific skill signal)
     'get', 'got', 'getting', 'make', 'made', 'making', 'take', 'took', 'taking', 'give', 'gave', 'giving',
-    'come', 'came', 'coming', 'go', 'went', 'going', 'see', 'saw', 'seeing', 'know', 'knew', 'knowing',
+    'come', 'came', 'coming', 'went', 'going', 'see', 'saw', 'seeing', 'know', 'knew', 'knowing',
     'think', 'thought', 'thinking', 'want', 'wanted', 'wanting', 'feel', 'felt', 'feeling', 'seem', 'seemed',
     'seeming', 'let', 'lets', 'put', 'puts', 'putting', 'set', 'sets', 'setting', 'try', 'tries', 'trying',
     'look', 'looks', 'looking', 'keep', 'kept', 'keeping', 'ask', 'asked', 'asking', 'turn', 'turned',
@@ -675,7 +686,8 @@ const SKILL_TERMS = new Set([
     'acrolinx', 'genai', 'ai', 'llm', 'rag', 'openai', 'kpi', 'kpis', 'analytics', 'query', 'queries',
     'database', 'databases', 'cloud', 'security', 'testing', 'writing', 'documentation', 'tutorial',
     'tutorials', 'mentoring', 'reference', 'references', 'docs-as-code', 'infrastructure', 'etl',
-    'erp', 'crm', 'saas', 'nlp', 'cad', 'revit', 'hvac', 'cnc', 'pmp', 'cpa', 'gdpr', 'sox'
+    'erp', 'crm', 'saas', 'nlp', 'cad', 'revit', 'hvac', 'cnc', 'pmp', 'cpa', 'gdpr', 'sox',
+    'ci/cd', 'ci', 'cd', 'qa', 'bi', 'ml', 'ts', 'db', 'os', 'hr'
 ]);
 
 // Sentence words that survived the stop list. They are not skills to add to a resume.
@@ -1092,15 +1104,39 @@ function getKeywords(text, isJD = false) {
     }
 
     const companyCandidates = isJD ? getCompanyNameCandidates(processingText) : new Set();
-    const words = processingText.toLowerCase()
-        .replace(/([a-z])([A-Z])/g, '$1 $2') 
-        .replace(/[^\w\s+#+-]/g, ' ') 
+    const splitCamelText = processingText.replace(/\b[A-Za-z][A-Za-z0-9+#-]*\b/g, (tok) => {
+        const low = tok.toLowerCase();
+        if (SKILL_TERMS.has(low) || SKILLISH.has(low) || TECH_BOOST.has(low) || DONT_STEM.has(low) || NOISE_KEYWORDS.has(low) || PROTECTED_KEYWORDS.has(low) || STEM_MAP[low] || NARROW_SYNONYMS[low]) {
+            return tok;
+        }
+        return tok.replace(/([a-z])([A-Z])/g, '$1 $2');
+    });
+    const rawTokens = splitCamelText
+        .toLowerCase()
+        .replace(/[^\w\s+#/-]/g, ' ')
         .split(/\s+/)
-        .map(w => w.trim())
-        .filter(w => w.length > 2 || /^(ai|js|ip|5g|ui|ux|c#|xml)$/.test(w));
+        .map(w => w.replace(/^[\/-]+|[\/-]+$/g, '').trim())
+        .filter(Boolean);
+    const words = [];
+    rawTokens.forEach(t => {
+        if (t.includes('/')) {
+            if (/^(ci\/cd|ui\/ux|b2b\/b2c|i\/o)$/.test(t)) {
+                words.push(t);
+            }
+            t.split('/').forEach(part => {
+                const clean = part.replace(/^[\/-]+|[\/-]+$/g, '').trim();
+                if (clean) words.push(clean);
+            });
+        } else {
+            words.push(t);
+        }
+    });
+    const filteredWords = words.filter(w =>
+        w.length > 2 || /^(ai|js|ip|5g|ui|ux|c#|xml|ci\/cd|ci|cd|go|qa|bi|ml|ts|db|os|hr)$/.test(w)
+    );
 
     const frequencyMap = {};
-    words.forEach(w => {
+    filteredWords.forEach(w => {
         if (companyCandidates.has(w)) return;
         if (isJD && JD_NOT_SKILLS.has(w)) return;
         if (PROTECTED_KEYWORDS.has(w) || !NOISE_KEYWORDS.has(w)) {
@@ -1424,7 +1460,7 @@ analyzeBtn.addEventListener('click', () => {
             } else {
                 console.warn('Partial analysis completed despite error:', analysisError);
             }
-        } /* finally */ {
+        } finally {
             // Reset button state even if an error occurs
             try {
                 btnText.style.display = 'inline-block';
@@ -1658,8 +1694,8 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     let extraMissingCount = 0;
     if (hasJD) {
         document.getElementById('foundKeywords').innerHTML = found
-            .sort((a, b) => jdFreq[b] - jdFreq[a])
-            .map(kw => `<span class="keyword-badge keyword-found">${kw}</span> `)
+            .sort((a, b) => (jdFreq[b] || 0) - (jdFreq[a] || 0))
+            .map(kw => `<span class="keyword-badge keyword-found">${escHtml(kw)}</span> `)
             .join(' ');
         const filteredMissingRaw = Array.from(new Set(
             missing
@@ -1672,25 +1708,25 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         extraMissingCount = Math.max(0, filteredMissing.length - displayMissing.length);
         document.getElementById('missingKeywords').innerHTML =
             `<p id="jdScopeNote" style="color:var(--text-muted);font-size:0.82rem;line-height:1.45;margin:0 0 0.75rem;"></p>` +
-            displayMissing.map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ') +
+            displayMissing.map(kw => `<span class="keyword-badge keyword-missing">${escHtml(kw)}</span>`).join(' ') +
             (extraMissingCount > 0
                 ? `<div id="allMissingKeywords" style="display:none; margin-top:0.5rem; line-height:1.8;">
-                       ${filteredMissing.slice(INITIAL_MISSING_COUNT).map(kw => `<span class="keyword-badge keyword-missing">${kw}</span>`).join(' ')}
+                       ${filteredMissing.slice(INITIAL_MISSING_COUNT).map(kw => `<span class="keyword-badge keyword-missing">${escHtml(kw)}</span>`).join(' ')}
                    </div>
                    <button id="showMissingKeywordsBtn" style="margin-top:0.9rem; background: transparent; border: 1px solid rgba(239,68,68,0.35); color: var(--danger); padding: 0.45rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight:600; cursor:pointer; display:block;">
                        + Show ${extraMissingCount} more missing keywords
                    </button>`
                 : '');
         const showMissingBtn = document.getElementById('showMissingKeywordsBtn');
-        if (showMissingBtn) {
+        const allMissingEl = document.getElementById('allMissingKeywords');
+        if (showMissingBtn && allMissingEl) {
             showMissingBtn.addEventListener('click', () => {
-                document.getElementById('allMissingKeywords').style.display = 'block';
-                showMissingBtn.textContent = '− Show fewer';
-                showMissingBtn.addEventListener('click', () => {
-                    document.getElementById('allMissingKeywords').style.display = 'none';
-                    showMissingBtn.textContent = `+ Show ${extraMissingCount} more missing keywords`;
-                }, { once: true });
-            }, { once: true });
+                const isHidden = allMissingEl.style.display === 'none';
+                allMissingEl.style.display = isHidden ? 'block' : 'none';
+                showMissingBtn.textContent = isHidden
+                    ? '− Show fewer'
+                    : `+ Show ${extraMissingCount} more missing keywords`;
+            });
         }
         window.lastResults = window.lastResults || {};
         window.lastResults.filteredMissing = filteredMissing;
@@ -1749,11 +1785,11 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     if (impactDetailsEl) {
         const bulletPctColor = bulletMetrics.pct < 30 ? 'var(--danger)' : bulletMetrics.pct < 60 ? 'var(--warning)' : 'var(--success)';
         const metricHTML = impactResult.metricExamples.length > 0
-            ? `Found metrics in your resume: ${impactResult.metricExamples.map(m => `<strong>${m}</strong>`).join(', ')}`
+            ? `Found metrics in your resume: ${impactResult.metricExamples.map(m => `<strong>${escHtml(m)}</strong>`).join(', ')}`
             : '⚠️ No metrics found (%, $, numbers like "50K"). Quantify your achievements!';
         const verbsHTML = impactResult.foundVerbs.length > 0
             ? impactResult.foundVerbs.slice(0, 8).map(v => 
-                `<span class="keyword-badge keyword-found">✓ ${v}</span>`).join(' ')
+                `<span class="keyword-badge keyword-found">✓ ${escHtml(v)}</span>`).join(' ')
             : '<span style="color: var(--danger); font-size: 0.85rem;">No strong action verbs detected. Use: led, built, launched, optimized, delivered</span>';
         impactDetailsEl.innerHTML = `
             <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.6rem;">Scores (1) quantifiable metrics and (2) strong action verbs. Both signal real results to recruiters.</p>
@@ -1808,13 +1844,14 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
 
     // 0. Template Compliance — HIGHEST PRIORITY, fix before anything else
     if (criticalFormatIssues.length > 0) {
+        const templateHref = location.pathname.indexOf('/role/') !== -1 ? '../GetATSReady_Template.docx' : 'GetATSReady_Template.docx';
         tips.push({
             type: 'danger',
             html: `<strong>🚨 Fix Your Template First — This Is Priority #1</strong><br>
             Your current template is reducing your score from a potential <strong>${projectedWithFix}%</strong> to <strong>${finalScore}%</strong>. No other single fix will have as much impact.<br><br>
-            Detected: <strong>${criticalFormatIssues.map(i => i.label).join(', ')}</strong><br><br>
+            Detected: <strong>${criticalFormatIssues.map(i => escHtml(i.label)).join(', ')}</strong><br><br>
             <strong>Fix your template in 2 easy steps:</strong><br><br>
-            <strong>1. Download our official template:</strong> <a href="GetATSReady_Template.docx" download style="color:var(--primary); font-weight:bold; text-decoration:underline;">📥 Download ATS-Safe Word Template (.docx)</a><br><br>
+            <strong>1. Download our official template:</strong> <a href="${templateHref}" download style="color:var(--primary); font-weight:bold; text-decoration:underline;">📥 Download ATS-Safe Word Template (.docx)</a><br><br>
             <strong>2. Move your text:</strong> Scroll down to the <em>Visual View</em> box, copy your clean text, and paste it into the matching sections of the new template (don't just overwrite the whole file!).<br><br>
             Re-upload here to confirm your improved score!`
         });
@@ -1829,7 +1866,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         
         tips.push({
             type: 'warning',
-            html: `<strong>🎯 Missing terms (${keywordMatchPct}% match):</strong> These are skills or tools from the role, and they are not whole words on your resume. Add one only if you have actually done that work. Do not invent a result to make it fit.<br><br><strong>${topMissing.join(', ')}</strong>${extraMissingCount > 0 ? `<br><span style="color:var(--text-muted);">Plus ${extraMissingCount} more in the list below.</span>` : ''}`
+            html: `<strong>🎯 Missing terms (${keywordMatchPct}% match):</strong> These are skills or tools from the role, and they are not whole words on your resume. Add one only if you have actually done that work. Do not invent a result to make it fit.<br><br><strong>${topMissing.map(escHtml).join(', ')}</strong>${extraMissingCount > 0 ? `<br><span style="color:var(--text-muted);">Plus ${extraMissingCount} more in the list below.</span>` : ''}`
         });
     }
 
@@ -1862,7 +1899,7 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
     // 2.5 Vocabulary Diversity (New Check)
     const vocab = calculateVocabularyDiversity(fullText);
     if (vocab.overused.length > 0) {
-        const overusedList = vocab.overused.map(v => `<strong>${v.verb}</strong> (${v.count}x)`).join(', ');
+        const overusedList = vocab.overused.map(v => `<strong>${escHtml(v.verb)}</strong> (${v.count}x)`).join(', ');
         tips.push({
             type: 'warning',
             html: `<strong>🔄 Vocabulary Repetition:</strong> You've overused these terms: ${overusedList}.<br>
@@ -1909,11 +1946,11 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
             'participated': 'Contributed / Facilitated / Delivered'
         };
         const verbLines = health.weakVerbsFound.map(v => 
-            `• Found "<strong>${v}</strong>" → Replace with: <em>${verbReplacements[v] || 'a stronger action verb'}</em>`
+            `• Found "<strong>${escHtml(v)}</strong>" → Replace with: <em>${verbReplacements[v] || 'a stronger action verb'}</em>`
         ).join('<br>');
         tips.push({
             type: 'warning',
-            html: `<strong>💪 Weak Verbs Found (${health.weakVerbCount}):</strong><br>${verbLines}<br><br>Example transformation:<br>❌ "${health.weakVerbsFound[0].charAt(0).toUpperCase() + health.weakVerbsFound[0].slice(1)} on backend API development"<br>✅ "Engineered RESTful backend APIs serving 200K+ requests/day"`
+            html: `<strong>💪 Weak Verbs Found (${health.weakVerbCount}):</strong><br>${verbLines}<br><br>Example transformation:<br>❌ "${escHtml(health.weakVerbsFound[0].charAt(0).toUpperCase() + health.weakVerbsFound[0].slice(1))} on backend API development"<br>✅ "Engineered RESTful backend APIs serving 200K+ requests/day"`
         });
     }
 
@@ -2472,7 +2509,7 @@ function renderHistory() {
                     <span class="history-item-sub">${escHtml(item.jobTitle)}</span>
                 </div>
                 <div class="history-item-right">
-                    <span class="history-item-date">${item.timestamp}</span>
+                    <span class="history-item-date">${escHtml(item.timestamp)}</span>
                     ${deltaHtml}
                     <span class="keyword-badge" style="border: 1px solid ${badgeColor}; color: ${badgeColor}; font-weight: 700; background: transparent; padding: 4px 10px; margin: 0;">${item.score}%</span>
                 </div>
@@ -2633,21 +2670,36 @@ function setupReviewPricing() {
     btn.textContent = 'Loading pricing...';
     setEnabled(false);
 
-    fetch('https://get.geojs.io/v1/ip/country.json')
-        .then(response => response.json())
+    let pricingSettled = false;
+    const finishPricing = () => {
+        if (pricingSettled) return;
+        pricingSettled = true;
+        updateButton();
+    };
+    const fetchWithTimeout = (url, ms) => {
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timer = controller ? setTimeout(() => controller.abort(), ms) : null;
+        return fetch(url, controller ? { signal: controller.signal } : {})
+            .then(res => res.json())
+            .finally(() => { if (timer) clearTimeout(timer); });
+    };
+    const fallbackTimer = setTimeout(finishPricing, 3000);
+
+    fetchWithTimeout('https://get.geojs.io/v1/ip/country.json', 3000)
         .then(data => {
-            if (data.country === 'IN') detectedMarket = 'india';
-            updateButton();
+            if (data && data.country === 'IN') detectedMarket = 'india';
+            clearTimeout(fallbackTimer);
+            finishPricing();
         })
         .catch(() => {
-            fetch('https://ipapi.co/json/')
-                .then(res => res.json())
+            fetchWithTimeout('https://ipapi.co/json/', 3000)
                 .then(data => {
-                    if (data.country_code === 'IN') detectedMarket = 'india';
-                    updateButton();
+                    if (data && data.country_code === 'IN') detectedMarket = 'india';
                 })
-                .catch(() => {
-                    updateButton();
+                .catch(() => {})
+                .finally(() => {
+                    clearTimeout(fallbackTimer);
+                    finishPricing();
                 });
         });
 }

@@ -129,20 +129,15 @@
   </style>
 </head>
 <body>
-
+<div class="container">
   <!-- NAV -->
-  <header class="site-header">
-    <div class="header-inner">
-      <a href="/" class="logo">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="32" height="32" rx="8" fill="var(--primary)"/>
-          <path d="M8 10h8l5 5v9a1 1 0 01-1 1H9a1 1 0 01-1-1V11a1 1 0 011-1z" stroke="white" stroke-width="1.8" fill="none"/>
-          <line x1="11" y1="16" x2="19" y2="16" stroke="var(--accent, #818cf8)" stroke-width="2" stroke-linecap="round"/>
-          <line x1="11" y1="19" x2="17" y2="19" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-        </svg>
+  <header>
+    <div class="header-top-row">
+      <a href="/" class="logo-link">
+        <img class="logo-mark" src="../logo.svg?v=2" width="36" height="36" alt="">
         <span class="logo-text">GetATS<span class="logo-accent">Ready</span></span>
       </a>
-      <button class="hamburger" id="atsHamburger" aria-label="Toggle navigation" onclick="document.getElementById('atsNavLinks').classList.toggle('open');this.classList.toggle('open')">
+      <button type="button" class="hamburger" id="atsHamburger" aria-label="Toggle navigation" onclick="document.getElementById('atsNavLinks').classList.toggle('open');this.classList.toggle('open')">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -312,7 +307,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q">Does Canva have an ATS-friendly resume template?</div>
-        <div class="faq-a">Canva has introduced some "ATS-friendly" templates, but they still export as PDFs with limitations. Even their simplest templates often use multi-column elements or graphic text rendering that causes parsing issues. For guaranteed ATS compatibility, use Google Docs or our free ATS Resume Builder.</div>
+        <div class="faq-a">Canva has introduced some "ATS-friendly" templates, but they still export as PDFs with limitations. Even their simplest templates often use multi-column elements or graphic text rendering that causes parsing issues. For more reliable ATS parsing, use Google Docs or our free ATS Resume Builder.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Is a PDF or DOCX better for ATS?</div>
@@ -337,10 +332,6 @@
     </div>
   </main>
 
-  <!-- Network Footer -->
-  
-  </div>
-
   <footer style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--glass-border);">
     <p>© 2026 GetATSReady.com — Free ATS Resume Tools. Not affiliated with any ATS vendor.</p>
     <p style="margin-top: 8px;">
@@ -350,6 +341,7 @@
       <a href="../privacy.html" style="color:var(--text-muted); margin: 0 8px;">Privacy</a>
     </p>
   </footer>
+</div>
 
 </body>
 </html>

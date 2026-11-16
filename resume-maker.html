@@ -304,7 +304,7 @@
 
         <div style="text-align: center; margin: 32px 0;">
             <h1 style="margin-bottom: 8px;">Free Resume Maker — ATS-friendly PDF, no signup</h1>
-            <p style="color: var(--text-color); max-width: 640px; margin: 0 auto;">Looking for a free resume maker? Build here, live-preview, and download a PDF. No account, no watermark. Your data stays in the browser. Then <a href="/" style="color:var(--primary);font-weight:600;">scan it against a job description</a> or <a href="jobs.html" style="color:var(--primary);font-weight:600;">find matching jobs</a>.</p>
+            <p style="color: var(--text-muted, #9aa6c7); max-width: 640px; margin: 0 auto;">Looking for a free resume maker? Build here, live-preview, and download a PDF. No account, no watermark. Your data stays in the browser. Then <a href="/" style="color:var(--primary);font-weight:600;">scan it against a job description</a> or <a href="jobs.html" style="color:var(--primary);font-weight:600;">find matching jobs</a>.</p>
 <div id="maker-badge-container" style="margin-top: 10px; margin-bottom: 20px; display: none; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">&#128640; <span id="maker-counter-display">8,920</span> Resumes Built</div>
         </div>
 
@@ -728,6 +728,15 @@
         }
 
 
+        function escHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function updatePreview() {
             const textFields = [
                 'b_name', 'b_email', 'b_phone', 'b_link', 'b_summary', 
@@ -758,7 +767,7 @@
                 if(outEl) {
                     const textToFormat = val || descEl.placeholder;
                     const bullets = textToFormat.split('\n').filter(l => l.trim().length > 0);
-                    outEl.innerHTML = bullets.map(b => `&bull; ${b.replace(/^- /, '').replace(/^• /, '')}`).join('<br>');
+                    outEl.innerHTML = bullets.map(b => `&bull; ${escHtml(b.replace(/^- /, '').replace(/^• /, ''))}`).join('<br>');
                 }
                 
                 // Hide/Show Job Block based on Job Title
@@ -805,6 +814,17 @@
         }
 
         function downloadPDF() {
+            const val = (id) => {
+                const el = document.getElementById(id);
+                return el ? (el.value || '').trim() : '';
+            };
+
+            const hasAnyInput = MAKER_FIELDS.some(id => val(id).length > 0);
+            if (!hasAnyInput) {
+                alert('Please enter your resume details before downloading a PDF.');
+                return;
+            }
+
             if (!window.jspdf || !window.jspdf.jsPDF) {
                 alert('PDF library is still loading. Please try again in a moment.');
                 return;
@@ -816,11 +836,6 @@
             const pageH = doc.internal.pageSize.getHeight();
             const maxW = pageW - margin * 2;
             let y = margin;
-
-            const val = (id) => {
-                const el = document.getElementById(id);
-                return el ? (el.value || '').trim() : '';
-            };
 
             function ensureSpace(needed) {
                 if (y + needed > pageH - margin) {

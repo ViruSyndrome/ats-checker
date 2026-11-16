@@ -10,16 +10,33 @@
     <meta name="description" content="GetATSReady is a free, in-browser ATS resume checker built by Vinod Isaac in Bengaluru. No signup. Your file stays on your device.">
     <link rel="canonical" href="https://www.getatsready.com/about.html">
     <meta name="msvalidate.01" content="FA7405A0B7623E8A404F74AE4952777C">
-    <script defer src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
+    <script src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
     <script>
-      Sentry.onLoad(function() {
-        Sentry.init({
-          ignoreErrors: [/runtime\.sendMessage/i, /Tab not found/i, /Extension context invalidated/i],
-          tracesSampleRate: 0.1,
-          replaysSessionSampleRate: 0,
-          replaysOnErrorSampleRate: 0,
+      if (typeof Sentry !== 'undefined') {
+        Sentry.onLoad(function() {
+          Sentry.init({
+            ignoreErrors: [
+              /runtime\.sendMessage/i,
+              /Tab not found/i,
+              /Extension context invalidated/i,
+              /TagError|adsbygoogle|availableWidth|No slot size|Script error|ErrorEvent/i
+            ],
+            beforeSend: function(event, hint) {
+              var re = /TagError|adsbygoogle|availableWidth|No slot size|Script error|ErrorEvent/i;
+              var msg = (event && event.message) || '';
+              var err = hint && hint.originalException;
+              var errMsg = (err && (err.message || String(err))) || '';
+              var values = event && event.exception && event.exception.values;
+              var valMsg = values ? values.map(function(v) { return (v.type || '') + ' ' + (v.value || ''); }).join(' ') : '';
+              if (re.test(msg + ' ' + errMsg + ' ' + valMsg)) return null;
+              return event;
+            },
+            tracesSampleRate: 0.1,
+            replaysSessionSampleRate: 0,
+            replaysOnErrorSampleRate: 0,
+          });
         });
-      });
+      }
     </script>
     <title>About GetATSReady — Vinod Isaac</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8HMGTGQ4B8"></script>

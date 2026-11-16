@@ -3,16 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <script defer src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
+    <script src="https://js.sentry-cdn.com/d62024e9014b97cc89780c4a0051997e.min.js" crossorigin="anonymous"></script>
     <script>
-      Sentry.onLoad(function() {
-        Sentry.init({
-          ignoreErrors: [/runtime\.sendMessage/i, /Tab not found/i, /Extension context invalidated/i],
-          tracesSampleRate: 0.1,
-          replaysSessionSampleRate: 0,
-          replaysOnErrorSampleRate: 0,
+      if (typeof Sentry !== 'undefined') {
+        Sentry.onLoad(function() {
+          Sentry.init({
+            ignoreErrors: [
+              /runtime\.sendMessage/i,
+              /Tab not found/i,
+              /Extension context invalidated/i,
+              /TagError|adsbygoogle|availableWidth|No slot size|Script error|ErrorEvent/i
+            ],
+            beforeSend: function(event, hint) {
+              var re = /TagError|adsbygoogle|availableWidth|No slot size|Script error|ErrorEvent/i;
+              var msg = (event && event.message) || '';
+              var err = hint && hint.originalException;
+              var errMsg = (err && (err.message || String(err))) || '';
+              var values = event && event.exception && event.exception.values;
+              var valMsg = values ? values.map(function(v) { return (v.type || '') + ' ' + (v.value || ''); }).join(' ') : '';
+              if (re.test(msg + ' ' + errMsg + ' ' + valMsg)) return null;
+              return event;
+            },
+            tracesSampleRate: 0.1,
+            replaysSessionSampleRate: 0,
+            replaysOnErrorSampleRate: 0,
+          });
         });
-      });
+      }
     </script>
     <title>Free Teacher ATS Resume Checker & Keyword Scanner</title>
     <meta name="description" content="Check your Teacher resume against ATS parsers. Discover exactly which keywords and skills you are missing for Teacher jobs.">
@@ -73,7 +90,6 @@
     }
     </script>
     <!-- FAQPage schema is injected dynamically from the live FAQ section via script.js -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959862133855422" crossorigin="anonymous"></script>
     <!-- PDF and DOCX libraries — deferred to avoid blocking page render -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
@@ -156,6 +172,21 @@
         <p>We use cookies for analytics and advertising. By continuing, you accept our <a href="privacy.html">Privacy Policy</a>.</p>
         <button onclick="acceptCookies()">Accept</button>
     </div>
+    <script>
+      window.acceptCookies = window.acceptCookies || function () {
+        try { localStorage.setItem('cookieConsent', 'true'); } catch (e) {}
+        var b = document.getElementById('cookieConsent');
+        if (b) b.classList.add('hidden');
+        if (typeof gtag === 'function') {
+          gtag('consent', 'update', {
+            ad_storage: 'granted',
+            analytics_storage: 'granted',
+            ad_user_data: 'granted',
+            ad_personalization: 'granted'
+          });
+        }
+      };
+    </script>
 
     <div class="container">
         <header>
@@ -306,15 +337,15 @@
                         <p id="scoreText" class="inline-style-1f8f6c">Local estimate: keyword overlap, section headers, metrics, and layout risk — not a Workday/Taleo/Greenhouse emulator.</p>
                         <button id="downloadReport" class="secondary-btn inline-style-8a5dc8">&#8595; Download Full PDF Report</button>
                         
-                        <div class="ats-pro-cta" style="margin-top: 24px; padding: 20px; border-radius: 8px; background: linear-gradient(135deg, var(--bg-soft), #fff); border: 2px solid var(--primary); text-align: left;">
+                        <div class="ats-pro-cta" style="margin-top: 24px; padding: 20px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 2px solid var(--primary); text-align: left;">
                             <h3 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 8px;">Get a human ATS-focused review</h3>
-                            <p style="color: var(--text); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">A technical writer reviews your resume against your target role, improves its content and structure, and emails the finished document within the selected turnaround. Results and interviews cannot be guaranteed.</p>
-                            <label for="reviewTier" style="display:block; font-size:0.85rem; color:var(--text); margin-bottom:6px;">Choose your service</label>
+                            <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">A technical writer reviews your resume against your target role, improves its content and structure, and emails the finished document within the selected turnaround. Results and interviews cannot be guaranteed.</p>
+                            <label for="reviewTier" style="display:block; font-size:0.85rem; color:var(--text-main); margin-bottom:6px;">Choose your service</label>
                             <select id="reviewTier" style="width:100%; padding:14px 12px; margin-bottom:20px; border:2px solid var(--primary); border-radius:8px; font-size:1.05rem; font-weight:600; color:#0f172a; background-color:#ffffff; cursor:pointer; box-shadow: 0 4px 6px -1px rgba(15, 98, 254, 0.1); outline:none; -webkit-appearance: menulist; appearance: menulist; background-image: none;">
                                 <option value="standard">Standard: 48 hours / $49 or ₹2,499</option>
                                 <option value="express">Express: 24 hours / $79 or ₹3,999</option>
                             </select>
-                            <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--text); margin-bottom: 16px; cursor: pointer;">
+                            <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--text-main); margin-bottom: 16px; cursor: pointer;">
                                 <input type="checkbox" id="refundConsent" style="margin-top: 3px;">
                                 <span>I agree to the <a href="refund-policy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Refund Policy</a> and <a href="terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms</a>. I understand the service is personalized, has no job or score guarantee, and revisions are limited to the published policy.</span>
                             </label>
@@ -491,26 +522,6 @@
                 <p style="margin-bottom: 0;">GetATSReady helps you see parsing and keyword gaps before you apply. It cannot guarantee interviews or that a specific ATS will rank you the same way.</p>
             </div>
 
-            <!-- Ad Zone: In-Content -->
-            <div class="ad-zone ad-content" aria-label="Advertisement">
-                <ins class="adsbygoogle inline-style-cb6278"
-                     data-ad-layout="in-article"
-                     data-ad-format="fluid"
-                     data-ad-client="ca-pub-2959862133855422"
-                    ></ins>
-                <script>
-                    (function() {
-                        var adPush = function() {
-                            if (document.querySelector('.ad-content').offsetWidth > 0) {
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            } else {
-                                setTimeout(adPush, 500);
-                            }
-                        };
-                        adPush();
-                    })();
-                </script>
-            </div>
 
             <!-- FAQ Section for SEO -->
             <div class="card inline-style-3c92e1" id="faq">
