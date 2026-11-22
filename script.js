@@ -1417,58 +1417,90 @@ function getBulletMetricsPct(text) {
 
     const rawLines = cleanedText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     let sectionMode = 'unknown'; // 'experience' | 'nonbullet' | 'unknown'
+    const bulletStartRe = /^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/;
     const expHeaderRe = /^(?:(?:relevant|professional|work|industry)\s+)?(?:experience|employment(?:\s+history)?|career\s+history|projects?|portfolio|key\s+achievements):?$/i;
     const nonBulletHeaderRe = /^(?:(?:core|key|technical|professional|primary|relevant|additional|other)\s+)?(?:skills|competencies|expertise|proficiencies|capabilities|tools|technologies|tech\s+stack|education|academic(?:\s+background)?|certifications?|licenses?|awards|honors|languages|interests|hobbies|summary|profile|objective|contact(?:\s+info(?:rmation)?)?|references)(?:\s*(?:&|and|\/)\s*[a-z\s]{2,30})?:?$/i;
+    const metadataRe = /[|—]|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\[?YEAR\]?\b/i;
     const actionVerbHintRe = /\b(?:led|directed|managed|supervised|orchestrated|spearheaded|built|developed|designed|engineered|created|architected|optimized|improved|reduced|increased|decreased|streamlined|simplified|accelerated|delivered|generated|negotiated|secured|won|surpassed|launched|mentored|automated|wrote|authored|published|implemented|drove|migrated|integrated|maintained|supported|analyzed|researched|coordinated|collaborated|established|executed|administered|participated|worked|assisted|helped|reviewed|edited|tested|deployed|monitored|tracked|resolved|handled|trained|coached|presented|prepared|audited|documented|produced|owned|scaled|refactored|configured)\b/i;
 
-    const bullets = [];
+    const candidateBullets = [];
+    let current = null;
+    const flushCurrent = () => {
+        if (current) {
+            candidateBullets.push(current);
+            current = null;
+        }
+    };
+    const isUnfinishedBullet = (str) => {
+        if (!str) return false;
+        const openParens = (str.match(/\(/g) || []).length;
+        const closeParens = (str.match(/\)/g) || []).length;
+        if (openParens > closeParens) return true;
+        if (/[(\[,;/\-]$/.test(str)) return true;
+        if (/\b(?:and|or|with|for|to|in|of|on|by|the|a|an|across|using|via)$/i.test(str)) return true;
+        if (!/[.!?)]$/.test(str)) return true;
+        return false;
+    };
+
     for (const line of rawLines) {
         const cleanHeader = line.replace(/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]\s*/, '').trim();
         if (cleanHeader.length <= 55) {
-            if (expHeaderRe.test(cleanHeader)) { sectionMode = 'experience'; continue; }
-            if (nonBulletHeaderRe.test(cleanHeader)) { sectionMode = 'nonbullet'; continue; }
+            if (expHeaderRe.test(cleanHeader)) { flushCurrent(); sectionMode = 'experience'; continue; }
+            if (nonBulletHeaderRe.test(cleanHeader)) { flushCurrent(); sectionMode = 'nonbullet'; continue; }
         }
-        if (sectionMode === 'nonbullet') continue;
-        if (line.length <= 20) continue;
+        if (sectionMode === 'nonbullet') { flushCurrent(); continue; }
 
-        const body = cleanHeader;
-        // Headings/category labels ("Content Development & Publishing Systems:") are never bullets
-        if (/:$/.test(body)) continue;
-        // Wrapped parenthetical fragments ("Code), Markdown, Multi-Channel Delivery.") are not bullets
-        const firstCloseParen = body.indexOf(')');
-        const firstOpenParen = body.indexOf('(');
-        if (firstCloseParen !== -1 && (firstOpenParen === -1 || firstCloseParen < firstOpenParen)) continue;
-        if (body.split(/\s+/).length < 5) continue;
+        const isExplicitBullet = bulletStartRe.test(line);
+        const isMetadata = metadataRe.test(cleanHeader) && !isExplicitBullet;
+        if (isMetadata) { flushCurrent(); continue; }
 
-        // Reject skill/topic lists ("Category: X, Y", comma/ampersand Title-Case noun lists with no action verb)
-        const commaCount = (body.match(/,/g) || []).length;
-        const hasAmpersand = /\s&\s/.test(body);
-        const hasVerbHint = actionVerbHintRe.test(body);
-        const looksLikeLabelList = /^[^:]{2,45}:\s+/.test(body) && !hasVerbHint;
-        const looksLikeTopicList = (commaCount >= 1 || hasAmpersand) && body.length < 140 && !hasVerbHint && !/[.!?]$/.test(body);
-        const isSkillList = (commaCount >= 2 && body.length < 140 && !hasVerbHint) || looksLikeLabelList || looksLikeTopicList;
-        if (isSkillList) continue;
-
-        // 1. Explicit bullet characters inside Experience/Projects/unknown are counted as bullets
-        if (/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/.test(line)) {
-            bullets.push(line);
+        if (isExplicitBullet) {
+            flushCurrent();
+            current = { text: line, explicit: true };
             continue;
         }
 
-        // 2. Fallback heuristic: Starts with uppercase, reasonable length, not an all-caps header or job metadata
-        const isLikelyBullet = /^[A-Z]/.test(line) && line.length >= 40 && line.length < 350 && line !== line.toUpperCase();
-        const isMetadata = /[|—]/.test(line) || /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\[?YEAR\]?\b/i.test(line);
-        if (isLikelyBullet && !isMetadata) {
-            bullets.push(line);
+        // Merge wrapped PDF continuation lines back into the active bullet
+        if (current && current.text.length + line.length < 550 &&
+            (isUnfinishedBullet(current.text) || /^[a-z0-9)\],.]/.test(line))) {
+            current.text += ' ' + line;
+            continue;
+        }
+
+        flushCurrent();
+        if (line.length >= 40 && line.length < 350 && /^[A-Z]/.test(line) && line !== line.toUpperCase()) {
+            current = { text: line, explicit: false };
         }
     }
-    const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+%|\d+x\b|\d{1,3}\s*\+|\d{1,3}-member|\d+\s*(years?|users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|cycles?|platforms?|members?|roles?|sites?|packs?)/i;
+    flushCurrent();
+
+    const bullets = candidateBullets
+        .map(item => item.text)
+        .filter(line => {
+            const body = line.replace(/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]\s*/, '').trim();
+            if (body.length <= 20) return false;
+            if (/:$/.test(body)) return false;
+            const firstCloseParen = body.indexOf(')');
+            const firstOpenParen = body.indexOf('(');
+            if (firstCloseParen !== -1 && (firstOpenParen === -1 || firstCloseParen < firstOpenParen)) return false;
+            if (body.split(/\s+/).length < 5) return false;
+
+            const commaCount = (body.match(/,/g) || []).length;
+            const hasAmpersand = /\s&\s/.test(body);
+            const hasVerbHint = actionVerbHintRe.test(body);
+            const looksLikeLabelList = /^[^:]{2,45}:\s+/.test(body) && !hasVerbHint;
+            const looksLikeTopicList = (commaCount >= 1 || hasAmpersand) && body.length < 140 && !hasVerbHint && !/[.!?]$/.test(body);
+            const isSkillList = (commaCount >= 2 && body.length < 140 && !hasVerbHint) || looksLikeLabelList || looksLikeTopicList;
+            return !isSkillList;
+        });
+
+    const metricPattern = /\d+(?:\.\d+)?%|\$[\d,.]+|\d+(?:\.\d+)?\s?[kKmMbB]\b|\+\d+%|\d+(?:\.\d+)?x\b|\d{1,4}\s*\+|\d{1,3}-(?:member|person|team|week|day|month|year)\b|\b\d+\s*(?:years?|users?|customers?|clients?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|docs?|documents?|guides?|pages?|templates?|apis?|endpoints?|cycles?|platforms?|members?|roles?|sites?|packs?|releases?|hours?|days?|weeks?|months?)\b/i;
     const withMetrics = bullets.filter(line => metricPattern.test(line));
     const withoutMetrics = bullets.filter(line => !metricPattern.test(line));
     const total = bullets.length;
     // Pick up to 2 of the weakest bullets (shortest = least detail = best "before" candidates)
     const weakBulletSamples = withoutMetrics
-        .filter(b => b.length > 30 && b.length < 200)
+        .filter(b => b.length > 30 && b.length < 220)
         .sort((a, b) => a.length - b.length)
         .slice(0, 2)
         .map(b => b.replace(/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]\s*/, '').trim());
@@ -1954,8 +1986,10 @@ function displayResults(found, missing, fullText, jdFreq, resumeFreq, keywordSco
         const weakSamples = bulletMetrics.weakBulletSamples || [];
         if (weakSamples.length > 0) {
             exampleHTML = weakSamples.map((b, i) => {
-                const clean = escHtml(b.replace(/<[^>]+>/g, '').trim());
-                const suggestion = i === 0
+                const rawClean = b.replace(/<[^>]+>/g, '').trim();
+                const clean = escHtml(rawClean);
+                const startsStrong = /^(?:led|directed|managed|supervised|orchestrated|spearheaded|built|developed|designed|engineered|created|architected|optimized|improved|reduced|increased|decreased|streamlined|simplified|accelerated|delivered|generated|negotiated|secured|won|surpassed|launched|mentored|automated|wrote|authored|published|implemented|drove|migrated|integrated|maintained|supported|analyzed|researched|coordinated|collaborated|established|executed|administered|reviewed|edited|tested|deployed|monitored|tracked|resolved|handled|trained|coached|presented|prepared|audited|documented|produced|owned|scaled|refactored|configured)\b/i.test(rawClean);
+                const suggestion = (i === 0 || startsStrong)
                     ? `If this work had a real count — years, a team size, a release count — add that number. Do not invent a percentage.`
                     : `Start with a verb you can stand behind ("Led", "Mentored", "Documented") and add a real count if you have one.`;
                 return `❌ <strong>Your resume:</strong> "${clean}"<br>✅ <strong>Improve it:</strong> ${suggestion}`;
