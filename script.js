@@ -809,6 +809,9 @@ function crudePluralFold(word) {
 function stemNormalize(word) {
     const cleaned = stripKeywordPunctuation(word);
     if (!cleaned) return '';
+    // Keep multi-word phrases and clean hyphen/slash skill names intact
+    if (/\s/.test(cleaned)) return cleaned;
+    if (/^(?:ci\/cd|docs-as-code|full-stack|front-end|back-end|no-sql|vs-code|power-bi)$/.test(cleaned)) return cleaned;
     const compact = compactKeywordForm(cleaned);
     if (STEM_MAP[cleaned]) return STEM_MAP[cleaned];
     if (STEM_MAP[compact]) return STEM_MAP[compact];
@@ -857,27 +860,53 @@ function expandMatchForms(word) {
     return forms;
 }
 
-/** Capitalized multi-word phrases from the JD (e.g. "Power BI", "GitHub Actions"). */
+const PHRASE_CONNECTORS = new Set(['of', 'on', 'for', 'as', 'and', 'in', 'to', 'at', 'by', '&']);
+const SENTENCE_OPENER_VERBS = new Set([
+    'contributes', 'contribute', 'drives', 'drive', 'leads', 'lead', 'oversees', 'oversee',
+    'partners', 'partner', 'provides', 'provide', 'ensures', 'ensure', 'continuously',
+    'monitors', 'monitor', 'develops', 'develop', 'manages', 'manage', 'builds', 'build',
+    'creates', 'create', 'designs', 'design', 'writes', 'write', 'analyzes', 'analyze',
+    'maintains', 'maintain', 'supports', 'support', 'collaborates', 'collaborate',
+    'communicates', 'communicate', 'implements', 'implement', 'improves', 'improve',
+    'delivers', 'deliver', 'works', 'work', 'defines', 'define', 'establishes', 'establish',
+    'identifies', 'identify', 'produces', 'produce', 'translates', 'translate',
+    'minimum', 'required', 'preferred', 'qualifications', 'requirements', 'responsibilities',
+    'ability', 'knowledge', 'understanding', 'strong', 'excellent', 'proven', 'experience'
+]);
+
+/** Capitalized multi-word proper-noun tool phrases from the JD (e.g. "Power BI", "GitHub Actions"). */
 function extractCapitalizedPhrases(text) {
     const phrases = new Set();
     const src = String(text || '');
-    const re = /\b([A-Z][a-zA-Z0-9+#]*(?:[\s\-][A-Za-z0-9+#][a-zA-Z0-9+#]*)+)\b/g;
+    // Match strictly short Title-Case noun/tool phrases (2-4 tokens, no lowercase sentence clauses)
+    const capWord = '[A-Z][A-Za-z0-9+#.-]*';
+    const midConn = '(?:of|on|for|as|and|in|to|at|&)';
+    const re = new RegExp(`\\b(${capWord}(?:[\\s\\-]+(?:${capWord}|${midConn}[\\s\\-]+${capWord})){1,3})\\b`, 'g');
     let match;
     while ((match = re.exec(src))) {
-        const phrase = match[1];
-        // Skip sentence-start generics: "The Company", "Our Team"
-        const tokens = phrase.split(/[\s\-]+/).map(t => t.toLowerCase());
-        if (tokens.every(t => NOISE_KEYWORDS.has(t) || JD_PROSE.has(t) || t.length < 2)) continue;
-        if (tokens.length >= 2 && tokens[0].length <= 3 && NOISE_KEYWORDS.has(tokens[0])) continue;
-        const lower = phrase.toLowerCase();
+        const phrase = match[1].trim();
+        if (phrase.length > 40) continue;
+        const rawTokens = phrase.split(/[\s\-]+/).filter(Boolean);
+        if (rawTokens.length < 2 || rawTokens.length > 4) continue;
+        const tokens = rawTokens.map(t => t.toLowerCase());
+        if (SENTENCE_OPENER_VERBS.has(tokens[0])) continue;
+        if (PHRASE_CONNECTORS.has(tokens[0]) || PHRASE_CONNECTORS.has(tokens[tokens.length - 1])) continue;
+        const capCount = rawTokens.filter(t => /^[A-Z]/.test(t)).length;
+        if (capCount < 2) continue;
+        const contentTokens = tokens.filter(t => !PHRASE_CONNECTORS.has(t));
+        if (!contentTokens.length) continue;
+        if (contentTokens.every(t => NOISE_KEYWORDS.has(t) || JD_PROSE.has(t) || JD_NOT_SKILLS.has(t) || t.length < 2)) continue;
+        const lower = phrase.toLowerCase().replace(/\s+/g, ' ');
         phrases.add(lower);
-        hyphenSpaceVariants(lower).forEach(v => phrases.add(v));
-        phrases.add(compactKeywordForm(lower));
     }
     return phrases;
 }
 
 function tokenLooksSkillish(word, capitalizedPhrases) {
+    const rawLower = String(word || '').toLowerCase().trim();
+    if (!rawLower || rawLower.length < 2) return false;
+    // Reject absurdly long space-less blobs
+    if (!rawLower.includes(' ') && !rawLower.includes('-') && rawLower.length > 28) return false;
     const w = canonicalSkill(word);
     if (!w || w.length < 2) return false;
     if (SKILL_TERMS.has(w) || SKILLISH.has(w)) return true;
@@ -885,24 +914,29 @@ function tokenLooksSkillish(word, capitalizedPhrases) {
     if (TECH_BOOST.has(w) || TECH_BOOST.has(stemNormalize(w))) return true;
     const compact = compactKeywordForm(w);
     if (SKILL_TERMS.has(compact) || SKILLISH.has(compact)) return true;
-    if (capitalizedPhrases && (capitalizedPhrases.has(w) || capitalizedPhrases.has(compact) || capitalizedPhrases.has(String(word || '').toLowerCase()))) {
+    if (capitalizedPhrases && (capitalizedPhrases.has(w) || capitalizedPhrases.has(rawLower))) {
         return true;
     }
-    // Contains a known tech term as a substring (reactjs, nodejs, …)
+    // Compound tech words (reactjs, nodejs, postgresql) — only match long roots (>= 6) or explicit tech suffixes
+    if (!w.includes(' ') && /(?:js|sql|ops|db)$/.test(compact) && compact.length >= 5) {
+        const prefix = compact.replace(/(?:js|sql|ops|db)$/, '');
+        if (SKILL_TERMS.has(prefix) || prefix.length >= 3) return true;
+    }
     for (const tech of SKILL_TERMS) {
-        if (tech.length >= 3 && (compact.includes(tech) || w.includes(tech))) return true;
+        if (tech.length >= 6 && (compact.includes(tech) || w.includes(tech))) return true;
     }
-    for (const skill of SKILLISH) {
-        if (skill.length >= 5 && (compact.includes(skill.replace(/-/g, '')) || w.includes(skill))) return true;
+    // Hyphenated compounds (e.g. docs-as-code, full-stack, rest-api) only if a segment is skill-like or non-prose
+    if (w.includes('-') && w.length >= 5) {
+        const parts = w.split('-').filter(Boolean);
+        return parts.some(p => SKILL_TERMS.has(p) || SKILLISH.has(p) || TECH_BOOST.has(p));
     }
-    // Hyphenated compounds that survived stop lists often name tools/domains
-    if (w.includes('-') && w.length >= 5) return true;
     return false;
 }
 
 function canonicalSkill(word) {
     let w = stemNormalize(word);
-    if (!w) w = String(word || '').toLowerCase();
+    if (!w) w = String(word || '').toLowerCase().trim();
+    if (w.includes(' ')) return w;
     if (w === 'kpis') return 'kpi';
     if (w === 'apis') return 'api';
     if (w === 'queries') return 'query';
@@ -994,7 +1028,9 @@ function matchJdSkills(jdFreq, resumeFreq, scopeText, resumeText) {
     const required = new Map();
 
     Object.keys(jdFreq || {}).forEach(jdKw => {
+        if (!jdKw || jdKw.length > 40 || (!jdKw.includes(' ') && !jdKw.includes('-') && jdKw.length > 28)) return;
         const canon = canonicalSkill(jdKw);
+        if (!canon || canon.length > 40 || (!canon.includes(' ') && !canon.includes('-') && canon.length > 28)) return;
         const onlyExample = (exampleTerms.has(canon) || exampleTerms.has(jdKw))
             && !mentionedOutsideExamples(scopeText, canon);
         if (onlyExample) return;
@@ -1014,9 +1050,14 @@ function matchJdSkills(jdFreq, resumeFreq, scopeText, resumeText) {
     required.forEach((jdWeight, jdKw) => {
         maxPossibleScore += jdWeight * 10;
         const phraseParts = jdKw.split(' ');
-        const matched = phraseParts.length > 1
-            ? new RegExp('\\b' + phraseParts.join('\\W+') + '\\b', 'i').test(resumeText || '')
-            : keywordsMatch(jdKw, resumeFreq);
+        let matched = false;
+        if (phraseParts.length > 1) {
+            const safeParts = phraseParts.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            matched = new RegExp('\\b' + safeParts.join('\\W+') + 's?\\b', 'i').test(resumeText || '') ||
+                (jdKw.endsWith('s') && new RegExp('\\b' + safeParts.join('\\W+').replace(/s$/, '') + 's?\\b', 'i').test(resumeText || ''));
+        } else {
+            matched = keywordsMatch(jdKw, resumeFreq);
+        }
         if (matched) {
             found.push(jdKw);
             keywordScore += jdWeight * 10;
@@ -1069,7 +1110,7 @@ function isolateJobRequirements(text) {
     });
     let body = start >= 0 ? src.slice(start) : src;
     const beforeStrip = body;
-    body = body.replace(/\n(?:about (?:the|our) company|who we are|equal opportunity|we are an equal)[\s\S]*$/i, '');
+    body = body.replace(/\n\s*(?:about\s+(?:the|our)\s+company|who\s+we\s+are|what\s+we\s+offer|benefits(?:\s+(?:&|and)\s+perks)?|perks|compensation|diversity\s*(?:&|and)\s*inclusion|equal\s+(?:employment\s+)?opportunity|we\s+are\s+an\s+equal|life\s+at\s+\w+)[\s\S]*$/i, '');
     const trimmed = (start > 0) || body.length < beforeStrip.length;
     return {
         text: body,
@@ -1138,22 +1179,23 @@ function getKeywords(text, isJD = false) {
     const frequencyMap = {};
     filteredWords.forEach(w => {
         if (companyCandidates.has(w)) return;
-        if (isJD && JD_NOT_SKILLS.has(w)) return;
+        if (isJD && (JD_NOT_SKILLS.has(w) || (!w.includes('-') && w.length > 28))) return;
         if (PROTECTED_KEYWORDS.has(w) || !NOISE_KEYWORDS.has(w)) {
             frequencyMap[w] = (frequencyMap[w] || 0) + 1;
-            // Also index compact / stem forms so Mentored ↔ mentor and full-stack ↔ fullstack hit
-            const compact = compactKeywordForm(w);
-            const stem = stemNormalize(w);
-            if (compact && compact !== w) frequencyMap[compact] = (frequencyMap[compact] || 0) + 1;
-            if (stem && stem !== w && stem !== compact) frequencyMap[stem] = (frequencyMap[stem] || 0) + 1;
+            if (!isJD) {
+                // Index compact / stem forms on resumes so Mentored ↔ mentor and full-stack ↔ fullstack hit
+                const compact = compactKeywordForm(w);
+                const stem = stemNormalize(w);
+                if (compact && compact !== w) frequencyMap[compact] = (frequencyMap[compact] || 0) + 1;
+                if (stem && stem !== w && stem !== compact) frequencyMap[stem] = (frequencyMap[stem] || 0) + 1;
+            }
         }
     });
 
     if (isJD && window.lastJdCapitalizedPhrases) {
         window.lastJdCapitalizedPhrases.forEach(phrase => {
-            if (!phrase || phrase.length < 3) return;
+            if (!phrase || phrase.length < 3 || phrase.length > 40) return;
             if (NOISE_KEYWORDS.has(phrase) || JD_PROSE.has(phrase)) return;
-            // Prefer spaced / hyphenated phrases as JD keyword keys
             if (phrase.includes(' ') || phrase.includes('-')) {
                 frequencyMap[phrase] = Math.max(frequencyMap[phrase] || 0, 1);
             }
@@ -1373,21 +1415,50 @@ function getBulletMetricsPct(text) {
     const yearPattern = /\b(19|20)\d{2}\b/g;
     const cleanedText = text.replace(phonePattern, ' [PHONE] ').replace(yearPattern, ' [YEAR] ');
 
-    const lines = cleanedText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 20);
-    const bullets = lines.filter(line => {
-        // 1. Explicit bullet characters are always treated as bullets
-        if (/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/.test(line)) return true;
-        
-        // 2. Fallback heuristic: Starts with uppercase, reasonable length
-        // Also ensure it is NOT an all-caps header and DOES NOT contain title indicators
+    const rawLines = cleanedText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    let sectionMode = 'unknown'; // 'experience' | 'nonbullet' | 'unknown'
+    const expHeaderRe = /^(?:work\s+experience|professional\s+experience|experience|employment(?:\s+history)?|career\s+history|projects?|portfolio|key\s+achievements):?$/i;
+    const nonBulletHeaderRe = /^(?:skills|technical\s+skills|core\s+skills|core\s+competencies|competencies|tools(?:\s*(?:&|and)\s*technologies)?|technologies|tech\s+stack|education|academic(?:\s+background)?|certifications?|licenses?(?:\s*(?:&|and)\s*certifications?)?|awards|honors|languages|interests|hobbies|summary|professional\s+summary|profile|objective|contact(?:\s+info(?:rmation)?)?|references):?$/i;
+    const actionVerbHintRe = /\b(?:led|directed|managed|supervised|orchestrated|spearheaded|built|developed|designed|engineered|created|architected|optimized|improved|reduced|increased|decreased|streamlined|simplified|accelerated|delivered|generated|negotiated|secured|won|surpassed|launched|mentored|automated|wrote|authored|published|implemented|drove|migrated|integrated|maintained|supported|analyzed|researched|coordinated|collaborated|established|executed|administered)\b/i;
+
+    const bullets = [];
+    for (const line of rawLines) {
+        const cleanHeader = line.replace(/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]\s*/, '').trim();
+        if (cleanHeader.length <= 45) {
+            if (expHeaderRe.test(cleanHeader)) { sectionMode = 'experience'; continue; }
+            if (nonBulletHeaderRe.test(cleanHeader)) { sectionMode = 'nonbullet'; continue; }
+        }
+        if (sectionMode === 'nonbullet') continue;
+        if (line.length <= 20) continue;
+
+        const body = cleanHeader;
+        // Headings/category labels ("Content Development & Publishing Systems:") are never bullets
+        if (/:$/.test(body)) continue;
+        // Wrapped parenthetical fragments ("Code), Markdown, Multi-Channel Delivery.") are not bullets
+        const firstCloseParen = body.indexOf(')');
+        const firstOpenParen = body.indexOf('(');
+        if (firstCloseParen !== -1 && (firstOpenParen === -1 || firstCloseParen < firstOpenParen)) continue;
+        if (body.split(/\s+/).length < 5) continue;
+
+        // Reject skill/tool lists ("Category: X, Y" or comma lists with no action verb)
+        const commaCount = (body.match(/,/g) || []).length;
+        const looksLikeLabelList = /^[^:]{2,45}:\s+/.test(body) && !actionVerbHintRe.test(body);
+        const isSkillList = (commaCount >= 2 && body.length < 140 && !actionVerbHintRe.test(body)) || looksLikeLabelList;
+        if (isSkillList) continue;
+
+        // 1. Explicit bullet characters inside Experience/Projects/unknown are counted as bullets
+        if (/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]/.test(line)) {
+            bullets.push(line);
+            continue;
+        }
+
+        // 2. Fallback heuristic: Starts with uppercase, reasonable length, not an all-caps header or job metadata
         const isLikelyBullet = /^[A-Z]/.test(line) && line.length >= 40 && line.length < 350 && line !== line.toUpperCase();
-        
-        // 3. Reject if it looks like a section header, job metadata, or title
-        const isMetadata = /[|—]/.test(line) || /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/i.test(line);
-        const isSkillList = (line.match(/,/g) || []).length > 2 && line.length < 120;
-        
-        return isLikelyBullet && !isMetadata && !isSkillList;
-    });
+        const isMetadata = /[|—]/.test(line) || /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\[?YEAR\]?\b/i.test(line);
+        if (isLikelyBullet && !isMetadata) {
+            bullets.push(line);
+        }
+    }
     const metricPattern = /\d+%|\$[\d,]+|\d+\s?[kKmMbB]\b|\+\d+%|\d+x\b|\d{1,3}\s*\+|\d{1,3}-member|\d+\s*(years?|users?|customers?|people|products?|projects?|teams?|engineers?|writers?|companies|countries|articles?|cycles?|platforms?|members?|roles?|sites?|packs?)/i;
     const withMetrics = bullets.filter(line => metricPattern.test(line));
     const withoutMetrics = bullets.filter(line => !metricPattern.test(line));
@@ -2708,13 +2779,18 @@ document.addEventListener('DOMContentLoaded', setupReviewPricing);
 function explainJobDescriptionField() {
     const area = document.getElementById('jobDescription');
     if (!area || document.getElementById('jdPasteHint')) return;
-    const hint = 'Paste the full posting if you like. Keyword match skips the company introduction and uses the role, responsibilities, and requirements.';
-    area.placeholder = 'Paste the full job posting, or only the responsibilities and requirements.';
+    const hint = 'Best results: paste Job Title + Responsibilities + Qualifications. Leave blank for a layout & impact score.';
+    area.placeholder = 'Best results: paste Job Title + Responsibilities + Requirements (skip company "About Us", benefits, and EEO text if pasting manually — we also auto-skip common intros). Leave empty for a base resume score.';
     area.title = hint;
-    const note = document.createElement('p');
+    const note = document.createElement('div');
     note.id = 'jdPasteHint';
-    note.textContent = hint;
-    note.style.cssText = 'margin:8px 0 0;font-size:0.82rem;line-height:1.45;color:var(--text-muted,#94a3b8);';
+    note.style.cssText = 'margin:10px 0 0;padding:10px 12px;border-radius:8px;background:rgba(148,163,184,0.08);border:1px solid rgba(148,163,184,0.18);font-size:0.8rem;line-height:1.5;color:var(--text-muted,#94a3b8);';
+    note.innerHTML = '<strong style="color:var(--text,#e2e8f0);">Guidelines for an accurate score:</strong>' +
+        '<ul style="margin:6px 0 0;padding-left:18px;">' +
+        '<li><strong>Best JD paste:</strong> Include <strong>Responsibilities</strong> and <strong>Qualifications / Requirements</strong> (skip company bio, perks, and EEO boilerplate when copying).</li>' +
+        '<li><strong>Skills &amp; tools:</strong> Keyword match compares named tools, hard skills, and role terms — not full sentences.</li>' +
+        '<li><strong>Bullet metrics:</strong> Only Experience &amp; Project bullets count toward metric % (Skills lists are skipped).</li>' +
+        '</ul>';
     area.insertAdjacentElement('afterend', note);
 }
 explainJobDescriptionField();
