@@ -1417,14 +1417,14 @@ function getBulletMetricsPct(text) {
 
     const rawLines = cleanedText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     let sectionMode = 'unknown'; // 'experience' | 'nonbullet' | 'unknown'
-    const expHeaderRe = /^(?:work\s+experience|professional\s+experience|experience|employment(?:\s+history)?|career\s+history|projects?|portfolio|key\s+achievements):?$/i;
-    const nonBulletHeaderRe = /^(?:skills|technical\s+skills|core\s+skills|core\s+competencies|competencies|tools(?:\s*(?:&|and)\s*technologies)?|technologies|tech\s+stack|education|academic(?:\s+background)?|certifications?|licenses?(?:\s*(?:&|and)\s*certifications?)?|awards|honors|languages|interests|hobbies|summary|professional\s+summary|profile|objective|contact(?:\s+info(?:rmation)?)?|references):?$/i;
-    const actionVerbHintRe = /\b(?:led|directed|managed|supervised|orchestrated|spearheaded|built|developed|designed|engineered|created|architected|optimized|improved|reduced|increased|decreased|streamlined|simplified|accelerated|delivered|generated|negotiated|secured|won|surpassed|launched|mentored|automated|wrote|authored|published|implemented|drove|migrated|integrated|maintained|supported|analyzed|researched|coordinated|collaborated|established|executed|administered)\b/i;
+    const expHeaderRe = /^(?:(?:relevant|professional|work|industry)\s+)?(?:experience|employment(?:\s+history)?|career\s+history|projects?|portfolio|key\s+achievements):?$/i;
+    const nonBulletHeaderRe = /^(?:(?:core|key|technical|professional|primary|relevant|additional|other)\s+)?(?:skills|competencies|expertise|proficiencies|capabilities|tools|technologies|tech\s+stack|education|academic(?:\s+background)?|certifications?|licenses?|awards|honors|languages|interests|hobbies|summary|profile|objective|contact(?:\s+info(?:rmation)?)?|references)(?:\s*(?:&|and|\/)\s*[a-z\s]{2,30})?:?$/i;
+    const actionVerbHintRe = /\b(?:led|directed|managed|supervised|orchestrated|spearheaded|built|developed|designed|engineered|created|architected|optimized|improved|reduced|increased|decreased|streamlined|simplified|accelerated|delivered|generated|negotiated|secured|won|surpassed|launched|mentored|automated|wrote|authored|published|implemented|drove|migrated|integrated|maintained|supported|analyzed|researched|coordinated|collaborated|established|executed|administered|participated|worked|assisted|helped|reviewed|edited|tested|deployed|monitored|tracked|resolved|handled|trained|coached|presented|prepared|audited|documented|produced|owned|scaled|refactored|configured)\b/i;
 
     const bullets = [];
     for (const line of rawLines) {
         const cleanHeader = line.replace(/^[\u2022\u2023\u25B8\u25E6\u2043\u25CF\u25AA\-\*\u00b7]\s*/, '').trim();
-        if (cleanHeader.length <= 45) {
+        if (cleanHeader.length <= 55) {
             if (expHeaderRe.test(cleanHeader)) { sectionMode = 'experience'; continue; }
             if (nonBulletHeaderRe.test(cleanHeader)) { sectionMode = 'nonbullet'; continue; }
         }
@@ -1440,10 +1440,13 @@ function getBulletMetricsPct(text) {
         if (firstCloseParen !== -1 && (firstOpenParen === -1 || firstCloseParen < firstOpenParen)) continue;
         if (body.split(/\s+/).length < 5) continue;
 
-        // Reject skill/tool lists ("Category: X, Y" or comma lists with no action verb)
+        // Reject skill/topic lists ("Category: X, Y", comma/ampersand Title-Case noun lists with no action verb)
         const commaCount = (body.match(/,/g) || []).length;
-        const looksLikeLabelList = /^[^:]{2,45}:\s+/.test(body) && !actionVerbHintRe.test(body);
-        const isSkillList = (commaCount >= 2 && body.length < 140 && !actionVerbHintRe.test(body)) || looksLikeLabelList;
+        const hasAmpersand = /\s&\s/.test(body);
+        const hasVerbHint = actionVerbHintRe.test(body);
+        const looksLikeLabelList = /^[^:]{2,45}:\s+/.test(body) && !hasVerbHint;
+        const looksLikeTopicList = (commaCount >= 1 || hasAmpersand) && body.length < 140 && !hasVerbHint && !/[.!?]$/.test(body);
+        const isSkillList = (commaCount >= 2 && body.length < 140 && !hasVerbHint) || looksLikeLabelList || looksLikeTopicList;
         if (isSkillList) continue;
 
         // 1. Explicit bullet characters inside Experience/Projects/unknown are counted as bullets
