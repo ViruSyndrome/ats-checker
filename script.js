@@ -128,11 +128,8 @@ function bumpUsageCounter(path) {
     }).catch((err) => console.error("Usage counter failed", err));
 }
 
-// Cookie Consent — Accept grants analytics/ads storage; no auto-dismiss without consent
-function acceptCookies() {
-    _ls.setRaw('cookieConsent', 'true');
-    const cookieBanner = document.getElementById('cookieConsent');
-    if (cookieBanner) cookieBanner.classList.add('hidden');
+// Cookie Consent — Accept grants analytics/ads storage; works across root and nested pages
+function grantAtsConsent() {
     if (typeof gtag === 'function') {
         gtag('consent', 'update', {
             ad_storage: 'granted',
@@ -143,19 +140,36 @@ function acceptCookies() {
     }
 }
 
-window.addEventListener('load', () => {
+function acceptCookies() {
+    _ls.setRaw('cookieConsent', 'true');
     const cookieBanner = document.getElementById('cookieConsent');
-    if (cookieBanner && _ls.getRaw('cookieConsent') === 'true') {
-        cookieBanner.classList.add('hidden');
-        if (typeof gtag === 'function') {
-            gtag('consent', 'update', {
-                ad_storage: 'granted',
-                analytics_storage: 'granted',
-                ad_user_data: 'granted',
-                ad_personalization: 'granted'
-            });
-        }
+    if (cookieBanner) cookieBanner.classList.add('hidden');
+    grantAtsConsent();
+}
+window.acceptCookies = acceptCookies;
+
+function initAtsCookieBanner() {
+    let cookieBanner = document.getElementById('cookieConsent');
+    if (_ls.getRaw('cookieConsent') === 'true') {
+        if (cookieBanner) cookieBanner.classList.add('hidden');
+        grantAtsConsent();
+        return;
     }
+    if (!cookieBanner && document.body) {
+        const isNested = /\/(?:guides|role)\//i.test(window.location.pathname || '');
+        const privacyHref = isNested ? '../privacy.html' : 'privacy.html';
+        cookieBanner = document.createElement('div');
+        cookieBanner.id = 'cookieConsent';
+        cookieBanner.className = 'cookie-banner';
+        cookieBanner.innerHTML = `<p>We use cookies for analytics and advertising. By continuing, you accept our <a href="${privacyHref}">Privacy Policy</a>.</p><button type="button">Accept</button>`;
+        const btn = cookieBanner.querySelector('button');
+        if (btn) btn.addEventListener('click', acceptCookies);
+        document.body.insertBefore(cookieBanner, document.body.firstChild);
+    }
+}
+
+window.addEventListener('load', () => {
+    initAtsCookieBanner();
     try {
         renderHistory();
     } catch (historyError) {
